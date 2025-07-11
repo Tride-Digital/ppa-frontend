@@ -23,13 +23,13 @@ export default defineNuxtConfig({
         {
           rel: "icon",
           type: "image/png",
-          href: "images/PPA_Logo.png",
+          href: "images/logo_black.png",
           media: "(prefers-color-scheme: light)",
         },
         {
           rel: "icon",
           type: "image/png",
-          href: "images/PPA_Logo.png",
+          href: "images/logo_white.png",
           media: "(prefers-color-scheme: dark)",
         },
       ],
