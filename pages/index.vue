@@ -8,6 +8,7 @@
   </v-container> -->
   <div class="coming-soon">
     <div class="content">
+      <img src="/images/PPA_Logo-removebg.png" alt="Logo" class="logo" />
       <h1>We're Growing Something Awesome 🌱</h1>
       <p>This site is currently under development. Please check back soon!</p>
     </div>

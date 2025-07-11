@@ -22,14 +22,14 @@ export default defineNuxtConfig({
       link: [
         {
           rel: "icon",
-          type: "image/svg+xml",
-          href: "images/logo.svg",
+          type: "image/png",
+          href: "images/logo_black.png",
           media: "(prefers-color-scheme: light)",
         },
         {
           rel: "icon",
-          type: "image/svg+xml",
-          href: "images/logo.svg",
+          type: "image/png",
+          href: "images/logo_white.png",
           media: "(prefers-color-scheme: dark)",
         },
       ],
