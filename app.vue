@@ -1,11 +1,11 @@
 <template>
   <v-app >
-      <!-- <AppNavBar /> -->
+      <AppNavBar />
     <v-main>
         <NuxtPage />
     </v-main>
 
-     <!-- <AppFooter /> -->
+     <AppFooter />
   </v-app>
 </template>
 

@@ -5,7 +5,7 @@
             <v-list nav dense>
                 <div @click="goToHome" tag="span" style="cursor: pointer">
                     <v-row align="center">
-                        <v-col cols="4" class="pa-0 ma-0"><v-img :height="75" src="/images/logo.svg"></v-img></v-col>
+                        <v-col cols="4" class="pa-0 ma-0"><v-img :height="75" :src="theme.global.current.value.dark?'/images/PPA_Logo.png':'/images/PPA_Logo.png'"></v-img></v-col>
                         <v-col cols="8" class="pa-0 ma-0">
                             <h3>Proprietary</h3>
                             <h3>Planters Alliance</h3>
@@ -33,7 +33,7 @@
                 <v-col cols="4">
                     <div @click="goToHome" tag="span" style="cursor: pointer">
                         <v-row align="center">
-                            <v-col cols="4" class="pa-0 ma-0"><v-img :height="75" src="/images/logo.svg"></v-img></v-col>
+                            <v-col cols="4" class="pa-0 ma-0"><v-img :height="75" :src="theme.global.current.value.dark?'/images/PPA_Logo.png':'/images/PPA_Logo.png'"></v-img></v-col>
                             <v-col cols="4" class="pa-0 ma-0">
                                 <h3>Proprietary</h3>
                                 <h3>Planters Alliance</h3>
@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { useDisplay } from 'vuetify';
+import { useDisplay, useTheme } from 'vuetify';
 import { ref, computed, watch } from "vue";
 import { useRouter } from 'vue-router';
 
@@ -65,6 +65,7 @@ const { mobile } = useDisplay();
 const isMobile = computed(() => mobile.value);
 
 const router = useRouter();
+const theme = useTheme()
 
 const sidebar = ref(false);
 const menuItems = ref([

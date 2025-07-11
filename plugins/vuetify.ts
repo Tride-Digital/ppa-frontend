@@ -14,7 +14,7 @@ export default defineNuxtPlugin(nuxtApp => {
     },
     // Add any other Vuetify configurations here, e.g., themes
     theme: {
-      defaultTheme: 'dark',
+      defaultTheme: 'light',
       themes: {
         dark: {
           colors: {
