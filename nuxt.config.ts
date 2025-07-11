@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     prerender: {
-      routes: ["/", "/about"], // only these are SSG
+      routes: ["/"], // only these are SSG
     },
   },
 
