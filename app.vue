@@ -2,10 +2,7 @@
   <v-app >
       <!-- <AppNavBar /> -->
     <v-main>
-      <v-container fluid>
         <NuxtPage />
-
-      </v-container>
     </v-main>
 
      <!-- <AppFooter /> -->

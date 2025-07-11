@@ -55,7 +55,7 @@ html, body {
 }
 
 .logo {
-  width: 100px;
+  width: 500px;
   margin-bottom: 20px;
 }
 
