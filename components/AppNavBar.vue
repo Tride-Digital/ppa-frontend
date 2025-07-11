@@ -69,6 +69,7 @@ const theme = useTheme()
 
 const sidebar = ref(false);
 const menuItems = ref([
+    { title: 'Test', path: '/test', icon: 'mdi-home' },
     { title: 'Home', path: '/home', icon: 'mdi-home' },
     { title: 'Sign Up', path: '/signup', icon: 'face' },
     { title: 'Sign In', path: '/signin', icon: 'lock_open' }
