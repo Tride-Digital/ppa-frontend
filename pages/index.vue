@@ -6,13 +6,32 @@
       <h2>{{ discriptiption }}</h2>
     </v-col>
   </v-container> -->
-  <div class="coming-soon">
-    <div class="content">
-      <img src="/images/PPA_Logo-removebg.png" alt="Logo" class="logo" />
-      <h1>We're Growing Something Awesome 🌱</h1>
-      <p>This site is currently under development. Please check back soon!</p>
-    </div>
-  </div>
+  <v-container
+    fluid
+    class="coming-soon d-flex align-center justify-center text-center"
+  >
+    <v-row justify="center">
+      <v-col cols="12" md="8" lg="6">
+        <v-img
+          src="/images/PPA_Logo-removebg.png"
+          alt="Logo"
+          class="mb-6"
+          max-width="100%"
+          width="100%"
+          aspect-ratio="2.5"
+          contain
+        ></v-img>
+
+        <h1 class="display-1 font-weight-bold text-success">
+          We're Growing Something Awesome 🌱
+        </h1>
+
+        <p class="text-body-1 text-grey-darken-1 mt-4">
+          This site is currently under development. Please check back soon!
+        </p>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
@@ -31,42 +50,10 @@ const props = defineProps({
 </script>
 
 <style scoped>
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
 .coming-soon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  min-height: 100vh;   /* full viewport height */
-  width: 100vw;        /* full viewport width */
+  min-height: 100vh;
   background: linear-gradient(135deg, #d0f4de, #fdfcdc);
-  font-family: 'Segoe UI', sans-serif;
-  color: #215732;
   padding: 2rem;
   box-sizing: border-box;
-}
-
-.content {
-  max-width: 500px;
-}
-
-.logo {
-  width: 500px;
-  margin-bottom: 20px;
-}
-
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #38761d;
-}
-
-p {
-  font-size: 1.2rem;
-  color: #444;
 }
 </style>
