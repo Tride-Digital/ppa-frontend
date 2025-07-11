@@ -82,3 +82,5 @@ Mention SSG need routs on `nuxt.config.ts`
             routes: ["/", "/about"], // only these are SSG
         },
     },
+
+`useFetch()` for beckend data fecting
