@@ -1,0 +1,67 @@
+import { defineNuxtConfig } from "nuxt/config";
+
+export default defineNuxtConfig({
+  ssr: true,
+  nitro: {
+    prerender: {
+      routes: ["/", "/about"], // only these are SSG
+    },
+  },
+
+  css: [
+    "vuetify/lib/styles/main.sass", // Or 'vuetify/styles'
+    "@mdi/font/css/materialdesignicons.min.css", // For MDI icons
+  ],
+
+  build: {
+    transpile: ["vuetify"],
+  },
+  app: {
+    head: {
+      title: "Planters",
+      link: [
+        {
+          rel: "icon",
+          type: "image/svg+xml",
+          href: "images/logo.svg",
+          media: "(prefers-color-scheme: light)",
+        },
+        {
+          rel: "icon",
+          type: "image/svg+xml",
+          href: "images/logo.svg",
+          media: "(prefers-color-scheme: dark)",
+        },
+      ],
+    },
+  },
+
+  // modules: [
+  //   async (options, nuxt) => {
+  //     nuxt.hooks.hook('vite:extendConfig', (config) => {
+  //       config.plugins = config.plugins || [];
+  //       config.plugins.push(
+  //         vuetify({
+  //           styles: {
+  //             configFile: 'assets/scss/variables.scss', // Optional: for custom SASS variables
+  //           },
+  //         })
+  //       )
+  //     })
+  //   },
+  // ],
+
+  // Optional: If you want to customize SASS variables
+  // vite: {
+  //   define: {
+  //     'process.env.DEBUG': false, // Example for Vite
+  //   },
+  // },
+
+  // Optional: If you use the `vite-plugin-vuetify` with `styles.configFile`
+  // Create an `assets/scss/variables.scss` file with your custom Vuetify SASS variables
+  // For example:
+  // @forward 'vuetify/settings' with (
+  //   $button-border-radius: 0px,
+  // );
+});
