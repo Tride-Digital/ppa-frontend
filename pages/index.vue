@@ -1,29 +1,21 @@
 <template>
-  <v-container class="fill-height" max-width="900">
-    <v-col align="center" justify="center">
-      <h1>{{ message }}</h1>
-     
-      <h2>{{ discriptiption }}</h2>
-    </v-col>
-  </v-container>
- 
+  <div class="homepage">
+    <HeroSection />
+    <AboutSection />
+    <ProductSection />
+    <AnnouncementSection />
+  </div>
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
-
-const props = defineProps({
-  message: {
-    type: String,
-    default: 'Hello, World!'
-  },
-  discriptiption: {
-    type: String,
-    default: 'Hello, World!'
-  },
-})
+import HeroSection from '~/components/HeroSection.vue'
+import ProductSection from '~/components/ProductSection.vue'
+import AboutSection from '~/components/AboutSection.vue'
+import AnnouncementSection from '~/components/AnnouncementSection.vue'
 </script>
 
 <style scoped>
-
+.homepage {
+  min-height: 100vh;
+}
 </style>
