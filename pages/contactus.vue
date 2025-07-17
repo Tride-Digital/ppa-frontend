@@ -2,7 +2,7 @@
   <v-container class="fill-height py-12" max-width="1400">
     <v-row justify="center">
       <v-col cols="12" class="text-center mb-6">
-        <h2 class="directors-title">Our Leadership Team</h2>
+        <h2 class="directors-title">Senior Leadership Team</h2>
         <p class="directors-subtitle">Get in touch with our directors directly</p>
       </v-col>
     </v-row>
