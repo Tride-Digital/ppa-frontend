@@ -22,27 +22,21 @@
             </v-btn>
           </div>
         </v-col>
+        <v-col cols="12" md="2"></v-col>
         <v-col cols="12" md="2" class="mb-6">
-          <h4 class="footer-section-title footer-primary-text mb-4">Quick Links</h4>
-          <v-list class="footer-list">
-            <v-list-item v-for="item in quickLinks" :key="item.title" :to="item.path" class="footer-list-item">
-              <v-list-item-title class="footer-link footer-primary-text footer-link-base">
-                {{ item.title }}
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
+          <div>
+            <h4 class="footer-section-title footer-primary-text mb-4">Quick Links</h4>
+            <v-list class="footer-list px-0">
+              <v-list-item v-for="item in quickLinks" :key="item.title" :to="item.path" class="footer-list-item px-0">
+                <v-list-item-title class="footer-link footer-primary-text footer-link-base">
+                  {{ item.title }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </div>
         </v-col>
-        <v-col cols="12" md="2" class="mb-6">
-          <h4 class="footer-section-title footer-primary-text mb-4">Services</h4>
-          <v-list class="footer-list">
-            <v-list-item v-for="service in services" :key="service.title" :to="service.path" class="footer-list-item">
-              <v-list-item-title class="footer-link footer-primary-text footer-link-base">
-                {{ service.title }}
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-col>
-        <v-col cols="12" md="4" class="mb-6">
+        <v-col cols="12" md="1"></v-col>
+        <v-col cols="12" md="3" class="mb-6">
           <h4 class="footer-section-title footer-primary-text mb-4">Contact Info</h4>
           <div class="footer-contact">
             <div v-for="contact in contactInfo" :key="contact.type" class="contact-item mb-3">
@@ -53,29 +47,9 @@
           </div>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="12" class="mb-4">
-          <div class="footer-directors">
-            <v-row>
-              <v-col  v-for="(director, index) in directorContacts" :key="director.name" cols="12" sm="6" md="3" lg="2.4" xl="1.2" class="director-col">
-                  <div class="director-item mb-2">
-                    <div class="director-content">
-                      <div class="director-name footer-primary-text">{{ director.name }}</div>
-                       <div class="director-phone footer-secondary-text">
-                        <v-icon class="phone-icon">mdi-phone</v-icon>
-                        <a :href="'tel:' + director.phone" class="contact-link footer-secondary-text footer-link-base">{{ director.phone }}</a>
-                        <span v-if="director.note" class="director-note footer-secondary-text">{{ director.note }}</span>
-                       </div>
-                      </div>
-                    </div>
-                  </v-col>
-                </v-row>
-              </div>
-        </v-col>
-      </v-row>
-      <v-divider class="footer-divider my-6"></v-divider>
+      <v-divider class="footer-divider mb-6"></v-divider>
       <v-row align="center">
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="6" class="copyright-col">
           <p class="footer-copyright footer-secondary-text">© {{ currentYear }} Proprietary Planters Alliance. All rights reserved.</p>
         </v-col>
         <v-col cols="12" md="6" class="text-md-end">
@@ -103,12 +77,6 @@ const quickLinks = ref([
   { title: 'Products', path: '/products' },
   { title: 'Membership', path: '/membership' }
 ])
-const services = ref([
-  { title: 'Consultation'/*, path: '/services/consultation'*/ },
-  { title: 'Training'/*, path: '/services/training'*/ },
-  { title: 'Certification'/*, path: '/services/certification'*/ },
-  { title: 'Market Access'/*, path: '/services/market-access'*/ }
-])
 const socialLinks = ref([
   { name: 'Facebook', icon: 'mdi-facebook'/*, url: '#'*/ },
   { name: 'X', icon: 'custom-x'/*, url: '#'*/ },
@@ -135,25 +103,13 @@ const contactInfo = ref([
     href: 'https://planters.lk/'
   }
 ])
-const directorContacts = ref([
-  { name: 'Director / CEO', phone: '077 7790147' },
-  { name: 'Director-Operations', phone: '077 7812538' },
-  { name: 'Director-Marketing', phone: '077 7423500' },
-  { name: 'Director-Finance', phone: '076 9499270', note: '(WhatsApp)' },
-  { name: 'Director-Projects', phone: '077 2960284' },
-  { name: 'Director-Sustainability', phone: '077 7485957' },
-  { name: 'Director-Exports', phone: '077 8752657' },
-  { name: 'Director-Legal', phone: '077 7713567' },
-  { name: 'Director-HRM', phone: '077 2376343' },
-  { name: 'Director-Export crops', phone: '077 6083027' }
-])
 </script>
 
 <style scoped>
 .footer-section {
   background-color: rgb(var(--v-theme-primary));
   color: rgb(var(--v-theme-on-primary));
-  padding: 60px 0 20px 0;
+  padding: 40px 0 0 0;
 }
 .footer-primary-text {
   color: rgb(var(--v-theme-on-primary));
@@ -189,10 +145,12 @@ const directorContacts = ref([
 .footer-list {
   background: transparent;
   padding: 0;
+  margin-left: 0;
 }
 .footer-list-item {
   padding: 4px 0;
   min-height: auto;
+  padding-left: 0;
 }
 .footer-link {
   font-size: 0.9rem;
@@ -211,50 +169,6 @@ const directorContacts = ref([
 .contact-text {
   font-size: 0.9rem;
   line-height: 1.4;
-}
-.footer-directors .director-item {
-  margin-bottom: 8px;
-}
-.director-col {
-  padding: 0 4px !important;
-}
-.director-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.director-name {
-  font-size: 0.85rem;
-  font-weight: 500;
-  line-height: 1.2;
-  text-align: center;
-  white-space: nowrap;
-}
-.director-phone {
-  font-size: 0.8rem;
-  line-height: 1.3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  white-space: nowrap;
-}
-.phone-icon {
-  color: rgb(var(--v-theme-footer-link-hover));
-  font-size: 1rem;
-  margin-right: 4px;
-  margin-bottom: 0;
-}
-.director-phone .contact-link {
-  text-align: center;
-}
-.director-note {
-  font-size: 0.7rem;
-  margin-left: 4px;
-  opacity: 0.8;
-  display: inline;
 }
 .footer-social-btn {
   margin-right: 8px;
@@ -304,6 +218,9 @@ const directorContacts = ref([
   .footer-legal {
     justify-content: center;
     margin-top: 10px;
+  }
+  .copyright-col {
+    text-align: center;
   }
 }
 @media (max-width: 480px) {

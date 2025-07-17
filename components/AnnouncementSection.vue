@@ -1,5 +1,5 @@
 <template>
-  <section class="announcements-section py-16">
+  <section class="announcements-section pt-5 pb-12">
     <v-container>
       <v-row justify="center">
         <v-col cols="12" class="text-center mb-12">

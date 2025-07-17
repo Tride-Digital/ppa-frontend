@@ -50,6 +50,9 @@ export default defineNuxtPlugin(nuxtApp => {
             'announcement-shadow': 'rgba(0, 0, 0, 0.15)',
             'product-card-shadow': 'rgba(0, 0, 0, 0.15)',
             'about-text': '#424242',
+            'contact-title': '#2e7d32',
+            'toggle-btn': 'rgba(0, 0, 0, 0.2)',
+            'toggle-btn:hover': 'rgba(255, 255, 255, 0.1)',
           }
         },
         dark: {
@@ -61,7 +64,7 @@ export default defineNuxtPlugin(nuxtApp => {
             warning: '#ffb74d',
             info: '#64b5f6',
             success: '#81c784',
-            background: '#121212',
+            background: '#1E1E1E',
             surface: '#1e1e1e',
             'on-primary': '#ffffff',
             'on-secondary': '#000000',
@@ -87,6 +90,9 @@ export default defineNuxtPlugin(nuxtApp => {
             'announcement-shadow': 'rgba(0, 0, 0, 0.25)',
             'product-card-shadow': 'rgba(0, 0, 0, 0.25)',
             'about-text': '#e0e0e0',
+            'contact-title': '#ffffff',
+            'toggle-btn': 'rgba(0, 0, 0, 0.2)',
+            'toggle-btn:hover': 'rgba(255, 255, 255, 0.1)',
           },
         },
       },
