@@ -1,6 +1,6 @@
 <template>
   <AnnouncementSection />
-  <div class="my-6"></div>
+  <div class="my-16 py-16"></div>
 </template>
 
 <script setup>

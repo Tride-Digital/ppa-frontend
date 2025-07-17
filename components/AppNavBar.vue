@@ -75,15 +75,11 @@ const sidebar = ref(false);
 const search = ref('');
 const isDarkTheme = computed(() => theme.global.current.value.dark);
 const toggleTheme = () => {
-    theme.global.name.value = isDarkTheme.value ? 'light' : 'dark';
-    localStorage.setItem('theme', isDarkTheme.value ? 'light' : 'dark');
+    const newTheme = isDarkTheme.value ? 'light' : 'dark';
+    theme.global.name.value = newTheme;
+    localStorage.setItem('theme', newTheme);
 };
-if (process.client) {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        theme.global.name.value = savedTheme;
-    }
-}
+
 const menuItems = ref([
     { title: 'Home', path: '/', icon: 'mdi-home' },
     { title: 'About us', path: '/aboutus', icon: 'mdi-home' },
