@@ -12,7 +12,7 @@
             <h1 class="hero-title mb-6">{{ message }}</h1>
             <div class="hero-buttons">
               <v-btn color="primary" size="large" class="me-4 mb-3" to="/aboutus">Learn More</v-btn>
-              <v-btn variant="outlined" color="white" size="large" class="mb-3" to="/membership">Join PPA</v-btn>
+              <v-btn variant="outlined" color="white" size="large" class="mb-3">Join PPA</v-btn>
             </div>
           </v-col>
         </v-row>

@@ -1,12 +1,12 @@
 <template>
-  <section class="announcements-section py-16">
+  <section class="announcements-section pt-8">
     <v-container>
       <v-row justify="center">
         <v-col cols="12" class="text-center mb-12">
           <h2 class="section-title">Announcements</h2>
           <p class="section-subtitle">{{ sectionDescription }}</p>
         </v-col>
-        <v-col cols="12">
+        <!-- <v-col cols="12">
           <v-row>
             <v-col v-for="announcement in announcements" :key="announcement.id" cols="12" sm="6" lg="3" class="mb-6">
               <v-card class="announcement-card h-100" elevation="4" hover @click="handleAnnouncementClick(announcement)">
@@ -26,7 +26,8 @@
               </v-card>
             </v-col>
           </v-row>
-        </v-col>
+        </v-col> -->
+        <div class="my-16 py-16"></div>
       </v-row>
     </v-container>
   </section>
