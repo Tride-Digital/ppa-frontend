@@ -36,6 +36,11 @@ export default defineNuxtConfig({
     },
   },
 
+  modules: ['nuxt-google-translate'],
+  googleTranslate: {
+    defaultLanguage: 'en',
+    supportedLanguages: ['en','ta', 'si'],
+  },
   // modules: [
   //   async (options, nuxt) => {
   //     nuxt.hooks.hook('vite:extendConfig', (config) => {
