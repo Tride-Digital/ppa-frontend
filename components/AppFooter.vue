@@ -221,9 +221,11 @@ const directorContacts = ref([
 }
 .director-content {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
+  /* flex-direction: column; */
+  align-items: flex-start;
+  text-align: left; 
+  /* justify-content: center;
+  flex-wrap: wrap; */
   gap: 8px;
 }
 .director-name {
