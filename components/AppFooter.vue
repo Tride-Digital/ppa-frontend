@@ -9,8 +9,8 @@
                 <v-img :height="60" :width="60" src="/images/logo_white.png" alt="PPA Logo" contain class="footer-logo"></v-img>
               </v-col>
               <v-col class="ml-3">
-                <h3 class="footer-brand-text footer-primary-text">Proprietary</h3>
-                <h3 class="footer-brand-text footer-primary-text">Planters Alliance</h3>
+                <h3 class="footer-brand-text footer-primary-text" translate="no">Proprietary</h3>
+                <h3 class="footer-brand-text footer-primary-text" translate="no">Planters Alliance</h3>
               </v-col>
             </v-row>
           </div>
@@ -80,6 +80,7 @@
         </v-col>
         <v-col cols="12" md="6" class="text-md-end">
           <div class="footer-legal">
+          <LanguageSelector class="mr-4" />
             <a href="/privacy" class="footer-legal-link footer-primary-text footer-link-base">Privacy Policy</a>
             <span class="footer-separator footer-secondary-text">|</span>
             <a href="/terms" class="footer-legal-link footer-primary-text footer-link-base">Terms of Service</a>
@@ -220,9 +221,11 @@ const directorContacts = ref([
 }
 .director-content {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
+  /* flex-direction: column; */
+  align-items: flex-start;
+  text-align: left; 
+  /* justify-content: center;
+  flex-wrap: wrap; */
   gap: 8px;
 }
 .director-name {

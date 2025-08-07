@@ -1,4 +1,5 @@
 <template>
+  <GoogleTranslate />
   <v-app >
       <AppNavBar />
     <v-main>
