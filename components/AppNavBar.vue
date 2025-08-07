@@ -53,6 +53,9 @@
             <v-toolbar-items class="nav-items">
                 <v-btn flat v-for="item in menuItems.slice(0, 6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
                 <div class="d-flex align-center mx-2">
+                    <v-btn @click="goToAdmin">Log In</v-btn>
+                </div>
+                <div class="d-flex align-center mx-2">
                     <v-btn icon @click="toggleTheme" class="theme-toggle-btn">
                         <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
                     </v-btn>
@@ -75,6 +78,7 @@ import { useDisplay, useTheme } from 'vuetify';
 import { ref, computed } from "vue";
 import { useRouter } from 'vue-router';
 import LanguageSelector from './LanguageSelector.vue';
+const config = useRuntimeConfig();
 const { mobile } = useDisplay();
 const isMobile = computed(() => mobile.value);
 const router = useRouter();
@@ -95,10 +99,12 @@ const menuItems = ref([
     { title: 'Products', path: '/products', icon: 'mdi-leaf' },
     // { title: 'Membership', path: '/membership', icon: 'mdi-account' },
     { title: 'Contact us', path: '/contactus', icon: 'mdi-phone' },
-    // { title: 'Sign In', path: '/signin', icon: 'lock_open' }
 ]);
 const goToHome = () => {
     router.push('/');
+};
+const goToAdmin = () => {
+    window.open(config.public.adminAppUrl, '_blank')
 };
 </script>
 
