@@ -6,8 +6,8 @@
                     <v-row align="center">
                         <v-col cols="4" class="pa-0 ma-0"><v-img :height="75" :src="theme.global.current.value.dark?'/images/PPA_Logo.png':'/images/PPA_Logo.png'"></v-img></v-col>
                         <v-col cols="8" class="pa-0 ma-0">
-                            <h3>Proprietary</h3>
-                            <h3>Planters Alliance</h3>
+                            <h3 translate="no">Proprietary</h3>
+                            <h3 translate="no">Planters Alliance</h3>
                         </v-col>
                     </v-row>
                 </div>
@@ -23,6 +23,9 @@
                 <v-list-item v-for="item in menuItems" :key="item.title" :to="item.path" link>
                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                 </v-list-item>
+                <div class="d-flex">
+                    <LanguageSelector/>
+                </div>
             </v-list>
         </v-navigation-drawer>
         <v-fab-transition>
@@ -39,8 +42,8 @@
                         <v-row align="center">
                             <v-col cols="8" class="pa-0 mt-0"><v-img :height="75" :src="theme.global.current.value.dark?'/images/PPA_Logo.png':'/images/PPA_Logo.png'"></v-img></v-col>
                             <v-col cols="4" class="pa-0 ma-0">
-                                <h3>Proprietary</h3>
-                                <h3>Planters Alliance</h3>
+                                <h3 translate="no">Proprietary</h3>
+                                <h3 translate="no">Planters Alliance</h3>
                             </v-col>
                         </v-row>
                     </div>
@@ -54,10 +57,14 @@
                         <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
                     </v-btn>
                 </div>
+
                 <!-- <div class="d-flex align-center mx-3">
                     <v-text-field v-model="search" placeholder="Search" hide-details density="comfortable" prepend-inner-icon="mdi-magnify" variant="solo-filled" class="search-bar" :bg-color="$vuetify.theme.current.colors.secondary"></v-text-field>
                 </div> -->
                 <v-btn flat v-for="item in menuItems.slice(6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
+                <div class="d-flex align-center mx-3">
+                    <LanguageSelector/>
+                </div>
             </v-toolbar-items>
         </v-toolbar>
     </v-app-bar>
@@ -67,6 +74,7 @@
 import { useDisplay, useTheme } from 'vuetify';
 import { ref, computed } from "vue";
 import { useRouter } from 'vue-router';
+import LanguageSelector from './LanguageSelector.vue';
 const { mobile } = useDisplay();
 const isMobile = computed(() => mobile.value);
 const router = useRouter();

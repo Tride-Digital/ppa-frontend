@@ -9,8 +9,8 @@
                 <v-img :height="60" :width="60" src="/images/logo_white.png" alt="PPA Logo" contain class="footer-logo"></v-img>
               </v-col>
               <v-col class="ml-3">
-                <h3 class="footer-brand-text footer-primary-text">Proprietary</h3>
-                <h3 class="footer-brand-text footer-primary-text">Planters Alliance</h3>
+                <h3 class="footer-brand-text footer-primary-text" translate="no">Proprietary</h3>
+                <h3 class="footer-brand-text footer-primary-text" translate="no">Planters Alliance</h3>
               </v-col>
             </v-row>
           </div>
@@ -54,6 +54,7 @@
         </v-col>
         <v-col cols="12" md="6" class="text-md-end">
           <div class="footer-legal">
+          <LanguageSelector class="mr-4" />
             <a href="/privacy" class="footer-legal-link footer-primary-text footer-link-base">Privacy Policy</a>
             <span class="footer-separator footer-secondary-text">|</span>
             <a href="/terms" class="footer-legal-link footer-primary-text footer-link-base">Terms of Service</a>
@@ -169,6 +170,52 @@ const contactInfo = ref([
 .contact-text {
   font-size: 0.9rem;
   line-height: 1.4;
+}
+.footer-directors .director-item {
+  margin-bottom: 8px;
+}
+.director-col {
+  padding: 0 4px !important;
+}
+.director-content {
+  display: flex;
+  /* flex-direction: column; */
+  align-items: flex-start;
+  text-align: left; 
+  /* justify-content: center;
+  flex-wrap: wrap; */
+  gap: 8px;
+}
+.director-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+}
+.director-phone {
+  font-size: 0.8rem;
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  white-space: nowrap;
+}
+.phone-icon {
+  color: rgb(var(--v-theme-footer-link-hover));
+  font-size: 1rem;
+  margin-right: 4px;
+  margin-bottom: 0;
+}
+.director-phone .contact-link {
+  text-align: center;
+}
+.director-note {
+  font-size: 0.7rem;
+  margin-left: 4px;
+  opacity: 0.8;
+  display: inline;
 }
 .footer-social-btn {
   margin-right: 8px;

@@ -7,7 +7,7 @@
           </v-col>
           <v-col cols="12" md="10" lg="8">
             <div class="about-content">
-              <p class="about-text mb-4">{{ aboutParagraph1 }}</p>
+               <p class="about-text mb-4" v-html="aboutParagraph1"></p>
               <p class="about-text">{{ aboutParagraph2 }}</p>
             </div>
           </v-col>
@@ -19,7 +19,7 @@
 <script setup>
 import { ref } from 'vue'
 const aboutParagraph1 = ref(
-  "The Proprietary Planters Alliance (Pvt) Ltd (PPA) is established under the Companies Act of Sri Lanka, No. 07 of 2007, as a membership-based private organization. It is a pioneering initiative aimed at organizing and empowering all perennial crop growers who own and manage more than 10 acres of land in Sri Lanka. These planters, though vital to the national economy, have historically lacked unified representation."
+  'The <span translate="no"> Proprietary Planters Alliance (Pvt) Ltd (PPA) </span> is established under the Companies Act of Sri Lanka, No. 07 of 2007, as a membership-based private organization. It is a pioneering initiative aimed at organizing and empowering all perennial crop growers who own and manage more than 10 acres of land in Sri Lanka. These planters, though vital to the national economy, have historically lacked unified representation.'
 )
 const aboutParagraph2 = ref(
   "PPA is created to bridge that gap-liaising between proprietary planters and government agencies, private sector institutions, and international bodies. It will ensure that its members have a voice in shaping agricultural policy, access to innovation, funding for productivity, and integration into global value chains."
