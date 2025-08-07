@@ -12,7 +12,7 @@
             <h1 class="hero-title mb-6">{{ message }}</h1>
             <div class="hero-buttons">
               <v-btn color="primary" size="large" class="me-4 mb-3" to="/aboutus">Learn More</v-btn>
-              <v-btn variant="outlined" color="white" size="large" class="mb-3">Join PPA</v-btn>
+              <v-btn @click="goToAdmin" variant="outlined" color="white" size="large" class="mb-3">Join PPA</v-btn>
             </div>
           </v-col>
         </v-row>
@@ -23,6 +23,8 @@
 
 <script setup>
 import { ref } from 'vue'
+const config = useRuntimeConfig();
+
 const props = defineProps({
   message: {
     type: String,
@@ -30,6 +32,9 @@ const props = defineProps({
   },
 })
 const currentSlide = ref(0)
+const goToAdmin = () => {
+    window.open(config.public.adminAppUrl, '_blank')
+};
 const heroImages = ref([
   {
     url: '/images/cover/cover1.webp',

@@ -50,7 +50,7 @@
       <v-divider class="footer-divider mb-6"></v-divider>
       <v-row align="center">
         <v-col cols="12" md="6" class="copyright-col">
-          <p class="footer-copyright footer-secondary-text">© {{ currentYear }} Proprietary Planters Alliance. All rights reserved.</p>
+          <p class="footer-copyright footer-secondary-text" translate="no">© {{ currentYear }} Proprietary Planters Alliance. All rights reserved.</p>
         </v-col>
         <v-col cols="12" md="6" class="text-md-end">
           <div class="footer-legal">
@@ -59,7 +59,7 @@
             <span class="footer-separator footer-secondary-text">|</span>
             <a href="/terms" class="footer-legal-link footer-primary-text footer-link-base">Terms of Service</a>
             <span class="footer-separator footer-secondary-text">|</span>
-            <a target="_blank" href="https://www.trbogen.com/" class="footer-legal-link footer-primary-text footer-link-base">Powered by Turbogen</a>
+            <a translate="no" target="_blank" href="https://www.trbogen.com/" class="footer-legal-link footer-primary-text footer-link-base">Powered by Turbogen</a>
           </div>
         </v-col>
       </v-row>

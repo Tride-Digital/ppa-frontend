@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     prerender: {
-      routes: ["/"], // only these are SSG
+      routes: ["/","/aboutus", "/announcements", "/products", "/contactus"], // only these are SSG
     },
   },
 
@@ -34,6 +34,11 @@ export default defineNuxtConfig({
         },
       ],
     },
+  },
+  runtimeConfig: {
+    public: {
+      adminAppUrl: 'https://qaadmin.planters.lk',
+    }
   },
 
   modules: ['nuxt-google-translate'],
