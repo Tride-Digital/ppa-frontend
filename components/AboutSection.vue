@@ -1,29 +1,34 @@
 <template>
-    <section class="about-section py-8">
-      <v-container>
-        <v-row justify="center">
-          <v-col cols="12" class="text-center mb-8">
-            <h2 class="section-title">About us</h2>
-          </v-col>
-          <v-col cols="12" md="10" lg="8">
-            <div class="about-content">
-               <p class="about-text mb-4" v-html="aboutParagraph1"></p>
-              <p class="about-text">{{ aboutParagraph2 }}</p>
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </section>
+  <section class="about-section py-8">
+    <v-container>
+      <v-row justify="center">
+        <v-col cols="12" class="text-center mb-8">
+          <h2 class="section-title">About us</h2>
+        </v-col>
+        <v-col cols="12" md="10" lg="8">
+          <div class="about-content">
+            <p class="about-text mb-4" v-html="aboutParagraph1"></p>
+            <p class="about-text mb-4">{{ aboutParagraph2 }}</p>
+            <p class="about-text">{{ aboutParagraph3 }}</p>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </section>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 const aboutParagraph1 = ref(
-  'The <span translate="no"> Proprietary Planters Alliance (Pvt) Ltd (PPA) </span> is established under the Companies Act of Sri Lanka, No. 07 of 2007, as a membership-based private organization. It is a pioneering initiative aimed at organizing and empowering all perennial crop growers who own and manage more than 10 acres of land in Sri Lanka. These planters, though vital to the national economy, have historically lacked unified representation.'
-)
+  'The <span translate="no"> Proprietary Planters Alliance (Pvt) Ltd (PPA) </span> is Sri Lanka’s pioneering private‐sector catalyst for transforming privately owned plantations into high‐value, future‐ready enterprises. Since the Land Reform Act, proprietary planters who owned their property had no common platform to represent them nationally – a gap left unresolved for 52 years, until 2025. PPA bridges this gap, representing all proprietary planters at the highest level while driving GDP growth through value‐chain excellence and human resource management to secure a sustainable competitive advantage for their products and services.'
+);
 const aboutParagraph2 = ref(
-  "PPA is created to bridge that gap-liaising between proprietary planters and government agencies, private sector institutions, and international bodies. It will ensure that its members have a voice in shaping agricultural policy, access to innovation, funding for productivity, and integration into global value chains."
-)
+  "We unite visionary growers, Agri‐innovators, and investors across tea, rubber, coconut, spices, fruits, timber, agroforestry, and any perennial commercial crop. From field to finished product, we deliver integrated solutions in productivity, climate resilience, processing, branding, and export competitiveness."
+);
+
+const aboutParagraph3 = ref(
+  "Whether you seek investment partnerships or full project execution, do not hesitate to contact us on any activity pertaining to plantation‐related issues. Together, we create wealth, jobs, and a smarter Agri‐future."
+);
 </script>
 
 <style scoped>
