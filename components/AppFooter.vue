@@ -70,7 +70,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 const currentYear = computed(() => new Date().getFullYear())
-const footerDescription = ref('Empowering private plantation growers for a sustainable future through unified representation and agricultural innovation.')
+const footerDescription = ref('Empowering proprietary plantation growers for a sustainable future through unified representation and agricultural innovation.')
 const quickLinks = ref([
   { title: 'Home', path: '/' },
   { title: 'About Us', path: '/aboutus' },

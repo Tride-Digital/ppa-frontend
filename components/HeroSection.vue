@@ -28,7 +28,7 @@ const config = useRuntimeConfig();
 const props = defineProps({
   message: {
     type: String,
-    default: 'Empowering Private Plantation Growers for a Sustainable Future'
+    default: 'Empowering Proprietary Plantation Growers for a Sustainable Future'
   },
 })
 const currentSlide = ref(0)
