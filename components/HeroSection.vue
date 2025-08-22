@@ -82,7 +82,7 @@ const options = reactive({
 
 const uiEnterMs  = computed(() => options.transitionDuration) 
 const uiLeaveMs  = 800
-const travelY    = '300px'
+const travelY    = '100px'
 const leaveDelay = 520
 const currentIndex = ref(0)
 const pendingIndex = ref(null)

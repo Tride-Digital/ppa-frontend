@@ -1,6 +1,9 @@
 <template>
   <div class="homepage">
     <HeroSection />
+    <ClientOnly>
+      <RotateCoverflow />
+    </ClientOnly>
     <AboutSection />
     <VisionMission/>
     <ProductSection />
@@ -10,6 +13,7 @@
 
 <script setup>
 import HeroSection from '~/components/HeroSection.vue'
+import RotateCoverflow from '~/components/RotateCoverflow.vue'
 import ProductSection from '~/components/ProductSection.vue'
 import AboutSection from '~/components/AboutSection.vue'
 import AnnouncementSection from '~/components/AnnouncementSection.vue'
