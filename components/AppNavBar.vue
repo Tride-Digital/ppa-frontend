@@ -34,16 +34,16 @@
             </v-btn>
         </v-fab-transition>
     </div>
-    <v-app-bar v-else app flat height="80" :color="$vuetify.theme.current.colors.primary">
-        <v-toolbar flat :color="$vuetify.theme.current.colors.primary">
+    <v-app-bar v-else app flat height="100" :color="$vuetify.theme.current.colors.surface" class="navbar-with-border">
+        <v-toolbar flat :color="$vuetify.theme.current.colors.surface">
             <v-toolbar-title>
                 <v-col cols="4">
                     <div @click="goToHome" tag="span" style="cursor: pointer">
                         <v-row align="center">
-                            <v-col cols="8" class="pa-0 mt-0"><v-img :height="75" :src="theme.global.current.value.dark?'/images/PPA_Logo.png':'/images/PPA_Logo.png'"></v-img></v-col>
+                            <v-col cols="8" class="pa-0 mt-0"><v-img :height="80" :src="theme.global.current.value.dark?'/images/PPA_Logo.png':'/images/PPA_Logo.png'"></v-img></v-col>
                             <v-col cols="4" class="pa-0 ma-0">
-                                <h3 translate="no">Proprietary</h3>
-                                <h3 translate="no">Planters Alliance</h3>
+                                <h2 translate="no">Proprietary</h2>
+                                <h2 translate="no">Planters Alliance</h2>
                             </v-col>
                         </v-row>
                     </div>
@@ -115,8 +115,14 @@ const goToAdmin = () => {
     left: 10px;
     z-index: 100;
 }
+
+.navbar-with-border {
+    border-bottom: 2px solid rgb(var(--v-theme-hero-arrow-bg)) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
 .nav-items .nav-link {
-    color: var(--v-theme-navText) !important;
+    color: rgb(var(--v-theme-navtext)) !important;
     margin: 0 12px;
     font-weight: 500;
     text-transform: none;
