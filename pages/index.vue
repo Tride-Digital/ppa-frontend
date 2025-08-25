@@ -6,6 +6,7 @@
     </ClientOnly>
     <ModernTechnologies />
     <StateCountSection />
+    <ServicesShowcase />
     <VisionMission/>
   </div>
 </template>
@@ -16,6 +17,7 @@ import RotateCoverflow from '~/components/RotateCoverflow.vue'
 import VisionMission from '~/components/VisionMission.vue'
 import ModernTechnologies from '~/components/ModernTechnologies.vue'
 import StateCountSection from '~/components/StateCountSection.vue'
+import ServicesShowcase from '~/components/ServicesShowcase.vue'
 </script>
 
 <style scoped>
