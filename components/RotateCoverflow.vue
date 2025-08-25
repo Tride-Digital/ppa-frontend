@@ -124,7 +124,7 @@ function applyFiveVisible(swiper){
 <style scoped>
 .section-title {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 50px;
 }
 .divider-line {
   display: inline-flex;
@@ -141,7 +141,7 @@ function applyFiveVisible(swiper){
   position: absolute;
   top: 50%;
   height: 2px;
-  background: linear-gradient(to right, transparent, #61b96b 40%, #61b96b 60%, transparent);
+  background: linear-gradient(to right, transparent, rgb(var(--v-theme-divider-line)) 40%, rgb(var(--v-theme-divider-line)) 60%, transparent);
   width: 100%;
   transform: translateY(-50%);
   z-index: -1;
@@ -150,13 +150,13 @@ function applyFiveVisible(swiper){
   padding: 0 14px;
   font-family: "Dancing Script", cursive;
   font-size: 20px;
-  color: #2e7d32;
+  color: rgb(var(--v-theme-title-subtitle));
 }
 .main-title {
   padding: 0 14px;
   font-size: 32px;
   font-weight: 800;
-  color: #0f2e37;
+  color: rgb(var(--v-theme-title-main));
 }
 .destination-slider-wrap { 
   position: relative;
@@ -186,7 +186,7 @@ function applyFiveVisible(swiper){
   height: 580px;
   object-fit: cover;
   border-radius: 22px;
-  box-shadow: 0 14px 32px rgba(0,0,0,.18);
+  box-shadow: 0 14px 32px var(--v-theme-card-shadow);
 }
 .destination-content {
   position: absolute; left: 0; right: 0; bottom: 0;

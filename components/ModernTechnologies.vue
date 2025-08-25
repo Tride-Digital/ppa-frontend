@@ -1,8 +1,10 @@
 <template>
   <div class="card-slider-container">
-    <div class="slider-header">
-      <h2 class="slider-subtitle">Proprietary Planters Alliance For You</h2>
-      <h1 class="slider-title">Modern Technologies</h1>
+    <div class="section-title">
+      <div class="divider-line">
+        <span class="subtitle">Proprietary Planters Alliance For You</span>
+        <h2 class="main-title">Modern Technologies</h2>
+      </div>
     </div>
     <div class="slider-controls">
       <div class="cards-wrapper" ref="wrapper">
@@ -171,6 +173,43 @@ export default {
 </script>
 
 <style scoped>
+.section-title {
+  text-align: center;
+  margin-bottom: 50px;
+}
+.divider-line {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  width: min(980px, 100%);
+  margin: 0 auto;
+}
+.divider-line::before,
+.divider-line::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, rgb(var(--v-theme-divider-line)) 40%, rgb(var(--v-theme-divider-line)) 60%, transparent);
+  width: 100%;
+  transform: translateY(-50%);
+  z-index: -1;
+}
+.subtitle {
+  padding: 0 14px;
+  font-family: "Dancing Script", cursive;
+  font-size: 20px;
+  color: rgb(var(--v-theme-title-subtitle));
+}
+.main-title {
+  padding: 0 14px;
+  font-size: 32px;
+  font-weight: 800;
+  color: rgb(var(--v-theme-title-main));
+}
+
 .card-slider-container {
   width: 100%;
   max-width: 1700px;
@@ -178,15 +217,6 @@ export default {
   padding: 2rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
-.slider-header { text-align: center; margin-bottom: 32px; }
-.slider-subtitle {
-  padding: 0 14px;
-  font-family: "Dancing Script", cursive;
-  font-size: 22px;
-  color: #2e7d32;
-  margin-bottom: 8px;
-}
-.slider-title { font-size: 2.8rem; color: #1e293b; font-weight: 700; margin: 0; }
 .slider-controls { position: relative; width: 100%; }
 .cards-wrapper { overflow: hidden; width: 100%; position: relative; cursor: grab; }
 .cards-wrapper:active { cursor: grabbing; }
@@ -206,7 +236,7 @@ export default {
   height: 340px;
   border-radius: 1.25rem;
   overflow: hidden;
-  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 25px -5px var(--v-theme-card-shadow), 0 4px 10px -2px var(--v-theme-card-shadow);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
 }
@@ -225,29 +255,45 @@ export default {
 }
 .dot {
   width: 14px; height: 14px; border-radius: 50%; border: none; cursor: pointer;
-  background-color: #cbd5e1;
+  background-color: rgb(var(--v-theme-dot-inactive));
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
 }
 .dot::before {
   content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: 0; height: 0; background-color: rgba(16, 185, 129, 0.3); border-radius: 50%;
+  width: 0; height: 0; background-color: var(--v-theme-dot-hover-bg); border-radius: 50%;
   transition: all 0.3s ease;
 }
-.dot:hover { background-color: #94a3b8; transform: scale(1.2); }
+.dot:hover { 
+  background-color: rgb(var(--v-theme-dot-hover)); 
+  transform: scale(1.2); 
+}
 .dot:hover::before { width: 24px; height: 24px; }
-.dot.active { background-color: #10b981; transform: scale(1.3); }
-.dot.active::before { width: 28px; height: 28px; background-color: rgba(16, 185, 129, 0.2); }
+.dot.active { 
+  background-color: rgb(var(--v-theme-dot-active)); 
+  transform: scale(1.3); 
+}
+.dot.active::before { 
+  width: 28px; 
+  height: 28px; 
+  background-color: var(--v-theme-dot-active-bg); 
+}
 .nav-button {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
   width: 50px; height: 50px; border-radius: 50%; border: none;
-  background: rgba(255, 255, 255, 0.95); color: #1e293b; cursor: pointer;
+  background: var(--v-theme-nav-button-bg); 
+  color: rgb(var(--v-theme-nav-button-text)); 
+  cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--v-theme-nav-button-shadow);
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   backdrop-filter: blur(10px);
 }
-.nav-button:hover { background: rgba(255, 255, 255, 1); transform: translateY(-50%) scale(1.1); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); }
+.nav-button:hover { 
+  background: var(--v-theme-nav-button-bg); 
+  transform: translateY(-50%) scale(1.1); 
+  box-shadow: 0 6px 20px var(--v-theme-nav-button-shadow-hover); 
+}
 .nav-button:active { transform: translateY(-50%) scale(0.95); }
 .nav-button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(-50%) scale(1); }
 .nav-button-prev { left: 20px; }
@@ -259,7 +305,7 @@ export default {
 }
 @media (max-width: 768px) {
   .card-slider-container { padding: 1.5rem; }
-  .slider-title { font-size: 2.2rem; }
+  .main-title { font-size: 2.2rem; }
   .card { flex: 0 0 280px; height: 210px; }
   .cards-container { gap: 1.5rem; }
   .nav-button { width: 40px; height: 40px; }
@@ -268,7 +314,7 @@ export default {
 }
 @media (max-width: 480px) {
   .card-slider-container { padding: 1rem; }
-  .slider-title { font-size: 1.8rem; }
+  .main-title { font-size: 1.8rem; }
   .card { flex: 0 0 260px; height: 190px; }
   .cards-container { gap: 1rem; }
   .nav-button { width: 36px; height: 36px; }
