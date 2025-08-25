@@ -68,6 +68,14 @@ const props = defineProps({
       { title: 'PROCESS 6', subtitle: 'Process 6-description', image: '/images/products/cloves.webp' },
       { title: 'PROCESS 7', subtitle: 'Process 7-description', image: '/images/products/cardamom.webp' },
       { title: 'PROCESS 8', subtitle: 'Process 8-description', image: '/images/products/black_pepper.webp' },
+      { title: 'PROCESS 1', subtitle: 'Process 1-description', image: '/images/products/tea.webp' },
+      { title: 'PROCESS 2', subtitle: 'Process 2-description', image: '/images/products/rubber.webp' },
+      { title: 'PROCESS 3', subtitle: 'Process 3-description', image: '/images/products/coconuts.webp' },
+      { title: 'PROCESS 4', subtitle: 'Process 4-description', image: '/images/products/cinnamon.webp' },
+      { title: 'PROCESS 5', subtitle: 'Process 5-description', image: '/images/products/coffee.webp' },
+      { title: 'PROCESS 6', subtitle: 'Process 6-description', image: '/images/products/cloves.webp' },
+      { title: 'PROCESS 7', subtitle: 'Process 7-description', image: '/images/products/cardamom.webp' },
+      { title: 'PROCESS 8', subtitle: 'Process 8-description', image: '/images/products/black_pepper.webp' },
     ]
   },
   loop: { type: Boolean, default: false },
@@ -129,14 +137,12 @@ const middleIndex = computed(() => {
   font-family: "Dancing Script", cursive;
   font-size: 20px;
   color: #2e7d32;
-  background: #fff;
 }
 .main-title {
   padding: 0 14px;
   font-size: 32px;
   font-weight: 800;
   color: #0f2e37;
-  background: #fff;
 }
 .destination-slider-wrap { 
     position: relative;
@@ -156,7 +162,6 @@ const middleIndex = computed(() => {
 @media (min-width: 1200px) {
   .destination-swiper :deep(.swiper-slide) { width: 360px; }
 }
-
 .destination-box { border-radius: 22px; overflow: hidden; }
 .destination-img { position: relative; border-radius: 22px; overflow: hidden; }
 .destination-img img {
