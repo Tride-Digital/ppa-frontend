@@ -68,6 +68,7 @@ export default defineNuxtPlugin(nuxtApp => {
             'dot-active': '#10b981',
             'dot-active-bg': 'rgba(16, 185, 129, 0.2)',
             'dot-hover-bg': 'rgba(16, 185, 129, 0.3)',
+            'circle-ring': '#92E9FF',
           }
         },
         dark: {
@@ -123,6 +124,7 @@ export default defineNuxtPlugin(nuxtApp => {
             'dot-active': '#68d391',
             'dot-active-bg': 'rgba(104, 211, 145, 0.2)',
             'dot-hover-bg': 'rgba(104, 211, 145, 0.3)',
+            'circle-ring': '#92E9FF',
           },
         },
       },

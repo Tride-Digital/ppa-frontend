@@ -7,7 +7,6 @@
         <template #pagination="p"></template>
       </VueFlux>
     </div>
-
     <div class="navigation-buttons">
       <v-btn @click="showPrevious" class="nav-btn nav-btn-prev" icon size="large" variant="text">
         <v-icon size="32" color="white">mdi-chevron-left</v-icon>
@@ -16,7 +15,6 @@
         <v-icon size="32" color="white">mdi-chevron-right</v-icon>
       </v-btn>
     </div>
-
     <div class="hero-overlay">
       <v-container class="hero-content">
         <v-row align="center" justify="center" class="fill-height">
@@ -32,7 +30,6 @@
                   }"
                 >
                   <h1 class="hero-title mb-6">{{ activeSlide.title }} </h1>
-
                   <div class="hero-buttons">
                     <v-btn color="primary" size="large" class="me-4 mb-3" :to="activeSlide.learnTo">
                       {{ activeSlide.learnLabel }}
@@ -54,19 +51,17 @@
 
 <script setup>
 import { ref, reactive, shallowReactive, computed } from 'vue'
-import { VueFlux, FluxPreloader, FluxControls, FluxPagination, Img, Kenburn } from 'vue-flux'
+import { VueFlux, FluxPreloader, FluxControls, FluxPagination, Img, Fade } from 'vue-flux'
 import 'vue-flux/style.css'
 
 const config = useRuntimeConfig()
 const vueflux = ref(null)
 const isTransitioning = ref(false)
-
 const slidesMeta = [
   { title: 'Empowering Proprietary Plantation Growers for a Sustainable Future', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'Smart farming, export growth, and better livelihoods', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'Tea • Cinnamon • Rubber — Value through innovation', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
 ]
-
 const options = reactive({
   allowFullscreen: true,
   allowToSkipTransition: true,
@@ -79,20 +74,16 @@ const options = reactive({
   lazyLoad: false,
   transitionDuration: 3000,
 })
-
 const uiEnterMs  = computed(() => options.transitionDuration) 
 const uiLeaveMs  = 800
-const travelY    = '100px'
-const leaveDelay = 520
+const travelY    = '50px'
+const leaveDelay = 0
 const currentIndex = ref(0)
 const pendingIndex = ref(null)
-
 defineProps({
   message: { type: String, default: 'Empowering Proprietary Plantation Growers for a Sustainable Future' },
 })
-
 const goToAdmin = () => window.open(config.public.adminAppUrl, '_blank')
-
 const onFluxMounted = () => {}
 const onTransitionStart = () => {
   isTransitioning.value = true
@@ -104,7 +95,6 @@ const onTransitionStart = () => {
   }
 }
 const onTransitionEnd = () => { isTransitioning.value = false }
-
 const showNext = () => {
   if (vueflux.value && !isTransitioning.value) {
     pendingIndex.value = (currentIndex.value + 1) % rscs.length
@@ -117,7 +107,6 @@ const showPrevious = () => {
     vueflux.value.show('prev')
   }
 }
-
 const rscs = shallowReactive([
   new Img('/images/cover/cover1.webp'),
   new Img('/images/cover/cover2.webp'),
@@ -125,11 +114,9 @@ const rscs = shallowReactive([
   new Img('/images/cover/cover4.webp'),
   new Img('/images/cover/cover5.webp'),
 ])
-
 const transitions = shallowReactive([
-  { component: Kenburn, options: { totalDuration: 3000, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' } },
+  { component: Fade, options: { totalDuration: 3000, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' } },
 ])
-
 const activeSlide = computed(() => slidesMeta[currentIndex.value % slidesMeta.length])
 const activeKey   = computed(() => `copy-${currentIndex.value}`)
 </script>
@@ -153,24 +140,19 @@ const activeKey   = computed(() => `copy-${currentIndex.value}`)
   border: 1px solid rgba(255,255,255,.2);
 }
 .nav-btn:hover { background: rgba(0,0,0,.5) !important; opacity: 1; transform: scale(1.1); border-color: rgba(255,255,255,.4); }
-
 .hero-overlay { position: absolute; inset: 0; background: transparent; display: flex; align-items: center; z-index: 2; }
 .hero-content { height: 100%; display: flex; align-items: center; }
-
 .hero-title {
   font-size: 3rem; font-weight: 100; color: #fff;
   text-shadow: 2px 2px 8px rgba(0,0,0,.7);
   line-height: 1.2;
 }
 .hero-buttons { margin-top: 3rem; }
-
 :deep(.flux-controls), :deep(.flux-pagination) { display: none !important; }
-
 :deep(.vue-flux *), .hero-copy-stage, .hero-copy-slab, .hero-title, .hero-buttons {
   -webkit-backface-visibility: hidden; backface-visibility: hidden;
   transform: translateZ(0); will-change: transform, opacity;
 }
-
 .hero-copy-stage {
   position: relative;
   min-height: clamp(140px, 24vh, 260px);
@@ -180,28 +162,25 @@ const activeKey   = computed(() => `copy-${currentIndex.value}`)
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding-inline: 12px;
 }
-
 .hero-copy-enter-from,
 .hero-copy-leave-to { opacity: 0; }
-
 .hero-copy-enter-from { transform: translate3d(0, var(--travelY, 44px), 0); }
-.hero-copy-leave-to   { transform: translate3d(0, 0, 0); }
-
+.hero-copy-leave-to   { transform: translate3d(0, calc(var(--travelY, 44px) * -1), 0); }
 .hero-copy-enter-active {
   transition:
     opacity  var(--enterMs, 3000ms) cubic-bezier(0.16, 1, 0.3, 1),
     transform var(--enterMs, 3000ms) cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--leaveMs, 400ms);
 }
 .hero-copy-leave-active {
   transition:
-    opacity var(--leaveMs, 800ms) cubic-bezier(0.4, 0, 0.2, 1);
-  transition-delay: var(--leaveDelay, 520ms);
+    opacity var(--leaveMs, 400ms) cubic-bezier(0.4, 0, 0.2, 1),
+    transform var(--leaveMs, 400ms) cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0ms;
 }
-
 @media (prefers-reduced-motion: reduce) {
   .hero-copy-enter-active, .hero-copy-leave-active { transition-duration: 1ms !important; }
 }
-
 @media (max-width: 768px) {
   .hero-title { font-size: 2.5rem; }
   .hero-buttons { display: flex; flex-direction: column; align-items: center; }
