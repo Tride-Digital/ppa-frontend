@@ -96,7 +96,7 @@ const menuItems = ref([
     { title: 'Home', path: '/', icon: 'mdi-home' },
     { title: 'About us', path: '/aboutus', icon: 'mdi-home' },
     { title: 'Announcements', path: '/announcements', icon: 'mdi-bell' },
-    { title: 'Products', path: '/products', icon: 'mdi-leaf' },
+    // { title: 'Products', path: '/products', icon: 'mdi-leaf' },
     // { title: 'Membership', path: '/membership', icon: 'mdi-account' },
     { title: 'Contact us', path: '/contactus', icon: 'mdi-phone' },
 ]);
