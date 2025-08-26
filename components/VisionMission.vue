@@ -26,13 +26,10 @@ type Testimonial = {
   role: string
   text: string
 }
-
 const props = defineProps<{
   items?: Testimonial[]
 }>()
-
 const theme = useTheme()
-
 const fallback: Testimonial[] = [
   {
     name: 'Vision',
@@ -47,12 +44,10 @@ const fallback: Testimonial[] = [
       'PPA Pvt Ltd transforms the proprietary plantation sector through innovation, advanced technologies, and value chain optimization. We modernize operations, boost productivity, and create higher value for stakeholders while promoting biodiversity, climate resilience, and green livelihoods. By continuously improving all production factors, PPA enables planters to achieve cost leadership, sustainable competitive advantage, and measurable economic, environmental, and social impact across Sri Lanka’s proprietary plantations.'
   }
 ]
-
 const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
 </script>
 
 <style scoped>
-/* --- Section & headings --- */
 .testimonials {
   padding: 48px 16px 80px;
   background: rgb(var(--v-theme-background));
@@ -76,8 +71,6 @@ const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
   font-weight: 800;
   letter-spacing: .2px;
 }
-
-/* --- Cards layout --- */
 .cards {
   display: grid;
   grid-template-columns: 1fr;
@@ -86,8 +79,6 @@ const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
 @media (min-width: 900px) {
   .cards { grid-template-columns: 1fr 1fr; }
 }
-
-/* --- Card --- */
 .card {
   --header-overlap: 56px;
   position: relative;
@@ -96,8 +87,6 @@ const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
   box-shadow: 0 6px 20px var(--v-theme-vision-mission-card-shadow);
   border-radius: 20px;
 }
-
-/* Dark header/tag that overlaps the card */
 .namebar {
   position: relative;
   background: rgb(var(--v-theme-vision-mission-namebar-bg));
@@ -109,19 +98,14 @@ const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
   margin-left: -28px;
   z-index: 1;
 }
-
 .name { margin: 0 0 8px; font-size: 20px; font-weight: 700; }
 .role { margin: 0; opacity: .95; }
-
-/* Body text */
 .text {
   margin: 24px 0 0;
   color: rgb(var(--v-theme-vision-mission-text));
   line-height: 1.75;
   font-size: 16px;
 }
-
-/* Subtle inner highlight */
 .card::after{
   content: '';
   position: absolute;
@@ -129,8 +113,6 @@ const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
   border-radius: 20px;
   pointer-events: none;
   box-shadow: 0 1px 0 var(--v-theme-vision-mission-card-highlight) inset;
-
-  /* Hide the top portion equal to the header overlap so the line doesn't show */
   -webkit-mask: linear-gradient(#0000 0 var(--header-overlap), #000 var(--header-overlap) 100%);
           mask: linear-gradient(#0000 0 var(--header-overlap), #000 var(--header-overlap) 100%);
 }
