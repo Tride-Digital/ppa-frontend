@@ -104,7 +104,6 @@ function posStyle(s: { x: number; y: number }) {
   return {
     left: `${s.x}%`,
     top: `${s.y}%`,
-    '--size': `${props.size}px`,
   }
 }
 function splitLabel(label: string) {
@@ -116,15 +115,22 @@ function splitLabel(label: string) {
 .stats-hero{
   position: relative;
   width: 100%;
-  min-height: 680px;
+  min-height: 400px;
   background-image: var(--bg-url);
   background-size: cover;
   background-position: center;
   display: grid;
   place-items: center;
   overflow: hidden;
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+@media (min-width: 768px) {
+  .stats-hero {
+    min-height: 680px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
 }
 .stats-layer{
   position: relative;
@@ -139,7 +145,7 @@ function splitLabel(label: string) {
 }
 .circle{
   position: absolute;
-  inset: 12px;
+  inset: 8px;
   border-radius: 9999px;
   background: rgb(var(--v-theme-secondary));
   color: rgb(var(--v-theme-on-secondary));
@@ -148,46 +154,91 @@ function splitLabel(label: string) {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 18px;
-  box-shadow: 0 10px 28px var(--v-theme-card-shadow, rgba(0,0,0,.15));
+  padding: 10px;
+  box-shadow: 0 6px 16px var(--v-theme-card-shadow, rgba(0,0,0,.15));
   animation: fadeInScale 0.6s ease-out backwards;
+}
+@media (min-width: 768px) {
+  .circle {
+    inset: 12px;
+    padding: 18px;
+    box-shadow: 0 10px 28px var(--v-theme-card-shadow, rgba(0,0,0,.15));
+  }
 }
 .value{
   font-weight: 700;
   letter-spacing: .2px;
-  font-size: clamp(24px, 3.4vw, 40px);
+  font-size: 12px;
   line-height: 1.1;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
   transition: transform 0.1s ease;
 }
+@media (min-width: 400px) {
+  .value { font-size: 14px; }
+}
+@media (min-width: 480px) {
+  .value { font-size: 16px; margin-bottom: 4px; }
+}
+@media (min-width: 768px) {
+  .value { font-size: clamp(24px, 3.4vw, 40px); margin-bottom: 6px; }
+}
 .label{
-  font-size: clamp(14px, 1.4vw, 20px);
+  font-size: 8px;
   opacity: .9;
+  line-height: 1.1;
+}
+@media (min-width: 400px) {
+  .label { font-size: 9px; }
+}
+@media (min-width: 480px) {
+  .label { font-size: 10px; line-height: 1.2; }
+}
+@media (min-width: 768px) {
+  .label { font-size: clamp(14px, 1.4vw, 20px); }
 }
 .ring{
   position: absolute;
   border-radius: 9999px;
-  border: 3px solid transparent;
+  border: 1px solid transparent;
   animation: ringPulse 3s ease-in-out infinite;
 }
+@media (min-width: 768px) {
+  .ring { border-width: 3px; }
+}
 .ring.outer{ 
-  inset: -10px; 
+  inset: -4px; 
   border-color: rgba(var(--v-theme-circle-ring), .48);
   animation-delay: 0s;
 }
+@media (min-width: 768px) {
+  .ring.outer { inset: -10px; }
+}
 .ring.inner{ 
-  inset: -20px; 
+  inset: -8px; 
   border-color: rgba(var(--v-theme-circle-ring), .32);
   animation-delay: 0.5s;
 }
+@media (min-width: 768px) {
+  .ring.inner { inset: -20px; }
+}
 .accent-dot{
   position: absolute;
-  right: -10px;
+  right: -3px;
   bottom: 22%;
-  width: 10px; height: 10px; border-radius: 9999px;
+  width: 6px; 
+  height: 6px; 
+  border-radius: 9999px;
   background: rgb(var(--v-theme-dot-active, var(--v-theme-success)));
-  box-shadow: 0 0 0 6px rgba(var(--v-theme-dot-active, var(--v-theme-success)), .15);
+  box-shadow: 0 0 0 2px rgba(var(--v-theme-dot-active, var(--v-theme-success)), .15);
   animation: dotPulse 2s ease-in-out infinite;
+}
+@media (min-width: 768px) {
+  .accent-dot {
+    right: -10px;
+    width: 10px;
+    height: 10px;
+    box-shadow: 0 0 0 6px rgba(var(--v-theme-dot-active, var(--v-theme-success)), .15);
+  }
 }
 @keyframes fadeInScale {
   from {
@@ -217,7 +268,23 @@ function splitLabel(label: string) {
     transform: scale(1.2);
   }
 }
-@media (max-width: 1280px){ .stat{ --size: 200px; } }
-@media (max-width: 960px) { .stat{ --size: 180px; } }
-@media (max-width: 680px) { .stat{ --size: 150px; } .value{ font-size: 28px; } }
+.stat{ --size: 100px; }
+@media (min-width: 400px) { 
+  .stat{ --size: 110px; } 
+}
+@media (min-width: 480px) { 
+  .stat{ --size: 130px; } 
+}
+@media (min-width: 768px) { 
+  .stat{ --size: 170px; } 
+}
+@media (min-width: 960px) { 
+  .stat{ --size: 200px; } 
+}
+@media (min-width: 1280px) { 
+  .stat{ --size: 200px; } 
+}
+@media (min-width: 1440px) { 
+  .stat{ --size: 220px; } 
+}
 </style>

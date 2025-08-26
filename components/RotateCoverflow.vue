@@ -78,14 +78,12 @@ const props = defineProps({
   subtitleText: { type: String, default: 'Our Process' },
   titleText: { type: String, default: 'Value Addition Process' }
 })
-
 const modules = [EffectCoverflow, Navigation, A11y, Autoplay]
 const autoplayConfig = {
   delay: 3000,
   disableOnInteraction: false,
   pauseOnMouseEnter: true
 }
-
 const coverflowEffect = {
   rotate: 0,
   stretch: 0,
@@ -93,22 +91,18 @@ const coverflowEffect = {
   modifier: 1,
   slideShadows: false
 }
-
 const middleIndex = computed(() => {
   const len = props.items?.length ?? 1
   return Math.floor(len / 2)
 })
-
 const swiperRef = ref(null)
 const onSwiper = (swiper) => {
   swiperRef.value = swiper
   requestAnimationFrame(() => applyFiveVisible(swiper))
 }
-
 const onProgress = (swiper) => {
   applyFiveVisible(swiper)
 }
-
 function applyFiveVisible(swiper){
   if (!swiper?.slides) return
   swiper.slides.forEach((slideEl) => {
@@ -124,7 +118,10 @@ function applyFiveVisible(swiper){
 <style scoped>
 .section-title {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
+}
+@media (min-width: 768px) {
+  .section-title { margin-bottom: 50px; }
 }
 .divider-line {
   display: inline-flex;
@@ -149,27 +146,45 @@ function applyFiveVisible(swiper){
 .subtitle {
   padding: 0 14px;
   font-family: "Dancing Script", cursive;
-  font-size: 20px;
+  font-size: 18px;
   color: rgb(var(--v-theme-title-subtitle));
+}
+@media (min-width: 768px) {
+  .subtitle { font-size: 20px; }
 }
 .main-title {
   padding: 0 14px;
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 800;
   color: rgb(var(--v-theme-title-main));
 }
+@media (min-width: 768px) {
+  .main-title { font-size: 32px; }
+}
 .destination-slider-wrap { 
   position: relative;
-  margin: 50px 100px;
+  margin: 20px 10px;
+}
+@media (min-width: 768px) {
+  .destination-slider-wrap { margin: 50px 50px; }
+}
+@media (min-width: 1200px) {
+  .destination-slider-wrap { margin: 50px 100px; }
 }
 .gutter-mask{
-  padding: 0 220px;
+  padding: 0 20px;
   overflow: hidden;
+}
+@media (min-width: 768px) {
+  .gutter-mask { padding: 0 100px; }
+}
+@media (min-width: 1200px) {
+  .gutter-mask { padding: 0 220px; }
 }
 .destination-swiper { overflow: visible; }
 .destination-swiper :deep(.swiper) { overflow: visible; }
 .destination-swiper :deep(.swiper-slide) {
-  width: 360px;
+  width: 280px;
   transition: transform 0.05s ease, filter 0.05s ease, opacity 0.05s ease;
 }
 @media (min-width: 768px) {
@@ -183,28 +198,61 @@ function applyFiveVisible(swiper){
 .destination-img img{
   display: block;
   width: 100%;
-  height: 580px;
+  height: 400px;
   object-fit: cover;
   border-radius: 22px;
   box-shadow: 0 14px 32px var(--v-theme-card-shadow);
 }
+@media (min-width: 768px) {
+  .destination-img img { height: 580px; }
+}
 .destination-content {
   position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 18px;
+  padding: 12px;
   color: #fff;
   background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.45) 40%, rgba(0,0,0,.75) 100%);
 }
-.box-title { margin: 0; font-weight: 700; }
-.destination-subtitle { opacity: 0.9; font-size: 14px; }
+@media (min-width: 768px) {
+  .destination-content { padding: 18px; }
+}
+.box-title { 
+  margin: 0; 
+  font-weight: 700; 
+  font-size: 16px;
+}
+@media (min-width: 768px) {
+  .box-title { font-size: 18px; }
+}
+.destination-subtitle { 
+  opacity: 0.9; 
+  font-size: 12px;
+  line-height: 1.4;
+}
+@media (min-width: 768px) {
+  .destination-subtitle { font-size: 14px; }
+}
 .destination-swiper :deep(.swiper-slide:not(.swiper-slide-active)) {
-  filter: blur(4px) brightness(0.78);
-  transform: scale(0.92);
+  filter: blur(2px) brightness(0.85);
+  transform: scale(0.95);
   opacity: 0.95;
+}
+@media (min-width: 768px) {
+  .destination-swiper :deep(.swiper-slide:not(.swiper-slide-active)) {
+    filter: blur(4px) brightness(0.78);
+    transform: scale(0.92);
+  }
 }
 .destination-swiper :deep(.swiper-slide-prev),
 .destination-swiper :deep(.swiper-slide-next){
-  filter: blur(6px) brightness(0.72);
-  transform: scale(0.90);
+  filter: blur(3px) brightness(0.80);
+  transform: scale(0.93);
+}
+@media (min-width: 768px) {
+  .destination-swiper :deep(.swiper-slide-prev),
+  .destination-swiper :deep(.swiper-slide-next){
+    filter: blur(6px) brightness(0.72);
+    transform: scale(0.90);
+  }
 }
 .destination-swiper :deep(.swiper-slide-active) {
   filter: none;
