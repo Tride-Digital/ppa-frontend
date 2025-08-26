@@ -83,7 +83,7 @@ const pendingIndex = ref(null)
 defineProps({
   message: { type: String, default: 'Empowering Proprietary Plantation Growers for a Sustainable Future' },
 })
-const goToAdmin = () => window.open(config.public.adminAppUrl, '_blank')
+// const goToAdmin = () => window.open(config.public.adminAppUrl, '_blank') // uncomment this line to enable admin login button
 const onFluxMounted = () => {}
 const onTransitionStart = () => {
   isTransitioning.value = true
