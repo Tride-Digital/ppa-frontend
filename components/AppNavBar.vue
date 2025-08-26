@@ -52,9 +52,9 @@
             <v-spacer></v-spacer>
             <v-toolbar-items class="nav-items">
                 <v-btn flat v-for="item in menuItems.slice(0, 6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
-                <div class="d-flex align-center mx-2">
+                <!-- <div class="d-flex align-center mx-2">
                     <v-btn @click="goToAdmin">Log In</v-btn>
-                </div>
+                </div> -->
                 <div class="d-flex align-center mx-2">
                     <v-btn icon @click="toggleTheme" class="theme-toggle-btn">
                         <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
