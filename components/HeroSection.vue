@@ -110,8 +110,8 @@ const showPrevious = () => {
 const rscs = shallowReactive([
   new Img('/images/cover/cover6.jpg'),
   new Img('/images/cover/cover11.jpg'),
-  new Img('/images/cover/cover8.jpg'),
-  new Img('/images/cover/cover9.jpg'),
+  new Img('/images/cover/cover12.jpg'),
+  new Img('/images/cover/cover13.jpg'),
   new Img('/images/cover/cover10.jpg'),
 ])
 const transitions = shallowReactive([

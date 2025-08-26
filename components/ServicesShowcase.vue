@@ -1,8 +1,6 @@
-<!-- components/ServicesShowcase.vue -->
 <template>
   <section class="services-showcase">
     <v-container class="py-12">
-      <!-- Heading -->
       <div class="text-center mx-auto mb-10">
         <div class="section-title">
           <div class="divider-line">
@@ -10,27 +8,15 @@
             <h2 class="main-title">Popular Services we offer for all</h2>
           </div>
         </div>
-
         <p class="lead">
           Explore our most trusted agricultural products and services designed to support farmers,
           businesses, and communities. From high-quality crops to sustainable solutions, we bring
           you the best to grow, trade, and thrive.
         </p>
       </div>
-
-      <!-- Cards -->
       <v-row align="stretch" dense class="mt-6">
-        <v-col
-          v-for="(svc, i) in itemsToRender"
-          :key="i"
-          cols="12"
-          sm="6"
-          md="6"
-          lg="3"
-          class="d-flex"
-        >
+        <v-col v-for="(svc, i) in itemsToRender" :key="i" cols="12" sm="6" md="6" lg="3" class="d-flex">
           <div class="svc-card">
-            <!-- Fixed rectangle media frame -->
             <div class="svc-media">
               <img :src="svc.image" class="svc-img" :alt="svc.title" />
               <div class="svc-overlay">
@@ -41,7 +27,6 @@
           </div>
         </v-col>
       </v-row>
-
       <div class="see-more-wrap mt-6">
         <v-btn color="primary" variant="outlined" size="large" class="see-more-btn">
           See More
@@ -62,10 +47,8 @@ type ServiceItem = {
   image: string
   href?: string
 }
-
 const props = defineProps<{ items?: ServiceItem[] }>()
 useTheme()
-
 const localItems: ServiceItem[] = [
   {
     title: 'Services 1',
@@ -92,7 +75,6 @@ const localItems: ServiceItem[] = [
     image: '/images/services/service-4.jpg',
   },
 ]
-
 const itemsToRender = computed(() => (props.items?.length ? props.items : localItems))
 </script>
 
@@ -101,8 +83,6 @@ const itemsToRender = computed(() => (props.items?.length ? props.items : localI
   background: var(--v-theme-background);
   color: var(--v-theme-on-background);
 }
-
-/* --- Heading --- */
 .section-title { text-align: center; margin-bottom: 12px; }
 .divider-line {
   display: inline-flex;
@@ -154,16 +134,12 @@ const itemsToRender = computed(() => (props.items?.length ? props.items : localI
   .divider-line::before,
   .divider-line::after { display: none; }
 }
-
-/* --- Cards --- */
 .svc-card {
   width: 100%;
   display: block;
 }
-
 .svc-media {
   position: relative;
-  /* 🔒 keep a rectangle everywhere: change 4/3 to 16/9 or 3/2 if you prefer */
   aspect-ratio: 4 / 3;
   border-radius: 16px;
   overflow: hidden;
@@ -175,8 +151,6 @@ const itemsToRender = computed(() => (props.items?.length ? props.items : localI
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(0,0,0,0.18);
 }
-
-/* Image fills the fixed-ratio box */
 .svc-img {
   position: absolute;
   inset: 0;
@@ -184,8 +158,6 @@ const itemsToRender = computed(() => (props.items?.length ? props.items : localI
   height: 100%;
   object-fit: cover;
 }
-
-/* Single glass overlay */
 .svc-overlay {
   position: absolute;
   left: 16px; right: 16px; bottom: 16px;
@@ -197,12 +169,8 @@ const itemsToRender = computed(() => (props.items?.length ? props.items : localI
 }
 .svc-title { margin: 0 0 6px 0; font-size: clamp(16px, 2.4vw, 18px); font-weight: 700; }
 .svc-desc  { margin: 0; font-size: clamp(12px, 2vw, 14px); line-height: 1.5; }
-
-/* Hard-hide any extra overlays/pseudo created by theme/CMS */
 .svc-media::before,
 .svc-media::after { content: none !important; display: none !important; }
-
-/* Button alignment */
 .see-more-wrap { text-align: right; }
 @media (max-width: 600px) { .see-more-wrap { text-align: center; } }
 .see-more-btn {

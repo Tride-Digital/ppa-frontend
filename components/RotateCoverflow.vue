@@ -55,27 +55,19 @@ const props = defineProps({
   items: {
     type: Array,
     default: () => [
-      { title: 'PROCESS 1', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/tea.webp' },
-      { title: 'PROCESS 2', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/rubber.webp' },
-      { title: 'PROCESS 3', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/coconuts.webp' },
-      { title: 'PROCESS 4', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/cinnamon.webp' },
-      { title: 'PROCESS 5', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/coffee.webp' },
-      { title: 'PROCESS 6', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/cloves.webp' },
-      { title: 'PROCESS 7', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/cardamom.webp' },
-      { title: 'PROCESS 8', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/black_pepper.webp' },
-      { title: 'PROCESS 1', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/tea.webp' },
-      { title: 'PROCESS 2', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/rubber.webp' },
-      { title: 'PROCESS 3', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/coconuts.webp' },
-      { title: 'PROCESS 4', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/cinnamon.webp' },
-      { title: 'PROCESS 5', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/coffee.webp' },
-      { title: 'PROCESS 6', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/cloves.webp' },
-      { title: 'PROCESS 7', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/cardamom.webp' },
-      { title: 'PROCESS 8', subtitle: 'A process is a sequence of connected activities or steps carried out to achieve a particular goal.', image: '/images/products/black_pepper.webp' },
-    ]
+      { title: 'Pepper Processing', subtitle: 'Berries are harvested, sun-dried, and graded into black, white, or ground pepper for export.', image: '/images/value-addition/v1.webp' },
+      { title: 'Coconut Oil Extraction', subtitle: 'Coconut kernels are dried, pressed, and refined into pure oil used in cooking, cosmetics, and wellness products.', image: '/images/value-addition/v2.webp' },
+      { title: 'Cashew Processing', subtitle: 'Raw cashew nuts are steamed, shelled, peeled, and roasted to produce high-quality kernels for snacks, confectionery, and exports.', image: '/images/value-addition/v3.webp' },
+      { title: 'Cinnamon Processing', subtitle: 'Cinnamon bark is peeled, dried, and rolled into quills or ground into powder for culinary and medicinal use.', image: '/images/value-addition/v4.webp' },
+      { title: 'Coffee Processing', subtitle: 'Harvested beans are fermented, dried, roasted, and ground to produce high-quality coffee for local and global markets.', image: '/images/value-addition/v5.webp' },
+      { title: 'Tea Processing', subtitle: 'Freshly plucked leaves are withered, rolled, fermented, dried, and packed to enhance flavor, aroma, and market value.', image: '/images/value-addition/v6.webp' },
+      { title: 'Mace Processing', subtitle: 'The bright red aril covering nutmeg seeds is carefully dried and ground into flakes or powder, valued as a premium spice and flavoring agent.', image: '/images/value-addition/v7.webp' },
+      { title: 'Clove Processing', subtitle: 'Clove buds are handpicked, sun-dried, and processed into spice or essential oil for food and pharmaceuticals.', image: '/images/value-addition/v8.webp' },
+      ]
   },
   navigation: { type: [Boolean, Object], default: true },
   showTitle: { type: Boolean, default: true },
-  subtitleText: { type: String, default: 'Our Process' },
+  subtitleText: { type: String, default: 'Our Products' },
   titleText: { type: String, default: 'Value Addition Process' }
 })
 const modules = [EffectCoverflow, Navigation, A11y, Autoplay]
