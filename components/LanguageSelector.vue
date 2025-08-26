@@ -31,8 +31,8 @@ const changeLanguage = (event) => {
 }
 select {
   width: auto;
-  color: white;
-  border: 1px solid white;
+  color: var(--v-theme-navtext);
+  border: 1px solid rgb(var(--v-theme-navtext));
   padding: 10px;
   font-weight: 500;
   font-size: 14px;

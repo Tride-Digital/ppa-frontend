@@ -1,19 +1,23 @@
 <template>
   <div class="homepage">
     <HeroSection />
-    <AboutSection />
+    <ClientOnly>
+      <RotateCoverflow />
+    </ClientOnly>
+    <ModernTechnologies />
+    <StateCountSection />
+    <!-- <ServicesShowcase /> -->
     <VisionMission/>
-    <ProductSection />
-    <AnnouncementSection />
   </div>
 </template>
 
 <script setup>
 import HeroSection from '~/components/HeroSection.vue'
-import ProductSection from '~/components/ProductSection.vue'
-import AboutSection from '~/components/AboutSection.vue'
-import AnnouncementSection from '~/components/AnnouncementSection.vue'
+import RotateCoverflow from '~/components/RotateCoverflow.vue'
 import VisionMission from '~/components/VisionMission.vue'
+import ModernTechnologies from '~/components/ModernTechnologies.vue'
+import StateCountSection from '~/components/StateCountSection.vue'
+import ServicesShowcase from '~/components/ServicesShowcase.vue'
 </script>
 
 <style scoped>
