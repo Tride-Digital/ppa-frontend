@@ -51,11 +51,11 @@ export default {
       perView: 1,
       isPaused: false,
       cards: [
-        { image: '/images/modern-technologies/m1.jpg?w=500&h=400&fit=crop', alt: 'Agricultural drone technology' },
-        { image: '/images/modern-technologies/m2.jpg?w=500&h=400&fit=crop', alt: 'Hydroponic farming system' },
-        { image: '/images/modern-technologies/m3.jpg?w=500&h=400&fit=crop', alt: 'Smart agriculture monitoring' },
-        { image: '/images/modern-technologies/m4.jpg?w=500&h=400&fit=crop', alt: 'Precision crop spraying' },
-        { image: '/images/modern-technologies/m5.jpg?w=500&h=400&fit=crop', alt: 'Modern farming equipment' }
+        { image: '/images/modern-technologies/m1.webp?w=500&h=400&fit=crop', alt: 'Agricultural drone technology' },
+        { image: '/images/modern-technologies/m2.webp?w=500&h=400&fit=crop', alt: 'Hydroponic farming system' },
+        { image: '/images/modern-technologies/m3.webp?w=500&h=400&fit=crop', alt: 'Smart agriculture monitoring' },
+        { image: '/images/modern-technologies/m4.webp?w=500&h=400&fit=crop', alt: 'Precision crop spraying' },
+        { image: '/images/modern-technologies/m5.webp?w=500&h=400&fit=crop', alt: 'Modern farming equipment' }
       ]
     }
   },
