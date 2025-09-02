@@ -35,7 +35,7 @@
                       {{ activeSlide.learnLabel }}
                     </v-btn>
 
-                    <v-btn @click="goToAdmin" variant="outlined" color="white" size="large" class="mb-3">
+                    <v-btn @click="goToRegister" color="white" size="large" class="mb-3">
                       {{ activeSlide.joinLabel }}
                     </v-btn>
                   </div>
@@ -83,7 +83,7 @@ const pendingIndex = ref(null)
 defineProps({
   message: { type: String, default: 'Empowering Proprietary Plantation Growers for a Sustainable Future' },
 })
-const goToAdmin = () => window.open(config.public.adminAppUrl, '_blank')
+const goToRegister = () => window.open(config.public.registerUrl, '_blank')
 const onFluxMounted = () => {}
 const onTransitionStart = () => {
   isTransitioning.value = true
