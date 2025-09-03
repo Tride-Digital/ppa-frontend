@@ -84,6 +84,7 @@ defineProps({
   message: { type: String, default: 'Empowering Proprietary Planters (PP)' },
 })
 const goToRegister = () => window.open(config.public.registerUrl, '_blank')
+const goToAdmin = () => window.open(config.public.adminAppUrl, '_blank') // uncomment this line to enable admin login button
 const onFluxMounted = () => {}
 const onTransitionStart = () => {
   isTransitioning.value = true
