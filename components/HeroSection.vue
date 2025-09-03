@@ -35,7 +35,7 @@
                       {{ activeSlide.learnLabel }}
                     </v-btn>
 
-                    <v-btn @click="goToAdmin" variant="outlined" color="white" size="large" class="mb-3">
+                    <v-btn @click="goToRegister" color="white" size="large" class="mb-3">
                       {{ activeSlide.joinLabel }}
                     </v-btn>
                   </div>
@@ -58,9 +58,9 @@ const config = useRuntimeConfig()
 const vueflux = ref(null)
 const isTransitioning = ref(false)
 const slidesMeta = [
-  { title: 'Empowering Proprietary Plantation Growers for a Sustainable Future', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
-  { title: 'Smart farming, export growth, and better livelihoods', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
-  { title: 'Tea • Cinnamon • Rubber — Value through innovation', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
+  { title: 'Empowering Proprietary Planters (PP)', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
+  { title: 'Together, we are shaping plantations into profitable, sustainable, and globally competitive enterprises.', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
+  { title: 'From Tea to Cinnamon to Rubber: Innovation That Adds Value', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
 ]
 const options = reactive({
   allowFullscreen: true,
@@ -81,8 +81,9 @@ const leaveDelay = 0
 const currentIndex = ref(0)
 const pendingIndex = ref(null)
 defineProps({
-  message: { type: String, default: 'Empowering Proprietary Plantation Growers for a Sustainable Future' },
+  message: { type: String, default: 'Empowering Proprietary Planters (PP)' },
 })
+const goToRegister = () => window.open(config.public.registerUrl, '_blank')
 const goToAdmin = () => window.open(config.public.adminAppUrl, '_blank') // uncomment this line to enable admin login button
 const onFluxMounted = () => {}
 const onTransitionStart = () => {
@@ -108,12 +109,12 @@ const showPrevious = () => {
   }
 }
 const rscs = shallowReactive([
-  new Img('/images/cover/cover17.jpeg'),
+  new Img('/images/cover/cover20.png'),
   new Img('/images/cover/cover12.jpg'),
+  new Img('/images/cover/cover22.jpg'),
   new Img('/images/cover/cover13.jpg'),
-  new Img('/images/cover/cover14.jpg'),
-  new Img('/images/cover/cover18.jpg'),
   new Img('/images/cover/cover19.jpg'),
+  new Img('/images/cover/cover14.jpg'),
 ])
 const transitions = shallowReactive([
   { component: Fade, options: { totalDuration: 3000, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' } },

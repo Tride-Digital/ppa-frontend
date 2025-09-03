@@ -55,14 +55,15 @@ const props = defineProps({
   items: {
     type: Array,
     default: () => [
-      { title: 'Pepper Processing', subtitle: 'Berries are harvested, sun-dried, and graded into black, white, or ground pepper for export.', image: '/images/value-addition/v1.webp' },
-      { title: 'Coconut Oil Extraction', subtitle: 'Coconut kernels are dried, pressed, and refined into pure oil used in cooking, cosmetics, and wellness products.', image: '/images/value-addition/v2.webp' },
+      { title: 'Pepper Processing', subtitle: 'Freshly harvested berries are sun-dried and expertly graded into black, white, or ground pepper, ready for premium export markets.', image: '/images/value-addition/v1.webp' },
+      { title: 'Coconut Oil Extraction', subtitle: 'Kernels are dried, pressed, and refined into pure oil for food, beauty, and wellness markets.', image: '/images/value-addition/v2.webp' },
       { title: 'Cashew Processing', subtitle: 'Raw cashew nuts are steamed, shelled, peeled, and roasted to produce high-quality kernels for snacks, confectionery, and exports.', image: '/images/value-addition/v3.webp' },
-      { title: 'Cinnamon Processing', subtitle: 'Cinnamon bark is peeled, dried, and rolled into quills or ground into powder for culinary and medicinal use.', image: '/images/value-addition/v4.webp' },
-      { title: 'Coffee Processing', subtitle: 'Harvested beans are fermented, dried, roasted, and ground to produce high-quality coffee for local and global markets.', image: '/images/value-addition/v5.webp' },
-      { title: 'Tea Processing', subtitle: 'Freshly plucked leaves are withered, rolled, fermented, dried, and packed to enhance flavor, aroma, and market value.', image: '/images/value-addition/v6.webp' },
+      { title: 'Cinnamon Processing', subtitle: 'Bark is peeled, dried, and value-added into quills or powder, serving both culinary and medicinal markets.', image: '/images/value-addition/v4.webp' },
+      { title: 'Coffee Processing', subtitle: 'Harvested beans are carefully fermented, sun-dried, expertly roasted, and finely ground to craft premium coffee for both local and international markets.', image: '/images/value-addition/v5.webp' },
+      { title: 'Tea Processing', subtitle: 'Fresh green leaves move through withering, rolling, fermentation, and drying, before being graded and packed, creating higher flavor, aroma, and market value across the value chain.', image: '/images/value-addition/v6.webp' },
       { title: 'Mace Processing', subtitle: 'The bright red aril covering nutmeg seeds is carefully dried and ground into flakes or powder, valued as a premium spice and flavoring agent.', image: '/images/value-addition/v7.webp' },
       { title: 'Clove Processing', subtitle: 'Clove buds are handpicked, sun-dried, and processed into spice or essential oil for food and pharmaceuticals.', image: '/images/value-addition/v8.webp' },
+      { title: 'Turmeric Processing', subtitle: 'Fresh rhizomes are cleaned, boiled, sun-dried, and polished before being ground into vibrant powder, widely used in food, medicine, and cosmetics.', image: '/images/value-addition/v9.webp' },
       ]
   },
   navigation: { type: [Boolean, Object], default: true },

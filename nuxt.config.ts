@@ -38,6 +38,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       adminAppUrl: 'https://qaadmin.planters.lk',
+      registerUrl: 'https://qaadmin.planters.lk/register',
     }
   },
 
