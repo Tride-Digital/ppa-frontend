@@ -4,7 +4,7 @@
             <v-list nav dense>
                 <div @click="goToHome" tag="span" style="cursor: pointer">
                     <v-row align="center">
-                        <v-col cols="12" class="pa-2">
+                        <v-col cols="12" class="pa-2 mt-3">
                             <v-img :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo-dark.png'" contain max-height="60" class="mobile-logo"></v-img>
                         </v-col>
                     </v-row>
