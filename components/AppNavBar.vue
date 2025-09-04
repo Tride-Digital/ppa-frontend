@@ -4,10 +4,8 @@
             <v-list nav dense>
                 <div @click="goToHome" tag="span" style="cursor: pointer">
                     <v-row align="center">
-                        <v-col cols="4" class="pa-0 ma-0"><v-img :height="75" :src="theme.global.current.value.dark?'/images/PPA_Logo.png':'/images/PPA_Logo.png'"></v-img></v-col>
-                        <v-col cols="8" class="pa-0 ma-0">
-                            <h3 translate="no">Proprietary</h3>
-                            <h3 translate="no">Planters Alliance</h3>
+                        <v-col cols="12" class="pa-2 mt-3">
+                            <v-img :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo-dark.png'" contain max-height="60" class="mobile-logo"></v-img>
                         </v-col>
                     </v-row>
                 </div>
@@ -17,9 +15,6 @@
                         <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
                     </v-btn>
                 </v-list-item>
-                <!-- <v-list-item class="px-0 py-0">
-                    <v-text-field v-model="search" placeholder="Search" hide-details density="comfortable" prepend-inner-icon="mdi-magnify" variant="solo-filled" class="search-bar" :bg-color="$vuetify.theme.current.colors.secondary"></v-text-field>
-                </v-list-item> -->
                 <v-list-item v-for="item in menuItems" :key="item.title" :to="item.path" link>
                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                 </v-list-item>
@@ -35,45 +30,35 @@
         </v-fab-transition>
     </div>
     <v-app-bar v-else app flat height="100" :color="$vuetify.theme.current.colors.surface" class="navbar-with-border">
-        <v-toolbar flat :color="$vuetify.theme.current.colors.surface">
-            <v-toolbar-title>
-                <v-col cols="4">
-                    <div @click="goToHome" tag="span" style="cursor: pointer">
-                        <v-row align="center">
-                            <v-col cols="8" class="pa-0 mt-0"><v-img :height="80" :src="theme.global.current.value.dark?'/images/PPA_Logo.png':'/images/PPA_Logo.png'"></v-img></v-col>
-                            <v-col cols="4" class="pa-0 ma-0">
-                                <h2 translate="no">Proprietary</h2>
-                                <h2 translate="no">Planters Alliance</h2>
-                            </v-col>
-                        </v-row>
-                    </div>
-                </v-col>
-            </v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items class="nav-items">
-                <v-btn flat v-for="item in menuItems.slice(0, 6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
-                <div class="d-flex align-center mx-2">
-                    <v-btn @click="goToRegister">Join PPA</v-btn>
-                </div>
-                <div class="d-flex align-center mx-2">
-                    <v-btn @click="goToAdmin">Log In</v-btn>
-                </div>
-                <div class="d-flex align-center mx-2">
-                    <v-btn icon @click="toggleTheme" class="theme-toggle-btn">
-                        <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
-                    </v-btn>
-                </div>
-
-                <!-- <div class="d-flex align-center mx-3">
-                    <v-text-field v-model="search" placeholder="Search" hide-details density="comfortable" prepend-inner-icon="mdi-magnify" variant="solo-filled" class="search-bar" :bg-color="$vuetify.theme.current.colors.secondary"></v-text-field>
-                </div> -->
-                <v-btn flat v-for="item in menuItems.slice(6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
-                <div class="d-flex align-center mx-3">
-                    <LanguageSelector/>
-                </div>
-            </v-toolbar-items>
-        </v-toolbar>
-    </v-app-bar>
+  <v-toolbar flat :color="$vuetify.theme.current.colors.surface">
+    <v-toolbar-title>
+      <div @click="goToHome" tag="span" style="cursor: pointer">
+        <v-row align="center" no-gutters>
+          <v-img class="logo-img" :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo.png'" contain max-height="80" max-width="220"/>
+        </v-row>
+      </div>
+    </v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-toolbar-items class="nav-items">
+      <v-btn flat v-for="item in menuItems.slice(0, 6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
+      <div class="d-flex align-center mx-2">
+        <v-btn @click="goToRegister">Join PPA</v-btn>
+      </div>
+      <div class="d-flex align-center mx-2">
+        <v-btn @click="goToAdmin">Log In</v-btn>
+      </div>
+      <div class="d-flex align-center mx-2">
+        <v-btn icon @click="toggleTheme" class="theme-toggle-btn">
+          <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
+        </v-btn>
+      </div>
+      <v-btn flat v-for="item in menuItems.slice(6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
+      <div class="d-flex align-center mx-3">
+        <LanguageSelector/>
+      </div>
+    </v-toolbar-items>
+  </v-toolbar>
+</v-app-bar>
 </template>
 
 <script setup>
@@ -117,11 +102,10 @@ const goToRegister = () => {
 <style scoped>
 .fab {
     position: fixed;
-    top: 10px;
-    left: 10px;
+    top: 5px;
+    left: 5px;
     z-index: 100;
 }
-
 .navbar-with-border {
     border-bottom: 2px solid rgb(var(--v-theme-hero-arrow-bg)) !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
@@ -129,7 +113,6 @@ const goToRegister = () => {
 
 .nav-items .nav-link {
     color: rgb(var(--v-theme-navtext)) !important;
-    margin: 0 12px;
     font-weight: 500;
     text-transform: none;
 }
@@ -165,5 +148,15 @@ const goToRegister = () => {
 .mobile-theme-toggle-btn:hover {
     transform: rotate(30deg);
     background-color: var(--v-theme-toggle-btn-hover);
+}
+.logo-img {
+    min-width: 150px;
+    height: auto !important;
+    object-fit: contain;
+}
+
+.mobile-logo {
+    width: 100%;
+    object-fit: contain;
 }
 </style>
