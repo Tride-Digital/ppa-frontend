@@ -51,28 +51,28 @@ const props = defineProps<{ items?: ServiceItem[] }>()
 useTheme()
 const localItems: ServiceItem[] = [
   {
-    title: 'Services 1',
+    title: 'Business Registration & Legal Services',
     description:
-      'Explore our most trusted agricultural products and services designed to support farmers, businesses, and communities.',
-    image: '/images/services/service-1.jpg',
+      'We provide comprehensive business registration and legal services to help you establish and grow your business.',
+    image: '/images/services/service-1.png',
   },
   {
-    title: 'Services 2',
+    title: 'Agricultural Consultancy',
     description:
-      'Explore our most trusted agricultural products and services designed to support farmers, businesses, and communities.',
-    image: '/images/services/service-2.jpg',
+      'We offer expert agricultural consultancy services to help farmers and businesses optimize their operations and achieve sustainable growth.',
+    image: '/images/services/service-2.png',
   },
   {
-    title: 'Services 3',
+    title: 'Value Added Services',
     description:
-      'Explore our most trusted agricultural products and services designed to support farmers, businesses, and communities.',
-    image: '/images/services/service-3.jpg',
+      'We provide a range of value-added services to enhance the quality and marketability of agricultural products.',
+    image: '/images/services/service-3.png',
   },
   {
-    title: 'Services 4',
+    title: 'Export & Trade Facilitation',
     description:
-      'Explore our most trusted agricultural products and services designed to support farmers, businesses, and communities.',
-    image: '/images/services/service-4.jpg',
+      'We assist businesses in navigating the complexities of export and trade, ensuring smooth and efficient transactions across borders.',
+    image: '/images/services/service-4.png',
   },
 ]
 const itemsToRender = computed(() => (props.items?.length ? props.items : localItems))
