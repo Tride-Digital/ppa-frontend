@@ -160,17 +160,38 @@ const itemsToRender = computed(() => (props.items?.length ? props.items : localI
 }
 .svc-overlay {
   position: absolute;
-  left: 16px; right: 16px; bottom: 16px;
-  padding: 16px;
+  left: 12px; right: 12px; bottom: 8px;
+  padding: clamp(8px, 1.6vw, 8px);
   border-radius: 14px;
-  backdrop-filter: blur(6px);
+  max-height: 60%;
+  overflow: hidden;
+  backdrop-filter: blur(2px);
   background: rgba(0, 0, 0, 0.28);
   color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
 }
-.svc-title { margin: 0 0 6px 0; font-size: clamp(16px, 2.4vw, 18px); font-weight: 700; }
-.svc-desc  { margin: 0; font-size: clamp(12px, 2vw, 14px); line-height: 1.5; }
-.svc-media::before,
-.svc-media::after { content: none !important; display: none !important; }
+.svc-title {
+  margin: 0;
+  font-weight: 800;
+  font-size: clamp(14px, 1.5vw, 15px);
+  line-height: 1.25;
+}
+.svc-desc {
+  margin: 0;
+  font-size: clamp(13px, 1.2vw, 13px);
+  line-height: 1.45;
+}
+@media (max-height: 250px) {
+  .svc-title { font-size: 15px; }
+  .svc-desc  { font-size: 13px; }
+}
+@media (max-height: 200px) {
+  .svc-title { font-size: 15px; }
+  .svc-desc  { font-size: 12px; }
+}
 .see-more-wrap { text-align: right; }
 @media (max-width: 600px) { .see-more-wrap { text-align: center; } }
 .see-more-btn {
