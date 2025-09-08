@@ -1,12 +1,12 @@
 <template>
   <div class="homepage">
     <HeroSection />
+    <ServicesShowcase />
     <ClientOnly>
       <RotateCoverflow />
     </ClientOnly>
     <ModernTechnologies />
     <StateCountSection />
-    <!-- <ServicesShowcase /> -->
     <VisionMission/>
   </div>
 </template>

@@ -65,14 +65,14 @@ const slidesMeta = [
 const options = reactive({
   allowFullscreen: true,
   allowToSkipTransition: true,
-  autohideTime: 2500,
+  autohideTime: 1000,
   autoplay: true,
   bindKeys: true,
-  delay: 6000,
+  delay: 1000,
   enableGestures: true,
   infinite: true,
   lazyLoad: false,
-  transitionDuration: 3000,
+  transitionDuration: 1000,
 })
 const uiEnterMs  = computed(() => options.transitionDuration) 
 const uiLeaveMs  = 800
@@ -109,12 +109,12 @@ const showPrevious = () => {
   }
 }
 const rscs = shallowReactive([
-  new Img('/images/cover/cover20.png'),
-  new Img('/images/cover/cover12.jpg'),
-  new Img('/images/cover/cover22.jpg'),
-  new Img('/images/cover/cover13.jpg'),
-  new Img('/images/cover/cover19.jpg'),
-  new Img('/images/cover/cover14.jpg'),
+  new Img('/images/cover/cover23.png'),
+  new Img('/images/cover/cover24.png'),
+  new Img('/images/cover/cover25.png'),
+  new Img('/images/cover/cover16.png'),
+  new Img('/images/cover/cover27.png'),
+  new Img('/images/cover/cover28.png'),
 ])
 const transitions = shallowReactive([
   { component: Fade, options: { totalDuration: 3000, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' } },
