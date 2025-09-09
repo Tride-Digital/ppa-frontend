@@ -18,6 +18,12 @@
                 <v-list-item v-for="item in menuItems" :key="item.title" :to="item.path" link>
                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                 </v-list-item>
+                <v-list-item @click="goToRegister" link>
+                    <v-list-item-title>Join PPA</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="goToAdmin" link>
+                    <v-list-item-title>Log In</v-list-item-title>
+                </v-list-item>
                 <div class="d-flex">
                     <LanguageSelector/>
                 </div>
@@ -29,24 +35,20 @@
             </v-btn>
         </v-fab-transition>
     </div>
-    <v-app-bar v-else app flat height="100" :color="$vuetify.theme.current.colors.surface" class="navbar-with-border">
-  <v-toolbar flat :color="$vuetify.theme.current.colors.surface">
-    <v-toolbar-title>
+    <v-app-bar v-else app flat height="90" :color="$vuetify.theme.current.colors.surface" class="navbar-with-border">
+  <v-toolbar flat :color="$vuetify.theme.current.colors.surface" height="110">
+    <v-toolbar-title class="logo-container">
       <div @click="goToHome" tag="span" style="cursor: pointer">
         <v-row align="center" no-gutters>
-          <v-img class="logo-img" :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo.png'" contain max-height="80" max-width="220"/>
+          <v-img class="logo-img" :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo.png'" contain height="90" width="220"/>
         </v-row>
       </div>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items class="nav-items">
       <v-btn flat v-for="item in menuItems.slice(0, 6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
-      <div class="d-flex align-center mx-2">
-        <v-btn @click="goToRegister">Join PPA</v-btn>
-      </div>
-      <div class="d-flex align-center mx-2">
-        <v-btn @click="goToAdmin">Log In</v-btn>
-      </div>
+      <v-btn flat @click="goToRegister" class="nav-link">Join PPA</v-btn>
+      <v-btn flat @click="goToAdmin" class="nav-link">Log In</v-btn>
       <div class="d-flex align-center mx-2">
         <v-btn icon @click="toggleTheme" class="theme-toggle-btn">
           <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
@@ -83,10 +85,10 @@ const toggleTheme = () => {
 const menuItems = ref([
     { title: 'Home', path: '/', icon: 'mdi-home' },
     { title: 'About us', path: '/aboutus', icon: 'mdi-home' },
+    { title: 'Services', path: '/products', icon: 'mdi-leaf' },
     { title: 'Announcements', path: '/announcements', icon: 'mdi-bell' },
-    { title: 'Products', path: '/products', icon: 'mdi-leaf' },
     // { title: 'Membership', path: '/membership', icon: 'mdi-account' },
-    { title: 'Contact us', path: '/contactus', icon: 'mdi-phone' },
+    { title: 'Our Leadership Team', path: '/contactus', icon: 'mdi-phone' },
 ]);
 const goToHome = () => {
     router.push('/');
@@ -149,10 +151,22 @@ const goToRegister = () => {
     transform: rotate(30deg);
     background-color: var(--v-theme-toggle-btn-hover);
 }
+
+.logo-container {
+    flex-shrink: 0 !important;
+    min-width: 220px !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
 .logo-img {
-    min-width: 150px;
-    height: auto !important;
-    object-fit: contain;
+    width: 220px !important;
+    height: 90px !important;
+    flex-shrink: 0 !important;
+    object-fit: contain !important;
+    max-width: none !important;
+    max-height: none !important;
 }
 
 .mobile-logo {

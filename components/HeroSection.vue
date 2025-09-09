@@ -2,7 +2,6 @@
   <section class="hero-section">
     <div class="hero-slider">
       <VueFlux ref="vueflux" :options="options" :rscs="rscs" :transitions="transitions" class="vue-flux-container" @mounted="onFluxMounted" @transition-start="onTransitionStart" @transition-end="onTransitionEnd">
-        <template #preloader="p"><FluxPreloader v-bind="p" /></template>
         <template #controls="c"><FluxControls v-bind="c" /></template>
         <template #pagination="p"></template>
       </VueFlux>
@@ -30,17 +29,12 @@
                   }"
                 >
                   <h1 class="hero-title mb-6">{{ activeSlide.title }} </h1>
-                  <div class="hero-buttons">
-                    <v-btn color="primary" size="large" class="me-4 mb-3" :to="activeSlide.learnTo">
-                      {{ activeSlide.learnLabel }}
-                    </v-btn>
-
-                    <v-btn @click="goToRegister" color="white" size="large" class="mb-3">
-                      {{ activeSlide.joinLabel }}
-                    </v-btn>
-                  </div>
                 </div>
               </Transition>
+              <div class="hero-buttons-fixed">
+                <v-btn color="primary" size="large" class="me-4 mb-3" to="/aboutus">Learn More</v-btn>
+                <v-btn @click="goToRegister" color="white" size="large" class="mb-3">Join PPA</v-btn>
+              </div>
             </div>
           </v-col>
         </v-row>
@@ -50,42 +44,70 @@
 </template>
 
 <script setup>
-import { ref, reactive, shallowReactive, computed } from 'vue'
+import { ref, reactive, shallowReactive, computed, onMounted, onUnmounted } from 'vue'
 import { VueFlux, FluxPreloader, FluxControls, FluxPagination, Img, Fade } from 'vue-flux'
 import 'vue-flux/style.css'
 
 const config = useRuntimeConfig()
 const vueflux = ref(null)
 const isTransitioning = ref(false)
+const autoplayTimer = ref(null)
+const isManualNavigation = ref(false)
+
 const slidesMeta = [
-  { title: 'Empowering Proprietary Planters (PP)', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
+  { title: 'Empowering Proprietary Planters (PP)', learnLabel: 'Join PPA', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'Together, we are shaping plantations into profitable, sustainable, and globally competitive enterprises.', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'From Tea to Cinnamon to Rubber: Innovation That Adds Value', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
 ]
+
 const options = reactive({
   allowFullscreen: true,
   allowToSkipTransition: true,
   autohideTime: 1000,
-  autoplay: true,
+  autoplay: false, // We'll handle autoplay manually
   bindKeys: true,
-  delay: 1000,
+  delay: 4000, // 4 seconds between slides
   enableGestures: true,
   infinite: true,
   lazyLoad: false,
   transitionDuration: 1000,
 })
+
 const uiEnterMs  = computed(() => options.transitionDuration) 
 const uiLeaveMs  = 800
-const travelY    = '50px'
+const travelY    = '5px'
 const leaveDelay = 0
 const currentIndex = ref(0)
 const pendingIndex = ref(null)
+
 defineProps({
   message: { type: String, default: 'Empowering Proprietary Planters (PP)' },
 })
+
 const goToRegister = () => window.open(config.public.registerUrl, '_blank')
-const goToAdmin = () => window.open(config.public.adminAppUrl, '_blank') // uncomment this line to enable admin login button
-const onFluxMounted = () => {}
+
+const startAutoplay = () => {
+  if (autoplayTimer.value) {
+    clearInterval(autoplayTimer.value)
+  }
+  autoplayTimer.value = setInterval(() => {
+    if (!isTransitioning.value && !isManualNavigation.value) {
+      showNext(true) // true indicates this is autoplay
+    }
+  }, options.delay)
+}
+
+const stopAutoplay = () => {
+  if (autoplayTimer.value) {
+    clearInterval(autoplayTimer.value)
+    autoplayTimer.value = null
+  }
+}
+
+const onFluxMounted = () => {
+  startAutoplay()
+}
+
 const onTransitionStart = () => {
   isTransitioning.value = true
   if (typeof pendingIndex.value === 'number') {
@@ -95,24 +117,54 @@ const onTransitionStart = () => {
     currentIndex.value = (currentIndex.value + 1) % rscs.length
   }
 }
-const onTransitionEnd = () => { isTransitioning.value = false }
-const showNext = () => {
-  if (vueflux.value && !isTransitioning.value) {
+
+const onTransitionEnd = () => { 
+  isTransitioning.value = false
+  // Reset manual navigation flag and restart autoplay after manual navigation
+  if (isManualNavigation.value) {
+    isManualNavigation.value = false
+    // Restart autoplay after a brief delay
+    setTimeout(() => {
+      if (!isManualNavigation.value) {
+        startAutoplay()
+      }
+    }, 1000)
+  }
+}
+
+const showNext = (isAuto = false) => {
+  if (vueflux.value) {
+    // If this is manual navigation, stop autoplay and set flag
+    if (!isAuto) {
+      isManualNavigation.value = true
+      stopAutoplay()
+    }
+    
+    // If transitioning and manual click, skip current transition
+    if (isTransitioning.value && !isAuto && options.allowToSkipTransition) {
+      // Skip to the end of current transition instead of stopping completely
+      vueflux.value.skipTransition?.() || vueflux.value.stop()
+    }
+    
     pendingIndex.value = (currentIndex.value + 1) % rscs.length
     vueflux.value.show('next')
   }
 }
 const showPrevious = () => {
-  if (vueflux.value && !isTransitioning.value) {
+  if (vueflux.value) {
+    isManualNavigation.value = true
+    stopAutoplay()
+    if (isTransitioning.value && options.allowToSkipTransition) {
+      vueflux.value.skipTransition?.() || vueflux.value.stop()
+    }
     pendingIndex.value = currentIndex.value === 0 ? rscs.length - 1 : currentIndex.value - 1
     vueflux.value.show('prev')
   }
 }
 const rscs = shallowReactive([
   new Img('/images/cover/cover23.png'),
-  new Img('/images/cover/cover24.png'),
-  new Img('/images/cover/cover25.png'),
-  new Img('/images/cover/cover16.png'),
+  new Img('/images/cover/cover29.png'),
+  new Img('/images/cover/cover30.png'),
   new Img('/images/cover/cover27.png'),
   new Img('/images/cover/cover28.png'),
 ])
@@ -121,6 +173,22 @@ const transitions = shallowReactive([
 ])
 const activeSlide = computed(() => slidesMeta[currentIndex.value % slidesMeta.length])
 const activeKey   = computed(() => `copy-${currentIndex.value}`)
+onUnmounted(() => {
+  stopAutoplay()
+})
+onMounted(() => {
+  const handleVisibilityChange = () => {
+    if (document.hidden) {
+      stopAutoplay()
+    } else if (!isManualNavigation.value) {
+      startAutoplay()
+    }
+  }
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+  onUnmounted(() => {
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+  })
+})
 </script>
 
 <style scoped>
@@ -148,8 +216,18 @@ const activeKey   = computed(() => `copy-${currentIndex.value}`)
   font-size: 3rem; font-weight: 100; color: #fff;
   text-shadow: 2px 2px 8px rgba(0,0,0,.7);
   line-height: 1.2;
+  margin-bottom: 0;
 }
-.hero-buttons { margin-top: 3rem; }
+.hero-buttons { margin-top: 10rem; }
+.hero-buttons-fixed {
+  margin-top: 0;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  padding-top: 20px;
+}
 :deep(.flux-controls), :deep(.flux-pagination) { display: none !important; }
 :deep(.vue-flux *), .hero-copy-stage, .hero-copy-slab, .hero-title, .hero-buttons {
   -webkit-backface-visibility: hidden; backface-visibility: hidden;
@@ -158,10 +236,21 @@ const activeKey   = computed(() => `copy-${currentIndex.value}`)
 .hero-copy-stage {
   position: relative;
   min-height: clamp(140px, 24vh, 260px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 120px;
 }
 .hero-copy-slab {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 120px;
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center;
   padding-inline: 12px;
 }
 .hero-copy-enter-from,
@@ -184,15 +273,54 @@ const activeKey   = computed(() => `copy-${currentIndex.value}`)
   .hero-copy-enter-active, .hero-copy-leave-active { transition-duration: 1ms !important; }
 }
 @media (max-width: 768px) {
-  .hero-title { font-size: 2.5rem; }
-  .hero-buttons { display: flex; flex-direction: column; align-items: center; }
-  .hero-buttons .v-btn { width: 300px; }
+  .hero-title { 
+    font-size: 2.2rem; 
+    line-height: 1.25;
+  }
+  .hero-copy-stage { padding-bottom: 180px; }
+  .hero-copy-slab { bottom: 180px; }
+  .hero-buttons, .hero-buttons-fixed { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 12px;
+  }
+  .hero-buttons .v-btn, .hero-buttons-fixed .v-btn { 
+    width: 280px; 
+    margin: 0 !important;
+  }
   .nav-btn { width: 50px !important; height: 50px !important; }
   .navigation-buttons { padding: 0 15px; }
 }
 @media (max-width: 480px) {
-  .hero-title { font-size: 2rem; }
+  .hero-title { 
+    font-size: 1.5rem; 
+    line-height: 1.3;
+    padding: 0 10px;
+  }
+  .hero-copy-stage { padding-bottom: 200px; }
+  .hero-copy-slab { bottom: 200px; }
+  .hero-buttons-fixed {
+    padding-top: 15px;
+  }
+  .hero-buttons .v-btn, .hero-buttons-fixed .v-btn { 
+    width: 260px;
+    font-size: 0.9rem;
+  }
   .nav-btn { width: 45px !important; height: 45px !important; }
   .navigation-buttons { padding: 0 10px; }
+}
+@media (max-width: 360px) {
+  .hero-title { 
+    font-size: 1.3rem; 
+    line-height: 1.4;
+    padding: 0 15px;
+  }
+  .hero-copy-stage { padding-bottom: 220px; }
+  .hero-copy-slab { bottom: 220px; }
+  .hero-buttons-fixed .v-btn { 
+    width: 240px;
+    font-size: 0.85rem;
+  }
 }
 </style>

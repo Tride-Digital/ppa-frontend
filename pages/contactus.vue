@@ -10,18 +10,16 @@
       <v-col v-for="director in directorContacts" :key="director.name" cols="12" sm="6" md="4" lg="2.4" xl="2.4" class="mb-4 d-flex">
         <v-card class="director-card h-100 flex-grow-1" elevation="3" hover>
           <v-card-text class="text-center pa-8">
-            <!-- Profile Icon -->
-            <v-avatar class="director-avatar mb-5" size="90" color="primary">
-              <v-icon size="45" color="white">mdi-account-tie</v-icon>
-            </v-avatar>
-            <h3 class="director-name mb-4">{{ director.name }}</h3>
-            <div class="contact-info">
-              <v-chip class="contact-chip" color="accent" variant="tonal" size="x-large" :href="'tel:' + director.phone" link>
-                <v-icon start>mdi-phone</v-icon>{{ director.phone }}</v-chip>
-              <div v-if="director.note" class="contact-note mt-2">
-                <v-chip size="small" color="success" variant="outlined">{{ director.note }}</v-chip>
-              </div>
+            <div class="director-image-container mb-5">
+              <v-img :src="director.image" :alt="director.name" class="director-image" cover>
+                <template #error>
+                  <div class="error-placeholder">
+                    <v-icon size="60" color="white">mdi-account-tie</v-icon>
+                  </div>
+                </template>
+              </v-img>
             </div>
+            <h3 class="director-name">{{ director.name }}</h3>
           </v-card-text>
         </v-card>
       </v-col>
@@ -35,16 +33,16 @@ definePageMeta({
   title: 'Contact Us - PPA'
 })
 const directorContacts = ref([
-  { name: 'Director / CEO', phone: '077 7790147' },
-  { name: 'Director-Operations', phone: '077 7812538' },
-  { name: 'Director-Marketing', phone: '077 7423500' },
-  { name: 'Director-Finance', phone: '076 9499270' },
-  { name: 'Director-Projects', phone: '077 2960284' },
-  { name: 'Director-Sustainability', phone: '077 7485957' },
-  { name: 'Director-Exports', phone: '077 8752657' },
-  { name: 'Director-Legal', phone: '077 7713567' },
-  { name: 'Director-HRM', phone: '077 2376343' },
-  { name: 'Director-Export crops', phone: '077 6083027' }
+  { name: 'Director : D M Kobbekaduwe', image: '/images/team/Dammika.jpg' },
+  { name: 'Director : Rehan Jayatilake', image: '/images/team/Rehan.jpg' },
+  { name: 'Director : Ravindra Hewavitharana', image: '/images/team/Ravindra.jpg' },
+  { name: 'Director : S M P Jayantha', image: '/images/team/Jayantha.jpg' },
+  { name: 'Director : Dr W G Somaratne', image: '/images/team/Somarathne.jpg' },
+  { name: 'Director : Mr Upananda Karunarathne', image: '/images/team/Upananda.jpg' },
+  { name: 'Director : Attorney Wijitha Manamperi', image: '/images/team/Vijitha.jpg' },
+  { name: 'Director : Nalin Amunugama', image: '/images/team/Nalin.jpg' },
+  { name: 'Director : Januka Karunasena', image: '/images/team/Januka.jpg' },
+  { name: 'Director : Prof Sarath P Nissanka', image: '/images/team/Nissanka 2.jpg' }
 ])
 </script>
 
@@ -65,15 +63,36 @@ const directorContacts = ref([
   border-radius: 16px;
   background: rgb(var(--v-theme-surface));
   border: 1px solid rgba(var(--v-theme-on-surface), 0.12);
-  min-width: 220px;
+  width: 220px;
 }
 .director-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgb(var(--v-theme-product-card-shadow)) !important;
 }
-.director-avatar {
+.director-image-container {
+  width: 180px;
+  height: 220px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
   border: 3px solid rgb(var(--v-theme-accent));
   box-shadow: 0 4px 12px rgba(var(--v-theme-primary), 0.3);
+}
+.director-image {
+  width: 100%;
+  height: 100%;
+}
+.director-image .v-img__img {
+  object-fit: cover;
+  object-position: center top;
+}
+.error-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(var(--v-theme-primary), 0.1);
 }
 .director-name {
   font-size: 1.2rem;
@@ -81,24 +100,6 @@ const directorContacts = ref([
   color: rgb(var(--v-theme-contact-title));
   line-height: 1.3;
   margin: 0;
-}
-.contact-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-.contact-chip {
-  font-weight: 500;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-.contact-chip:hover {
-  transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(var(--v-theme-accent), 0.3);
-}
-.contact-note {
-  margin-top: 8px;
 }
 @media (min-width: 1264px) {
   .v-col-lg-2\.4 {
@@ -125,8 +126,9 @@ const directorContacts = ref([
   .directors-subtitle {
     font-size: 1rem;
   }
-  .director-avatar {
-    size: 70px;
+  .director-image-container {
+    width: 120px;
+    height: 150px;
   }
   .director-name {
     font-size: 1rem;
@@ -140,8 +142,9 @@ const directorContacts = ref([
   .directors-title {
     font-size: 1.5rem;
   }
-  .director-avatar {
-    size: 60px;
+  .director-image-container {
+    width: 100px;
+    height: 130px;
   }
   .director-name {
     font-size: 0.95rem;
