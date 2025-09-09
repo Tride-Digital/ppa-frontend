@@ -89,38 +89,45 @@ export default {
       cards: [
         { 
           image: '/images/modern-technologies/m1.webp?w=500&h=400&fit=crop', 
-          alt: 'Smart soil management technology', 
-          title: 'SMART Soil Management',
-          description: 'Advanced soil testing and precision nutrient management for optimal crop yields.',
-          blogId: 1 
+          alt: 'SMART soil management sensors and IoT technology in plantation', 
+          title: 'SMART Soil Technology',
+          description: 'Advanced IoT sensors, real-time monitoring, and data analytics transform soil management for optimal crop performance.',
+          blogId: 201 // Modern Tech Store IDs start from 201
         },
         { 
           image: '/images/modern-technologies/m2.webp?w=500&h=400&fit=crop', 
-          alt: 'Sustainable plantation practices', 
-          title: 'Sustainable Practices',
-          description: 'Eco-friendly techniques that ensure long-term plantation productivity.',
-          blogId: 2 
+          alt: 'Solar-powered sustainable processing equipment and renewable energy systems', 
+          title: 'Green Processing Equipment',
+          description: 'Eco-friendly processing systems using renewable energy and bio-based alternatives for sustainable operations.',
+          blogId: 202 
         },
         { 
           image: '/images/modern-technologies/m3.webp?w=500&h=400&fit=crop', 
-          alt: 'Ceylon tea precision processing', 
-          title: 'Precision Processing',
-          description: 'Quality enhancement techniques for premium Ceylon tea production.',
-          blogId: 3 
+          alt: 'Automated Ceylon tea processing machinery with precision control systems', 
+          title: 'Automated Tea Systems',
+          description: 'Climate-controlled chambers and precision automation ensure consistent Ceylon tea quality standards.',
+          blogId: 203 
         },
         { 
           image: '/images/modern-technologies/m4.webp?w=500&h=400&fit=crop', 
-          alt: 'Climate adaptation technology', 
-          title: 'Climate Adaptation',
-          description: 'Modern strategies to adapt to changing climate conditions.',
-          blogId: 4 
+          alt: 'Weather monitoring stations with climate resilience technology', 
+          title: 'Climate Tech Systems',
+          description: 'Advanced weather monitoring and automated response systems for climate challenge adaptation.',
+          blogId: 204 
         },
         { 
           image: '/images/modern-technologies/m5.webp?w=500&h=400&fit=crop', 
-          alt: 'Digital marketing platforms', 
-          title: 'Digital Marketing',
-          description: 'Modern digital strategies for global market reach and premium pricing.',
-          blogId: 5 
+          alt: 'Digital marketing dashboard with e-commerce and analytics platforms', 
+          title: 'Digital Marketing Tech',
+          description: 'E-commerce platforms, customer analytics, and automated marketing systems for global market reach.',
+          blogId: 205 
+        },
+        { 
+          image: '/images/modern-technologies/m6.webp?w=500&h=400&fit=crop', 
+          alt: 'Collaboration platform showing resource sharing and knowledge management systems', 
+          title: 'Collaboration Platforms',
+          description: 'Knowledge sharing systems and resource management platforms for plantation alliance coordination.',
+          blogId: 206 
         }
       ]
     }
@@ -149,15 +156,28 @@ export default {
     this.clearAutoPlay();
   },
   methods: {
-    // Navigation method
-    handleCardClick(card) {
+    // Enhanced navigation method for MODERN TECH content
+    async handleCardClick(card) {
       if (card && card.blogId) {
-        const { selectPost, getPostById } = useBlogData()
-        const blogPost = getPostById(card.blogId)
-        if (blogPost) {
-          selectPost(blogPost)
-          // Navigate to blog page
-          this.$router.push('/blogs')
+        try {
+          const { selectPost, getPostById } = useModernTechStore()
+          const blogPost = getPostById(card.blogId)
+          if (blogPost) {
+            // Store the selected post
+            selectPost(blogPost)
+            // Navigate to the blog detail page with 'tech' prefix
+            await this.$router.push(`/blog/tech/${blogPost.id}`)
+          } else {
+            console.warn(`Modern Tech blog post with ID ${card.blogId} not found`)
+            await this.$router.push('/blogs')
+          }
+        } catch (error) {
+          console.error('Navigation error:', error)
+          try {
+            await this.$router.push('/blogs')
+          } catch (fallbackError) {
+            console.error('Fallback navigation failed:', fallbackError)
+          }
         }
       }
     },
@@ -251,6 +271,7 @@ export default {
 </script>
 
 <style scoped>
+/* Same styles as before - keeping the existing modern card styles */
 .section-title {
   text-align: center;
   margin-bottom: 50px;
@@ -320,7 +341,7 @@ export default {
   cursor: pointer;
 }
 .card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-8px) scale(1.02);
   box-shadow: 0 12px 35px -5px var(--v-theme-card-shadow), 0 6px 15px -2px var(--v-theme-card-shadow);
 }
 .card-image {
@@ -352,12 +373,14 @@ export default {
   font-weight: 700;
   margin: 0 0 8px 0;
   line-height: 1.3;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 .card-description {
   font-size: 0.9rem;
   line-height: 1.5;
   margin: 0 0 16px 0;
   opacity: 0.95;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 .click-indicator {
   display: flex;
@@ -367,6 +390,7 @@ export default {
   font-weight: 600;
   opacity: 0.9;
   transition: all 0.3s ease;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
 .card:hover .click-indicator {
   opacity: 1;

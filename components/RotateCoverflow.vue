@@ -21,7 +21,7 @@
         :autoplay="autoplayConfig"
         :speed="1000"
         :initial-slide="middleIndex"
-        aria-label="Destinations slider"
+        aria-label="Value addition processes slider"
         @swiper="onSwiper"
         @progress="onProgress"
       >
@@ -61,51 +61,51 @@ const props = defineProps({
     type: Array,
     default: () => [
       { 
-        title: 'Tea Processing', 
-        subtitle: 'Fresh green leaves move through withering, rolling, fermentation, and drying, before being graded and packed, creating higher flavor, aroma, and market value across the value chain.', 
+        title: 'Tea Processing Excellence', 
+        subtitle: 'Fresh green leaves move through advanced withering, rolling, fermentation, and drying processes, with modern grading and packaging techniques that create superior flavor, enhanced aroma, and increased market value throughout the entire processing chain.', 
         image: '/images/value-addition/v6.webp',
-        blogId: 3 // Ceylon Tea Quality Enhancement
+        blogId: 101 // Value Addition Store IDs start from 101
       },
       { 
-        title: 'SMART Agriculture', 
-        subtitle: 'Modern precision agriculture techniques using soil sensors, data analytics, and automated systems to optimize crop yields and reduce costs.', 
+        title: 'SMART Agriculture Revolution', 
+        subtitle: 'Modern precision agriculture techniques using advanced soil sensors, real-time data analytics, and automated nutrient management systems optimize crop yields while reducing costs through intelligent farming decisions.', 
         image: '/images/value-addition/v1.webp',
-        blogId: 1 // SMART Soil Nutrient Management
+        blogId: 102
       },
       { 
-        title: 'Sustainable Processing', 
-        subtitle: 'Environmentally friendly processing methods that maintain quality while reducing environmental impact and ensuring long-term sustainability.', 
+        title: 'Sustainable Processing Revolution', 
+        subtitle: 'Environmentally friendly processing methods that maintain premium quality while reducing environmental impact and ensuring long-term sustainability through eco-conscious techniques and renewable energy integration.', 
         image: '/images/value-addition/v2.webp',
-        blogId: 2 // Sustainable Rubber Tapping
+        blogId: 103
       },
       { 
-        title: 'Climate Adaptation', 
-        subtitle: 'Innovative techniques to adapt plantation operations to changing climate conditions while maintaining productivity and profitability.', 
+        title: 'Climate Resilience Innovation', 
+        subtitle: 'Innovative techniques to adapt plantation operations to changing climate conditions while maintaining productivity and profitability through resilience-building strategies and weather-smart technologies.', 
         image: '/images/value-addition/v3.webp',
-        blogId: 4 // Climate Change Adaptation
+        blogId: 104
       },
       { 
-        title: 'Digital Marketing', 
-        subtitle: 'Modern digital strategies to connect Sri Lankan plantation products with global markets and achieve premium pricing.', 
+        title: 'Digital Marketing Excellence', 
+        subtitle: 'Modern digital strategies to connect Sri Lankan plantation products with global markets and achieve premium pricing through authentic brand building and targeted customer engagement that realizes maximum value from quality products.', 
         image: '/images/value-addition/v4.webp',
-        blogId: 5 // Digital Marketing Strategies
+        blogId: 105
       },
       { 
-        title: 'Industry Collaboration', 
-        subtitle: 'United plantation owners sharing knowledge, resources, and best practices to strengthen the entire industry.', 
+        title: 'Industry Collaboration Power', 
+        subtitle: 'United plantation owners sharing knowledge, resources, and best practices to strengthen the entire industry through collective action and strategic partnerships that create value impossible to achieve individually.', 
         image: '/images/value-addition/v5.webp',
-        blogId: 6 // PPA Launch
+        blogId: 106
       }
     ]
   },
   navigation: { type: [Boolean, Object], default: true },
   showTitle: { type: Boolean, default: true },
-  subtitleText: { type: String, default: 'Our Products' },
+  subtitleText: { type: String, default: 'Our Excellence' },
   titleText: { type: String, default: 'Value Addition Process' }
 })
 
-// Use the blog data composable
-const { selectPost, getPostById } = useBlogData()
+// Use the VALUE ADDITION store specifically
+const { selectPost, getPostById } = useValueAdditionStore()
 
 const modules = [EffectCoverflow, Navigation, A11y, Autoplay]
 const autoplayConfig = {
@@ -126,14 +126,28 @@ const middleIndex = computed(() => {
 })
 const swiperRef = ref(null)
 
-// Navigation method
-const handleItemClick = (item) => {
+// Enhanced navigation method for VALUE ADDITION content
+const handleItemClick = async (item) => {
   if (item.blogId) {
-    const blogPost = getPostById(item.blogId)
-    if (blogPost) {
-      selectPost(blogPost)
-      // Navigate to blog page
-      navigateTo('/blogs')
+    try {
+      // Get the blog post data from VALUE ADDITION store
+      const blogPost = getPostById(item.blogId)
+      if (blogPost) {
+        // Store the selected post
+        selectPost(blogPost)
+        // Navigate to the blog detail page with 'value' prefix
+        await navigateTo(`/blog/value/${blogPost.id}`)
+      } else {
+        console.warn(`Value Addition blog post with ID ${item.blogId} not found`)
+        await navigateTo('/blogs')
+      }
+    } catch (error) {
+      console.error('Navigation error:', error)
+      try {
+        await navigateTo('/blogs')
+      } catch (fallbackError) {
+        console.error('Fallback navigation failed:', fallbackError)
+      }
     }
   }
 }
@@ -158,6 +172,7 @@ function applyFiveVisible(swiper){
 </script>
 
 <style scoped>
+/* Same styles as before - keeping the existing styles */
 .section-title {
   text-align: center;
   margin-bottom: 30px;
@@ -239,10 +254,11 @@ function applyFiveVisible(swiper){
   border-radius: 22px; 
   overflow: hidden; 
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .destination-box:hover {
   transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 .destination-img { position: relative; border-radius: 22px; overflow: hidden; }
 .destination-img img{
@@ -252,6 +268,10 @@ function applyFiveVisible(swiper){
   object-fit: cover;
   border-radius: 22px;
   box-shadow: 0 14px 32px var(--v-theme-card-shadow);
+  transition: transform 0.3s ease;
+}
+.destination-box:hover .destination-img img {
+  transform: scale(1.05);
 }
 @media (min-width: 768px) {
   .destination-img img { height: 580px; }
@@ -260,7 +280,7 @@ function applyFiveVisible(swiper){
   position: absolute; left: 0; right: 0; bottom: 0;
   padding: 12px;
   color: #fff;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.45) 40%, rgba(0,0,0,.75) 100%);
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.45) 40%, rgba(0,0,0,.80) 100%);
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -272,14 +292,16 @@ function applyFiveVisible(swiper){
   margin: 0; 
   font-weight: 700; 
   font-size: 16px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 @media (min-width: 768px) {
   .box-title { font-size: 18px; }
 }
 .destination-subtitle { 
-  opacity: 0.9; 
+  opacity: 0.95; 
   font-size: 12px;
   line-height: 1.4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 @media (min-width: 768px) {
   .destination-subtitle { font-size: 14px; }
@@ -287,6 +309,7 @@ function applyFiveVisible(swiper){
 .click-indicator {
   opacity: 0.8;
   transition: opacity 0.3s ease, transform 0.3s ease;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
 .destination-box:hover .click-indicator {
   opacity: 1;
