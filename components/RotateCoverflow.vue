@@ -26,13 +26,18 @@
         @progress="onProgress"
       >
         <SwiperSlide v-for="(item, i) in items" :key="i">
-          <article class="destination-box">
+          <article class="destination-box" @click="handleItemClick(item)">
             <div class="destination-img">
               <img :src="item.image" :alt="item.title" loading="lazy" decoding="async"/>
               <div class="destination-content">
                 <div class="media-left">
                   <h4 class="box-title title">{{ item.title }}</h4>
                   <span class="destination-subtitle trip_count">{{ item.subtitle }}</span>
+                </div>
+                <div class="click-indicator">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
                 </div>
               </div>
             </div>
@@ -55,22 +60,53 @@ const props = defineProps({
   items: {
     type: Array,
     default: () => [
-      { title: 'Pepper Processing', subtitle: 'Freshly harvested berries are sun-dried and expertly graded into black, white, or ground pepper, ready for premium export markets.', image: '/images/value-addition/v1.webp' },
-      { title: 'Coconut Oil Extraction', subtitle: 'Kernels are dried, pressed, and refined into pure oil for food, beauty, and wellness markets.', image: '/images/value-addition/v2.webp' },
-      { title: 'Cashew Processing', subtitle: 'Raw cashew nuts are steamed, shelled, peeled, and roasted to produce high-quality kernels for snacks, confectionery, and exports.', image: '/images/value-addition/v3.webp' },
-      { title: 'Cinnamon Processing', subtitle: 'Bark is peeled, dried, and value-added into quills or powder, serving both culinary and medicinal markets.', image: '/images/value-addition/v4.webp' },
-      { title: 'Coffee Processing', subtitle: 'Harvested beans are carefully fermented, sun-dried, expertly roasted, and finely ground to craft premium coffee for both local and international markets.', image: '/images/value-addition/v5.webp' },
-      { title: 'Tea Processing', subtitle: 'Fresh green leaves move through withering, rolling, fermentation, and drying, before being graded and packed, creating higher flavor, aroma, and market value across the value chain.', image: '/images/value-addition/v6.webp' },
-      { title: 'Mace Processing', subtitle: 'The bright red aril covering nutmeg seeds is carefully dried and ground into flakes or powder, valued as a premium spice and flavoring agent.', image: '/images/value-addition/v7.webp' },
-      { title: 'Clove Processing', subtitle: 'Clove buds are handpicked, sun-dried, and processed into spice or essential oil for food and pharmaceuticals.', image: '/images/value-addition/v8.webp' },
-      { title: 'Turmeric Processing', subtitle: 'Fresh rhizomes are cleaned, boiled, sun-dried, and polished before being ground into vibrant powder, widely used in food, medicine, and cosmetics.', image: '/images/value-addition/v9.webp' },
-      ]
+      { 
+        title: 'Tea Processing', 
+        subtitle: 'Fresh green leaves move through withering, rolling, fermentation, and drying, before being graded and packed, creating higher flavor, aroma, and market value across the value chain.', 
+        image: '/images/value-addition/v6.webp',
+        blogId: 3 // Ceylon Tea Quality Enhancement
+      },
+      { 
+        title: 'SMART Agriculture', 
+        subtitle: 'Modern precision agriculture techniques using soil sensors, data analytics, and automated systems to optimize crop yields and reduce costs.', 
+        image: '/images/value-addition/v1.webp',
+        blogId: 1 // SMART Soil Nutrient Management
+      },
+      { 
+        title: 'Sustainable Processing', 
+        subtitle: 'Environmentally friendly processing methods that maintain quality while reducing environmental impact and ensuring long-term sustainability.', 
+        image: '/images/value-addition/v2.webp',
+        blogId: 2 // Sustainable Rubber Tapping
+      },
+      { 
+        title: 'Climate Adaptation', 
+        subtitle: 'Innovative techniques to adapt plantation operations to changing climate conditions while maintaining productivity and profitability.', 
+        image: '/images/value-addition/v3.webp',
+        blogId: 4 // Climate Change Adaptation
+      },
+      { 
+        title: 'Digital Marketing', 
+        subtitle: 'Modern digital strategies to connect Sri Lankan plantation products with global markets and achieve premium pricing.', 
+        image: '/images/value-addition/v4.webp',
+        blogId: 5 // Digital Marketing Strategies
+      },
+      { 
+        title: 'Industry Collaboration', 
+        subtitle: 'United plantation owners sharing knowledge, resources, and best practices to strengthen the entire industry.', 
+        image: '/images/value-addition/v5.webp',
+        blogId: 6 // PPA Launch
+      }
+    ]
   },
   navigation: { type: [Boolean, Object], default: true },
   showTitle: { type: Boolean, default: true },
   subtitleText: { type: String, default: 'Our Products' },
   titleText: { type: String, default: 'Value Addition Process' }
 })
+
+// Use the blog data composable
+const { selectPost, getPostById } = useBlogData()
+
 const modules = [EffectCoverflow, Navigation, A11y, Autoplay]
 const autoplayConfig = {
   delay: 3000,
@@ -89,6 +125,19 @@ const middleIndex = computed(() => {
   return Math.floor(len / 2)
 })
 const swiperRef = ref(null)
+
+// Navigation method
+const handleItemClick = (item) => {
+  if (item.blogId) {
+    const blogPost = getPostById(item.blogId)
+    if (blogPost) {
+      selectPost(blogPost)
+      // Navigate to blog page
+      navigateTo('/blogs')
+    }
+  }
+}
+
 const onSwiper = (swiper) => {
   swiperRef.value = swiper
   requestAnimationFrame(() => applyFiveVisible(swiper))
@@ -186,7 +235,15 @@ function applyFiveVisible(swiper){
 @media (min-width: 1200px) {
   .destination-swiper :deep(.swiper-slide) { width: 380px; }
 }
-.destination-box { border-radius: 22px; overflow: hidden; }
+.destination-box { 
+  border-radius: 22px; 
+  overflow: hidden; 
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.destination-box:hover {
+  transform: translateY(-5px);
+}
 .destination-img { position: relative; border-radius: 22px; overflow: hidden; }
 .destination-img img{
   display: block;
@@ -204,6 +261,9 @@ function applyFiveVisible(swiper){
   padding: 12px;
   color: #fff;
   background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.45) 40%, rgba(0,0,0,.75) 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 @media (min-width: 768px) {
   .destination-content { padding: 18px; }
@@ -223,6 +283,14 @@ function applyFiveVisible(swiper){
 }
 @media (min-width: 768px) {
   .destination-subtitle { font-size: 14px; }
+}
+.click-indicator {
+  opacity: 0.8;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.destination-box:hover .click-indicator {
+  opacity: 1;
+  transform: translateX(5px);
 }
 .destination-swiper :deep(.swiper-slide:not(.swiper-slide-active)) {
   filter: blur(2px) brightness(0.85);

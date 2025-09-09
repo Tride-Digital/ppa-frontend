@@ -14,14 +14,50 @@
           </svg>
         </button>
         <div class="cards-container" ref="track" :class="{ transitioning: isTransitioning }" :style="{ transform: `translateX(-${currentIndex * slideSize}px)` }" @transitionend="onTransitionEnd" @mouseenter="pauseAutoPlay" @mouseleave="resumeAutoPlay">
-          <div v-for="(card, i) in preClones" :key="`pre-${i}`" class="card">
+          <div v-for="(card, i) in preClones" :key="`pre-${i}`" class="card" @click="handleCardClick(cards[cards.length - preClones.length + i])">
             <img :src="card.image" :alt="card.alt" class="card-image" />
+            <div class="card-overlay">
+              <div class="card-content">
+                <h3 class="card-title">{{ card.title }}</h3>
+                <p class="card-description">{{ card.description }}</p>
+                <div class="click-indicator">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>Learn More</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div v-for="(card, index) in cards" :key="`real-${index}`" class="card">
+          <div v-for="(card, index) in cards" :key="`real-${index}`" class="card" @click="handleCardClick(card)">
             <img :src="card.image" :alt="card.alt" class="card-image" />
+            <div class="card-overlay">
+              <div class="card-content">
+                <h3 class="card-title">{{ card.title }}</h3>
+                <p class="card-description">{{ card.description }}</p>
+                <div class="click-indicator">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>Learn More</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div v-for="(card, i) in postClones" :key="`post-${i}`" class="card">
+          <div v-for="(card, i) in postClones" :key="`post-${i}`" class="card" @click="handleCardClick(cards[i])">
             <img :src="card.image" :alt="card.alt" class="card-image" />
+            <div class="card-overlay">
+              <div class="card-content">
+                <h3 class="card-title">{{ card.title }}</h3>
+                <p class="card-description">{{ card.description }}</p>
+                <div class="click-indicator">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>Learn More</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <button class="nav-button nav-button-next" @click="next" :disabled="isTransitioning">
@@ -51,11 +87,41 @@ export default {
       perView: 1,
       isPaused: false,
       cards: [
-        { image: '/images/modern-technologies/m1.webp?w=500&h=400&fit=crop', alt: 'Agricultural drone technology' },
-        { image: '/images/modern-technologies/m2.webp?w=500&h=400&fit=crop', alt: 'Hydroponic farming system' },
-        { image: '/images/modern-technologies/m3.webp?w=500&h=400&fit=crop', alt: 'Smart agriculture monitoring' },
-        { image: '/images/modern-technologies/m4.webp?w=500&h=400&fit=crop', alt: 'Precision crop spraying' },
-        { image: '/images/modern-technologies/m5.webp?w=500&h=400&fit=crop', alt: 'Modern farming equipment' }
+        { 
+          image: '/images/modern-technologies/m1.webp?w=500&h=400&fit=crop', 
+          alt: 'Smart soil management technology', 
+          title: 'SMART Soil Management',
+          description: 'Advanced soil testing and precision nutrient management for optimal crop yields.',
+          blogId: 1 
+        },
+        { 
+          image: '/images/modern-technologies/m2.webp?w=500&h=400&fit=crop', 
+          alt: 'Sustainable plantation practices', 
+          title: 'Sustainable Practices',
+          description: 'Eco-friendly techniques that ensure long-term plantation productivity.',
+          blogId: 2 
+        },
+        { 
+          image: '/images/modern-technologies/m3.webp?w=500&h=400&fit=crop', 
+          alt: 'Ceylon tea precision processing', 
+          title: 'Precision Processing',
+          description: 'Quality enhancement techniques for premium Ceylon tea production.',
+          blogId: 3 
+        },
+        { 
+          image: '/images/modern-technologies/m4.webp?w=500&h=400&fit=crop', 
+          alt: 'Climate adaptation technology', 
+          title: 'Climate Adaptation',
+          description: 'Modern strategies to adapt to changing climate conditions.',
+          blogId: 4 
+        },
+        { 
+          image: '/images/modern-technologies/m5.webp?w=500&h=400&fit=crop', 
+          alt: 'Digital marketing platforms', 
+          title: 'Digital Marketing',
+          description: 'Modern digital strategies for global market reach and premium pricing.',
+          blogId: 5 
+        }
       ]
     }
   },
@@ -83,6 +149,18 @@ export default {
     this.clearAutoPlay();
   },
   methods: {
+    // Navigation method
+    handleCardClick(card) {
+      if (card && card.blogId) {
+        const { selectPost, getPostById } = useBlogData()
+        const blogPost = getPostById(card.blogId)
+        if (blogPost) {
+          selectPost(blogPost)
+          // Navigate to blog page
+          this.$router.push('/blogs')
+        }
+      }
+    },
     next() {
       if (this.isTransitioning) return;
       this.isTransitioning = true;
@@ -239,6 +317,11 @@ export default {
   box-shadow: 0 8px 25px -5px var(--v-theme-card-shadow), 0 4px 10px -2px var(--v-theme-card-shadow);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
+  cursor: pointer;
+}
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 35px -5px var(--v-theme-card-shadow), 0 6px 15px -2px var(--v-theme-card-shadow);
 }
 .card-image {
   width: 100%;
@@ -247,6 +330,49 @@ export default {
   transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .card:hover .card-image { transform: scale(1.08); }
+
+.card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.85) 100%);
+  color: white;
+  padding: 24px;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.card:hover .card-overlay {
+  transform: translateY(0);
+  opacity: 1;
+}
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+.card-description {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+  opacity: 0.95;
+}
+.click-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+.card:hover .click-indicator {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
 .navigation-dots {
   display: flex;
   justify-content: center;
@@ -311,6 +437,9 @@ export default {
   .nav-button { width: 40px; height: 40px; }
   .nav-button-prev { left: 10px; }
   .nav-button-next { right: 10px; }
+  .card-overlay { padding: 16px; }
+  .card-title { font-size: 1.2rem; }
+  .card-description { font-size: 0.8rem; }
 }
 @media (max-width: 480px) {
   .card-slider-container { padding: 1rem; }
@@ -320,5 +449,8 @@ export default {
   .nav-button { width: 36px; height: 36px; }
   .nav-button-prev { left: 5px; }
   .nav-button-next { right: 5px; }
+  .card-overlay { padding: 12px; }
+  .card-title { font-size: 1.1rem; }
+  .card-description { font-size: 0.75rem; }
 }
 </style>

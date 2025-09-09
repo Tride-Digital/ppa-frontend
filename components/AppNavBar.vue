@@ -87,6 +87,7 @@ const menuItems = ref([
     { title: 'Products', path: '/products', icon: 'mdi-leaf' },
     // { title: 'Membership', path: '/membership', icon: 'mdi-account' },
     { title: 'Contact us', path: '/contactus', icon: 'mdi-phone' },
+    { title: 'Blogs', path: '/blogs', icon: 'mdi-text-box-multiple-outline' },
 ]);
 const goToHome = () => {
     router.push('/');
