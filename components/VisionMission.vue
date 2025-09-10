@@ -89,7 +89,7 @@ const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
 }
 .namebar {
   position: relative;
-  background: rgb(var(--v-theme-vision-mission-namebar-bg));
+  background: rgb(var(--v-theme-primary));
   color: rgb(var(--v-theme-text));
   padding: 18px 20px;
   border-radius: 8px;
