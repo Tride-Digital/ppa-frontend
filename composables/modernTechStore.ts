@@ -211,13 +211,13 @@ export const useModernTechStore = () => {
   }
 
   // Computed Properties
-  const selectedPost = computed(() => selectedPost.value)
+  const selectedPostComputed = computed(() => selectedPost.value)
   const allPosts = computed(() => modernTechPosts.value)
   const totalPosts = computed(() => modernTechPosts.value.length)
 
   return {
     // State
-    selectedPost,
+    selectedPost: selectedPostComputed,
     allPosts,
     totalPosts,
 
