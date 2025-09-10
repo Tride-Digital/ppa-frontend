@@ -77,10 +77,10 @@ const quickLinks = ref([
   { title: 'About Us', path: '/aboutus' },
   { title: 'Announcements', path: '/announcements' },
   { title: 'Services', path: '/services' },
-  { title: 'Membership', url: $config.public.registerUrl, external: true }
+  { title: 'Join PPA', url: $config.public.registerUrl, external: true }
 ])
 const socialLinks = ref([
-  { name: 'Facebook', icon: 'mdi-facebook'/*, url: '#'*/ },
+  { name: 'Facebook', icon: 'mdi-facebook', url: 'https://www.facebook.com/share/1BZSphvAiV/?mibextid=wwXIfr' },
   { name: 'X', icon: 'custom-x'/*, url: '#'*/ },
   { name: 'LinkedIn', icon: 'mdi-linkedin'/*, url: '#'*/ },
   { name: 'Instagram', icon: 'mdi-instagram'/*, url: '#'*/ },

@@ -1,24 +1,11 @@
 <template>
   <div class="single-service-page">
-    <v-container>
-      <v-row>
-        <v-col cols="12">
-          <v-breadcrumbs :items="breadcrumbs" divider="/" class="pa-0 mb-4">
-            <template v-slot:item="{ item }">
-              <v-breadcrumbs-item :href="item.href" :disabled="item.disabled" class="breadcrumb-item">
-                {{ item.text }}
-              </v-breadcrumbs-item>
-            </template>
-          </v-breadcrumbs>
-        </v-col>
-      </v-row>
-    </v-container>
     <section class="hero-section bg-surface-variant">
       <v-container>
         <v-row align="center">
           <v-col cols="12" md="6">
             <div class="hero-content">
-              <h1 class="hero-title text-on-background">{{ serviceName }}</h1>
+              <h1 class="hero-title text-on-surface">{{ serviceName }}</h1>
               <p class="hero-description text-on-surface-variant">{{ serviceDescription }}</p>
             </div>
           </v-col>
@@ -35,7 +22,7 @@
         <v-row>
           <v-col cols="12" lg="8">
             <div class="service-details">
-              <h2 class="section-title mb-6 text-on-background">Service Overview</h2>
+              <h2 class="section-title mb-6 text-on-surface">Service Overview</h2>
               <div class="overview-content">
                 <p class="text-body-1 mb-4 text-on-surface">
                   Our {{ serviceName.toLowerCase() }} service provides comprehensive solutions tailored to meet your specific plantation requirements. With years of expertise and a deep understanding of the agricultural sector in Sri Lanka, we deliver results that exceed expectations.
@@ -43,11 +30,11 @@
                 <p class="text-body-1 mb-6 text-on-surface">
                   {{ serviceDescription }}
                 </p>
-                <h3 class="subsection-title mb-4 text-on-background">Key Features</h3>
+                <h3 class="subsection-title mb-4 text-on-surface">Key Features</h3>
                 <v-row class="mb-6">
                   <v-col cols="12" md="6" v-for="(feature, index) in keyFeatures" :key="index">
                     <div class="feature-item d-flex align-start">
-                      <v-icon color="primary" class="me-3 mt-1">mdi-check-circle</v-icon>
+                      <v-icon color="contact-title" class="me-3 mt-1">mdi-check-circle</v-icon>
                       <div>
                         <h4 class="feature-title text-on-surface">{{ feature.title }}</h4>
                         <p class="feature-description text-body-2 text-on-surface-variant">{{ feature.description }}</p>
@@ -55,32 +42,18 @@
                     </div>
                   </v-col>
                 </v-row>
-                <!-- <h3 class="subsection-title mb-4 text-on-background">What You Get</h3> -->
-                <!-- <v-card class="benefits-card bg-surface" elevation="2">
-                  <v-card-text>
-                    <v-list class="benefits-list bg-transparent">
-                      <v-list-item v-for="(benefit, index) in benefits" :key="index" class="px-0">
-                        <template v-slot:prepend>
-                          <v-icon color="success" size="small">mdi-chevron-right</v-icon>
-                        </template>
-                        <v-list-item-title class="text-on-surface">{{ benefit }}</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-card-text>
-                </v-card> -->
               </div>
             </div>
           </v-col>
           <v-col cols="12" lg="4">
             <div class="sidebar">
-              <!-- Service Info Card -->
-              <v-card class="service-info-card mb-6 bg-surface" elevation="4">
-                <v-card-title class="bg-primary text-on-primary">
+              <v-card class="service-info-card mb-6" elevation="4">
+                <v-card-title class="bg-section-title text-on-primary">
                   <v-icon start>mdi-information-outline</v-icon>
                   Service Information
                 </v-card-title>
                 <v-card-text class="pa-0">
-                  <v-list class="bg-transparent">
+                  <v-list>
                     <v-list-item>
                       <v-list-item-title class="text-on-surface">Category</v-list-item-title>
                       <v-list-item-subtitle class="text-on-surface-variant">{{ serviceCategory }}</v-list-item-subtitle>
@@ -100,39 +73,6 @@
                   </v-list>
                 </v-card-text>
               </v-card>
-              <!-- <v-card class="contact-card mb-6 bg-surface" elevation="4">
-                <v-card-title class="bg-secondary text-on-secondary">
-                  <v-icon start>mdi-phone-outline</v-icon>
-                  Need Assistance?
-                </v-card-title>
-                <v-card-text class="text-center py-6">
-                  <v-avatar size="64" class="mb-4 bg-primary">
-                    <v-img src="/images/expert-avatar.png" alt="Expert"></v-img>
-                  </v-avatar>
-                  <h4 class="mb-2 text-on-surface">Expert Consultation</h4>
-                  <p class="text-body-2 mb-4 text-on-surface-variant">Get personalized advice from our plantation experts</p>
-                  <v-btn color="secondary" variant="elevated" block @click="scheduleConsultation">
-                    <v-icon start>mdi-calendar</v-icon>
-                    Schedule Consultation
-                  </v-btn>
-                </v-card-text>
-              </v-card> -->
-              <!-- <v-card class="related-services-card bg-surface" elevation="4">
-                <v-card-title class="text-on-surface">
-                  <v-icon start>mdi-dots-grid</v-icon>
-                  Related Services
-                </v-card-title>
-                <v-card-text class="pa-0">
-                  <v-list class="bg-transparent">
-                    <v-list-item v-for="(related, index) in relatedServices" :key="index" @click="viewRelatedService(related)" class="related-service-item" variant="text">
-                      <v-list-item-title class="text-on-surface">{{ related.name }}</v-list-item-title>
-                      <template v-slot:append>
-                        <v-icon color="primary">mdi-arrow-right</v-icon>
-                      </template>
-                    </v-list-item>
-                  </v-list>
-                </v-card-text>
-              </v-card> -->
             </div>
           </v-col>
         </v-row>
@@ -147,11 +87,11 @@
               Take the first step towards optimizing your plantation operations with our professional {{ serviceName.toLowerCase() }} service.
             </p>
             <div class="cta-actions">
-              <v-btn color="surface" size="large" variant="elevated" class="me-4 text-on-surface" @click="getStarted">
+              <v-btn color="text" size="large" variant="elevated" class="me-4 text-on-surface" @click="getStarted">
                 <v-icon start>mdi-cart-plus</v-icon>
                 Add to Cart
               </v-btn>
-              <v-btn variant="outlined" size="large" color="surface" class="text-on-primary" @click="downloadBrochure">
+              <v-btn variant="outlined" size="large" color="text" class="text-on-primary" @click="downloadBrochure">
                 <v-icon start>mdi-download</v-icon>
                 Download Brochure
               </v-btn>
@@ -288,10 +228,12 @@ useSeoMeta({
   font-weight: 700;
   margin-bottom: 1.5rem;
   line-height: 1.2;
+  color: rgb(var(--v-theme-text));
 }
 .hero-description {
   font-size: 1.2rem;
   line-height: 1.6;
+  color: rgb(var(--v-theme-text));
 }
 .hero-actions {
   display: flex;
@@ -318,9 +260,8 @@ useSeoMeta({
   border-radius: 12px;
   border-left: 4px solid rgb(var(--v-theme-primary));
 }
-.service-info-card,
-.contact-card,
-.related-services-card {
+.service-info-card {
+  background-color: rgb(var(--v-theme-service-card-bg));
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(var(--v-theme-outline), 0.12);
@@ -390,11 +331,6 @@ useSeoMeta({
 }
 .v-theme--dark .benefits-card {
   border-left-color: rgb(var(--v-theme-primary));
-}
-.v-theme--dark .service-info-card,
-.v-theme--dark .contact-card,
-.v-theme--dark .related-services-card {
-  border-color: rgba(var(--v-theme-outline), 0.2);
 }
 .v-theme--light .hero-section {
   background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, rgba(var(--v-theme-surface), 0.9) 100%);

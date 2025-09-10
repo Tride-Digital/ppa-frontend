@@ -17,7 +17,7 @@
     <div class="hero-overlay">
       <v-container class="hero-content">
         <v-row align="center" justify="center" class="fill-height">
-          <v-col cols="12" md="8" lg="6" class="text-center">
+          <v-col cols="12" md="10" lg="9" xl="8" class="text-center">
             <div class="hero-copy-stage">
               <Transition name="hero-copy" :duration="{ enter: uiEnterMs, leave: uiLeaveMs }" appear>
                 <div :key="activeKey" class="hero-copy-slab"
@@ -58,15 +58,17 @@ const slidesMeta = [
   { title: 'Empowering Proprietary Planters (PP)', learnLabel: 'Join PPA', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'Together, we are shaping plantations into profitable, sustainable, and globally competitive enterprises.', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'From Tea to Cinnamon to Rubber: Innovation That Adds Value', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
+  { title: 'Sustainable Practices for Future Generations', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
+  { title: 'Empowering Agriculture for International Markets', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
 ]
 
 const options = reactive({
   allowFullscreen: true,
   allowToSkipTransition: true,
   autohideTime: 1000,
-  autoplay: false, // We'll handle autoplay manually
+  autoplay: false,
   bindKeys: true,
-  delay: 4000, // 4 seconds between slides
+  delay: 2000,
   enableGestures: true,
   infinite: true,
   lazyLoad: false,
@@ -79,35 +81,26 @@ const travelY    = '5px'
 const leaveDelay = 0
 const currentIndex = ref(0)
 const pendingIndex = ref(null)
-
-defineProps({
-  message: { type: String, default: 'Empowering Proprietary Planters (PP)' },
-})
-
 const goToRegister = () => window.open(config.public.registerUrl, '_blank')
-
 const startAutoplay = () => {
   if (autoplayTimer.value) {
     clearInterval(autoplayTimer.value)
   }
   autoplayTimer.value = setInterval(() => {
     if (!isTransitioning.value && !isManualNavigation.value) {
-      showNext(true) // true indicates this is autoplay
+      showNext(true)
     }
   }, options.delay)
 }
-
 const stopAutoplay = () => {
   if (autoplayTimer.value) {
     clearInterval(autoplayTimer.value)
     autoplayTimer.value = null
   }
 }
-
 const onFluxMounted = () => {
   startAutoplay()
 }
-
 const onTransitionStart = () => {
   isTransitioning.value = true
   if (typeof pendingIndex.value === 'number') {
@@ -117,13 +110,10 @@ const onTransitionStart = () => {
     currentIndex.value = (currentIndex.value + 1) % rscs.length
   }
 }
-
 const onTransitionEnd = () => { 
   isTransitioning.value = false
-  // Reset manual navigation flag and restart autoplay after manual navigation
   if (isManualNavigation.value) {
     isManualNavigation.value = false
-    // Restart autoplay after a brief delay
     setTimeout(() => {
       if (!isManualNavigation.value) {
         startAutoplay()
@@ -131,21 +121,15 @@ const onTransitionEnd = () => {
     }, 1000)
   }
 }
-
 const showNext = (isAuto = false) => {
   if (vueflux.value) {
-    // If this is manual navigation, stop autoplay and set flag
     if (!isAuto) {
       isManualNavigation.value = true
       stopAutoplay()
     }
-    
-    // If transitioning and manual click, skip current transition
     if (isTransitioning.value && !isAuto && options.allowToSkipTransition) {
-      // Skip to the end of current transition instead of stopping completely
       vueflux.value.skipTransition?.() || vueflux.value.stop()
     }
-    
     pendingIndex.value = (currentIndex.value + 1) % rscs.length
     vueflux.value.show('next')
   }
@@ -222,7 +206,7 @@ onMounted(() => {
 .hero-buttons-fixed {
   margin-top: 0;
   position: absolute;
-  bottom: 0;
+  bottom: -30px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
@@ -240,6 +224,8 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
   padding-bottom: 120px;
+  max-width: 90vw;
+  margin: 0 auto;
 }
 .hero-copy-slab {
   position: absolute;
@@ -277,13 +263,19 @@ onMounted(() => {
     font-size: 2.2rem; 
     line-height: 1.25;
   }
-  .hero-copy-stage { padding-bottom: 180px; }
-  .hero-copy-slab { bottom: 180px; }
+  .hero-copy-stage { 
+    padding-bottom: 180px;
+    max-width: 95vw;
+  }
+  .hero-copy-slab { bottom: 210px; }
   .hero-buttons, .hero-buttons-fixed { 
     display: flex; 
     flex-direction: column; 
     align-items: center; 
     gap: 12px;
+  }
+  .hero-buttons-fixed {
+    bottom: -40px;
   }
   .hero-buttons .v-btn, .hero-buttons-fixed .v-btn { 
     width: 280px; 
@@ -294,14 +286,19 @@ onMounted(() => {
 }
 @media (max-width: 480px) {
   .hero-title { 
-    font-size: 1.5rem; 
+    font-size: 1.8rem; 
     line-height: 1.3;
     padding: 0 10px;
   }
-  .hero-copy-stage { padding-bottom: 200px; }
-  .hero-copy-slab { bottom: 200px; }
+  .hero-copy-stage { 
+    padding-bottom: 200px;
+    max-width: 100vw;
+    padding-inline: 20px;
+  }
+  .hero-copy-slab { bottom: 230px; }
   .hero-buttons-fixed {
     padding-top: 15px;
+    bottom: -50px;
   }
   .hero-buttons .v-btn, .hero-buttons-fixed .v-btn { 
     width: 260px;
@@ -312,15 +309,20 @@ onMounted(() => {
 }
 @media (max-width: 360px) {
   .hero-title { 
-    font-size: 1.3rem; 
+    font-size: 1.6rem; 
     line-height: 1.4;
     padding: 0 15px;
   }
-  .hero-copy-stage { padding-bottom: 220px; }
-  .hero-copy-slab { bottom: 220px; }
-  .hero-buttons-fixed .v-btn { 
+  .hero-copy-stage { 
+    padding-bottom: 220px;
+    max-width: 100vw;
+    padding-inline: 15px;
+  }
+  .hero-copy-slab { bottom: 250px; }
+  .hero-buttons-fixed { 
     width: 240px;
     font-size: 0.85rem;
+    bottom: -60px;
   }
 }
 </style>
