@@ -72,7 +72,7 @@ export default defineNuxtPlugin(nuxtApp => {
             'circle-ring': '#92E9FF',
             'vision-mission-eyebrow': '#2a6b7a',
             'vision-mission-title': '#083b43',
-            'vision-mission-card-bg': '#eefdff',
+            'vision-mission-card-bg': '#D0F0C0',
             'vision-mission-card-shadow': 'rgba(0,0,0,.06)',
             'vision-mission-namebar-bg': '#10a5c2',
             'vision-mission-text': '#0f2e36',

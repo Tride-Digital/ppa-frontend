@@ -21,12 +21,15 @@
         :autoplay="autoplayConfig"
         :speed="1000"
         :initial-slide="middleIndex"
-        aria-label="Destinations slider"
+        aria-label="Value addition processes slider"
         @swiper="onSwiper"
         @progress="onProgress"
       >
-        <SwiperSlide v-for="(item, i) in items" :key="i">
-          <article class="destination-box">
+        <SwiperSlide
+          v-for="(item, i) in items"
+          :key="item.blogId ?? i"
+        >
+          <article class="destination-box" @click="handleItemClick(item)">
             <div class="destination-img">
               <img :src="item.image" :alt="item.title" loading="lazy" decoding="async"/>
               <div class="destination-content">
@@ -51,26 +54,74 @@ import 'swiper/css/effect-coverflow'
 import 'swiper/css/navigation'
 import { computed, ref } from 'vue'
 
+const { selectPost, getPostById } = useValueAdditionStore()
+
 const props = defineProps({
   items: {
     type: Array,
     default: () => [
-      { title: 'Pepper Processing', subtitle: 'Freshly harvested berries are sun-dried and expertly graded into black, white, or ground pepper, ready for premium export markets.', image: '/images/value-addition/v1.webp' },
-      { title: 'Coconut Oil Extraction', subtitle: 'Kernels are dried, pressed, and refined into pure oil for food, beauty, and wellness markets.', image: '/images/value-addition/v2.webp' },
-      { title: 'Cashew Processing', subtitle: 'Raw cashew nuts are steamed, shelled, peeled, and roasted to produce high-quality kernels for snacks, confectionery, and exports.', image: '/images/value-addition/v3.webp' },
-      { title: 'Cinnamon Processing', subtitle: 'Bark is peeled, dried, and value-added into quills or powder, serving both culinary and medicinal markets.', image: '/images/value-addition/v4.webp' },
-      { title: 'Coffee Processing', subtitle: 'Harvested beans are carefully fermented, sun-dried, expertly roasted, and finely ground to craft premium coffee for both local and international markets.', image: '/images/value-addition/v5.webp' },
-      { title: 'Tea Processing', subtitle: 'Fresh green leaves move through withering, rolling, fermentation, and drying, before being graded and packed, creating higher flavor, aroma, and market value across the value chain.', image: '/images/value-addition/v6.webp' },
-      { title: 'Mace Processing', subtitle: 'The bright red aril covering nutmeg seeds is carefully dried and ground into flakes or powder, valued as a premium spice and flavoring agent.', image: '/images/value-addition/v7.webp' },
-      { title: 'Clove Processing', subtitle: 'Clove buds are handpicked, sun-dried, and processed into spice or essential oil for food and pharmaceuticals.', image: '/images/value-addition/v8.webp' },
-      { title: 'Turmeric Processing', subtitle: 'Fresh rhizomes are cleaned, boiled, sun-dried, and polished before being ground into vibrant powder, widely used in food, medicine, and cosmetics.', image: '/images/value-addition/v9.webp' },
-      ]
+      { 
+        title: 'Pepper Processing',
+        subtitle: 'Freshly harvested berries are sun-dried and expertly graded into black, white, or ground pepper, ready for premium export markets.',
+        image: '/images/value-addition/v1.webp',
+        blogId: 101
+      },
+      { 
+        title: 'Coconut Oil Extraction',
+        subtitle: 'Kernels are dried, pressed, and refined into pure oil for food, beauty, and wellness markets.',
+        image: '/images/value-addition/v2.webp',
+        blogId: 102
+      },
+      { 
+        title: 'Cashew Processing',
+        subtitle: 'Raw cashew nuts are steamed, shelled, peeled, and roasted to produce high-quality kernels for snacks, confectionery, and exports.',
+        image: '/images/value-addition/v3.webp',
+        blogId: 103
+      },
+      { 
+        title: 'Cinnamon Processing',
+        subtitle: 'Bark is peeled, dried, and value-added into quills or powder, serving both culinary and medicinal markets.',
+        image: '/images/value-addition/v4.webp',
+        blogId: 104
+      },
+      { 
+        title: 'Coffee Processing',
+        subtitle: 'Harvested beans are carefully fermented, sun-dried, expertly roasted, and finely ground to craft premium coffee for both local and international markets.',
+        image: '/images/value-addition/v5.webp',
+        blogId: 105
+      },
+      { 
+        title: 'Tea Processing',
+        subtitle: 'Fresh green leaves move through withering, rolling, fermentation, and drying, before being graded and packed, creating higher flavor, aroma, and market value across the value chain.',
+        image: '/images/value-addition/v6.webp',
+        blogId: 106
+      },
+      { 
+        title: 'Mace Processing',
+        subtitle: 'The bright red aril covering nutmeg seeds is carefully dried and ground into flakes or powder, valued as a premium spice and flavoring agent.',
+        image: '/images/value-addition/v7.webp',
+        blogId: 107
+      },
+      { 
+        title: 'Clove Processing',
+        subtitle: 'Clove buds are handpicked, sun-dried, and processed into spice or essential oil for food and pharmaceuticals.',
+        image: '/images/value-addition/v8.webp',
+        blogId: 108
+      },
+      { 
+        title: 'Turmeric Processing',
+        subtitle: 'Fresh rhizomes are cleaned, boiled, sun-dried, and polished before being ground into vibrant powder, widely used in food, medicine, and cosmetics.',
+        image: '/images/value-addition/v9.webp',
+        blogId: 109
+      },
+    ]
   },
   navigation: { type: [Boolean, Object], default: true },
   showTitle: { type: Boolean, default: true },
-  subtitleText: { type: String, default: 'Our Products' },
-  titleText: { type: String, default: 'Value Addition Process' }
+  subtitleText: { type: String, default: 'Our Products' },        
+  titleText:   { type: String, default: 'Value Addition Process' } 
 })
+
 const modules = [EffectCoverflow, Navigation, A11y, Autoplay]
 const autoplayConfig = {
   delay: 3000,
@@ -89,6 +140,29 @@ const middleIndex = computed(() => {
   return Math.floor(len / 2)
 })
 const swiperRef = ref(null)
+
+const handleItemClick = async (item) => {
+  if (item.blogId) {
+    try {
+      const blogPost = getPostById(item.blogId)
+      if (blogPost) {
+        selectPost(blogPost)
+        await navigateTo(`/blog/value/${blogPost.id}`)
+      } else {
+        console.warn(`Value Addition blog post with ID ${item.blogId} not found`)
+        await navigateTo('/blogs')
+      }
+    } catch (error) {
+      console.error('Navigation error:', error)
+      try {
+        await navigateTo('/blogs')
+      } catch (fallbackError) {
+        console.error('Fallback navigation failed:', fallbackError)
+      }
+    }
+  }
+}
+
 const onSwiper = (swiper) => {
   swiperRef.value = swiper
   requestAnimationFrame(() => applyFiveVisible(swiper))
@@ -186,7 +260,16 @@ function applyFiveVisible(swiper){
 @media (min-width: 1200px) {
   .destination-swiper :deep(.swiper-slide) { width: 380px; }
 }
-.destination-box { border-radius: 22px; overflow: hidden; }
+.destination-box { 
+  border-radius: 22px; 
+  overflow: hidden; 
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.destination-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
 .destination-img { position: relative; border-radius: 22px; overflow: hidden; }
 .destination-img img{
   display: block;
@@ -195,6 +278,10 @@ function applyFiveVisible(swiper){
   object-fit: cover;
   border-radius: 22px;
   box-shadow: 0 14px 32px var(--v-theme-card-shadow);
+  transition: transform 0.3s ease;
+}
+.destination-box:hover .destination-img img {
+  transform: scale(1.05);
 }
 @media (min-width: 768px) {
   .destination-img img { height: 580px; }
@@ -203,7 +290,10 @@ function applyFiveVisible(swiper){
   position: absolute; left: 0; right: 0; bottom: 0;
   padding: 12px;
   color: #fff;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.45) 40%, rgba(0,0,0,.75) 100%);
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.45) 40%, rgba(0,0,0,.80) 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 @media (min-width: 768px) {
   .destination-content { padding: 18px; }
@@ -212,14 +302,16 @@ function applyFiveVisible(swiper){
   margin: 0; 
   font-weight: 700; 
   font-size: 16px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 @media (min-width: 768px) {
   .box-title { font-size: 18px; }
 }
 .destination-subtitle { 
-  opacity: 0.9; 
+  opacity: 0.95; 
   font-size: 12px;
   line-height: 1.4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 @media (min-width: 768px) {
   .destination-subtitle { font-size: 14px; }
