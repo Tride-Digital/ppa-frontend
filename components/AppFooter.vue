@@ -27,7 +27,7 @@
           <div>
             <h4 class="footer-section-title footer-primary-text mb-4">Quick Links</h4>
             <v-list class="footer-list px-0">
-              <v-list-item v-for="item in quickLinks" :key="item.title" :to="item.path" class="footer-list-item px-0">
+              <v-list-item v-for="item in quickLinks" :key="item.title" :to="item.external ? undefined : item.path" :href="item.external ? item.url : undefined" :target="item.external ? '_blank' : undefined" class="footer-list-item px-0">
                 <v-list-item-title class="footer-link footer-primary-text footer-link-base">
                   {{ item.title }}
                 </v-list-item-title>
@@ -71,12 +71,13 @@
 import { ref, computed } from 'vue'
 const currentYear = computed(() => new Date().getFullYear())
 const footerDescription = ref('Empowering proprietary plantation growers for a sustainable future through unified representation and agricultural innovation.')
+const { $config } = useNuxtApp()
 const quickLinks = ref([
   { title: 'Home', path: '/' },
   { title: 'About Us', path: '/aboutus' },
   { title: 'Announcements', path: '/announcements' },
   { title: 'Products', path: '/products' },
-  { title: 'Membership', path: '/membership' }
+  { title: 'Membership', url: $config.public.registerUrl, external: true }
 ])
 const socialLinks = ref([
   { name: 'Facebook', icon: 'mdi-facebook'/*, url: '#'*/ },
