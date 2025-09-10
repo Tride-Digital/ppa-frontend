@@ -14,7 +14,7 @@
               <div 
                 v-for="(navItem, index) in navigationItems" :key="index"class="nav-item-wrapper">
                 <div class="nav-item" :class="{ active: activeCategory === index }" @click="selectCategory(index)">
-                  <span class="nav-icon">{{ navItem.icon }}</span>
+                  <v-icon class="nav-icon" :color="navtext">{{ navItem.icon }}</v-icon>
                   <span class="nav-text">{{ navItem.label }}</span>
                 </div>
               </div>
@@ -50,7 +50,7 @@
               {{ subItem.description || getServiceDescription(navigationItems[activeCategory].label, subItem.name) }}
             </v-card-text>
             <v-card-actions class="card-actions">
-              <v-btn variant="text" color="primary" size="small" @click.stop="learnMoreService(navigationItems[activeCategory].label, subItem)">
+              <v-btn variant="outlined" color="primary" size="small" @click.stop="learnMoreService(navigationItems[activeCategory].label, subItem)">
                 Learn More
                 <v-icon right>mdi-arrow-right</v-icon>
               </v-btn>
@@ -85,7 +85,7 @@ const sectionDescription = ref('Discover the diverse range of high-quality servi
 const activeCategory = ref(-1)
 const navigationItems = ref([
   {
-    icon: '🏞️',
+    icon: 'mdi-map',
     label: 'Land',
     subItems: [
       {
@@ -116,7 +116,7 @@ const navigationItems = ref([
     ]
   },
   {
-    icon: '🏦',
+    icon: 'mdi-bank',
     label: 'Finance',
     subItems: [
       {
@@ -147,7 +147,7 @@ const navigationItems = ref([
     ]
   },
   {
-    icon: '🌱',
+    icon: 'mdi-sprout',
     label: 'Agronomy',
     subItems: [
       {
@@ -183,7 +183,7 @@ const navigationItems = ref([
     ]
   },
   {
-    icon: '🏭',
+    icon: 'mdi-factory',
     label: 'Processing',
     subItems: [
       {
@@ -214,7 +214,7 @@ const navigationItems = ref([
     ]
   },
   {
-    icon: '🛠️',
+    icon: 'mdi-account-hard-hat',
     label: 'Support',
     subItems: [
       {
@@ -250,7 +250,7 @@ const navigationItems = ref([
     ]
   },
   {
-    icon: '🚛',
+    icon: 'mdi-truck',
     label: 'Supply Chain',
     subItems: [
       {
@@ -286,7 +286,7 @@ const navigationItems = ref([
     ]
   },
   {
-    icon: '🌍',
+    icon: 'mdi-earth',
     label: 'ESG',
     subItems: [
       {
@@ -307,53 +307,53 @@ const navigationItems = ref([
     ]
   },
   {
-    icon: '🏆',
+    icon: 'mdi-certificate',
     label: 'Certifications',
     subItems: [
       {
         name: 'Rainforest Alliance',
-        image: '/images/services/service.png',
+        image: '/images/services/certifications/rainforest-alliance.webp',
         description: 'Rainforest Alliance certification and compliance'
       },
       {
         name: 'Organic (EU/USDA/JAS/SL)',
-        image: '/images/services/service.png',
+        image: '/images/services/certifications/Organic.png',
         description: 'Multiple organic certifications for global markets'
       },
       {
         name: 'Fairtrade International',
-        image: '/images/services/service.png',
+        image: '/images/services/certifications/Fairtrade_International.jpg',
         description: 'Fairtrade International certification and support'
       },
       {
         name: 'GlobalG.A.P. & UTZ',
-        image: '/images/services/service.png',
+        image: '/images/services/certifications/Gloable G.P.A.png',
         description: 'GlobalG.A.P. and UTZ certification services'
       },
       {
         name: 'SMETA & SA8000',
-        image: '/images/services/service.png',
+        image: '/images/services/certifications/SMETA & SA8000.png',
         description: 'SMETA and SA8000 social compliance certifications'
       },
       {
         name: 'ISO Standards',
-        image: '/images/services/service.png',
+        image: '/images/services/certifications/ISO.png',
         description: 'Various ISO standard certifications and implementation'
       },
       {
         name: 'B Corp Certification',
-        image: '/images/services/service.png',
+        image: '/images/services/certifications/B Corp.png',
         description: 'B Corp certification for sustainable business practices'
       },
       {
         name: 'GRI / SASB Reporting',
-        image: '/images/services/service.png',
+        image: 'images/services/certifications/GRI & SASB.png',
         description: 'GRI and SASB sustainability reporting services'
       }
     ]
   },
   {
-    icon: '📊',
+    icon: 'mdi-chart-line',
     label: 'KPIs',
     subItems: [
       {
@@ -452,7 +452,7 @@ const getServiceDescription = (category, service) => {
   line-height: 1.6;
 }
 .services-nav {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, rgb(var(--v-theme-services-nav-bg-start)) 0%, rgb(var(--v-theme-services-nav-bg-end)) 100%);
   border-radius: 20px;
   padding: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -473,7 +473,7 @@ const getServiceDescription = (category, service) => {
   display: flex;
   align-items: center;
   padding: 18px 24px;
-  background: white;
+  background: rgb(var(--v-theme-services-nav-item-bg));
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -481,22 +481,24 @@ const getServiceDescription = (category, service) => {
   border: 1px solid rgba(0, 0, 0, 0.05);
   min-width: 150px;
   justify-content: center;
+  color: rgb(var(--v-theme-on-surface));
 }
 .nav-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, rgb(var(--v-theme-primary-darken-1)) 100%);
-  color: white;
+  color: rgb(var(--v-theme-on-primary));
 }
 .nav-item.active {
   background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, rgb(var(--v-theme-primary-darken-1)) 100%);
-  color: white;
+  color: rgb(var(--v-theme-on-primary));
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 20px rgb(var(--v-theme-services-nav-item-shadow-hover));
 }
 .nav-icon {
-  font-size: 1.5rem;
+  font-size: 1.5rem !important;
   margin-right: 12px;
+  transition: color 0.3s ease;
 }
 .nav-text {
   font-weight: 600;
@@ -508,10 +510,11 @@ const getServiceDescription = (category, service) => {
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
+  background-color: rgb(var(--v-theme-service-card-bg));
 }
 .service-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 30px rgb(var(--v-theme-card-shadow-hover));
 }
 .card-image-container {
   position: relative;
@@ -531,6 +534,7 @@ const getServiceDescription = (category, service) => {
 .category-chip {
   backdrop-filter: blur(10px);
   background-color: rgba(var(--v-theme-primary), 0.9) !important;
+  color: rgb(var(--v-theme-on-primary)) !important;
 }
 .service-name {
   font-size: 1.1rem;
@@ -548,6 +552,7 @@ const getServiceDescription = (category, service) => {
 .card-actions {
   padding: 16px;
   gap: 8px;
+  background-color: rgb(var(--v-theme-service-card-bg));
 }
 .add-to-cart-btn {
   text-transform: none;
@@ -556,12 +561,41 @@ const getServiceDescription = (category, service) => {
 .no-selection {
   padding: 2rem;
 }
+.no-selection h3 {
+  color: rgb(var(--v-theme-section-title));
+}
+.no-selection p {
+  color: rgb(var(--v-theme-section-subtitle));
+}
+:deep(.v-card) {
+  background-color: rgb(var(--v-theme-service-card-bg)) !important;
+}
+:deep(.v-card-title) {
+  color: rgb(var(--v-theme-section-title)) !important;
+}
+:deep(.v-card-text) {
+  color: rgb(var(--v-theme-section-subtitle)) !important;
+}
 :deep(.v-card-actions) {
   padding-top: 8px;
+  background-color: rgb(var(--v-theme-service-card-bg)) !important;
 }
 :deep(.v-btn) {
   text-transform: none;
   font-weight: 500;
+}
+:deep(.v-btn--variant-text) {
+  color: rgb(var(--v-theme-navtext)) !important;
+}
+:deep(.v-btn--variant-outlined) {
+  color: rgb(var(--v-theme-navtext)) !important;
+  border-color: rgb(var(--v-theme-navtext)) !important;
+}
+:deep(.v-btn--variant-outlined:hover) {
+  background-color: rgba(var(--v-theme-navtext), 0.1) !important;
+}
+:deep(.v-btn .v-icon) {
+  color: inherit !important;
 }
 @media (max-width: 1200px) {
   .nav-container {
