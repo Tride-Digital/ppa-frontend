@@ -454,7 +454,7 @@ const getServiceDescription = (category, service) => {
 .services-nav {
   background: linear-gradient(135deg, rgb(var(--v-theme-services-nav-bg-start)) 0%, rgb(var(--v-theme-services-nav-bg-end)) 100%);
   border-radius: 20px;
-  padding: 16px;
+  padding: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -463,7 +463,7 @@ const getServiceDescription = (category, service) => {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 .nav-item-wrapper {
   position: relative;
@@ -472,7 +472,7 @@ const getServiceDescription = (category, service) => {
 .nav-item {
   display: flex;
   align-items: center;
-  padding: 18px 24px;
+  padding: 18px 20px;
   background: rgb(var(--v-theme-services-nav-item-bg));
   border-radius: 16px;
   cursor: pointer;
