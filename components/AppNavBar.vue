@@ -87,8 +87,9 @@ const menuItems = ref([
     { title: 'About us', path: '/aboutus', icon: 'mdi-home' },
     { title: 'Services', path: '/products', icon: 'mdi-leaf' },
     { title: 'Announcements', path: '/announcements', icon: 'mdi-bell' },
-    // { title: 'Membership', path: '/membership', icon: 'mdi-account' },
     { title: 'Our Leadership Team', path: '/contactus', icon: 'mdi-phone' },
+    { title: 'Blogs', path: '/blogs', icon: 'mdi-text-box-multiple-outline' },
+
 ]);
 const goToHome = () => {
     router.push('/');
