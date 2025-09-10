@@ -8,7 +8,7 @@
     </v-row>
     <v-row justify="center">
       <v-col v-for="director in directorContacts" :key="director.name" cols="12" sm="6" md="4" lg="2.4" xl="2.4" class="mb-4 d-flex">
-        <v-card class="director-card h-100 flex-grow-1" elevation="3" hover>
+        <v-card class="director-card h-100 flex-grow-1" elevation="3" hover @click="navigateToDirector(director.slug)" style="cursor: pointer;">
           <v-card-text class="text-center pa-8">
             <div class="director-image-container mb-5">
               <v-img :src="director.image" :alt="director.name" class="director-image" cover>
@@ -32,18 +32,22 @@ import { ref } from 'vue'
 definePageMeta({
   title: 'Contact Us - PPA'
 })
+const router = useRouter()
 const directorContacts = ref([
-  { name: 'Director : D M Kobbekaduwe', image: '/images/team/Dammika.jpg' },
-  { name: 'Director : Rehan Jayatilake', image: '/images/team/Rehan.jpg' },
-  { name: 'Director : Ravindra Hewavitharana', image: '/images/team/Ravindra.jpg' },
-  { name: 'Director : S M P Jayantha', image: '/images/team/Jayantha.jpg' },
-  { name: 'Director : Dr W G Somaratne', image: '/images/team/Somarathne.jpg' },
-  { name: 'Director : Mr Upananda Karunarathne', image: '/images/team/Upananda.jpg' },
-  { name: 'Director : Attorney Wijitha Manamperi', image: '/images/team/Vijitha.jpg' },
-  { name: 'Director : Nalin Amunugama', image: '/images/team/Nalin.jpg' },
-  { name: 'Director : Januka Karunasena', image: '/images/team/Januka.jpg' },
-  { name: 'Director : Prof Sarath P Nissanka', image: '/images/team/Nissanka 2.jpg' }
+  { name: 'Director : D M Kobbekaduwe', image: '/images/team/Dammika.jpg',slug: 'd-m-kobbekaduwe'},
+  { name: 'Director : Rehan Jayatilake', image: '/images/team/Rehan.jpg',slug: 'rehan-jayatilake'},
+  { name: 'Director : Ravindra Hewavitharana', image: '/images/team/Ravindra.jpg',slug: 'ravindra-hewavitharana'},
+  { name: 'Director : S M P Jayantha', image: '/images/team/Jayantha.jpg',slug: 's-m-p-jayantha'},
+  { name: 'Director : Dr W G Somaratne', image: '/images/team/Somarathne.jpg',slug: 'w-g-somaratne'},
+  { name: 'Director : Mr Upananda Karunarathne', image: '/images/team/Upananda.jpg',slug: 'upananda-karunarathne'},
+  { name: 'Director : Attorney Wijitha Manamperi', image: '/images/team/Vijitha.jpg',slug: 'wijitha-manamperi'},
+  { name: 'Director : Nalin Amunugama', image: '/images/team/Nalin.jpg',slug: 'nalin-amunugama'},
+  { name: 'Director : Januka Karunasena', image: '/images/team/Januka.jpg',slug: 'januka-karunasena'},
+  { name: 'Director : Prof Sarath P Nissanka', image: '/images/team/Nissanka 2.jpg',slug: 'sarath-p-nissanka'}
 ])
+const navigateToDirector = (slug) => {
+  router.push(`/director/${slug}`)
+}
 </script>
 
 <style scoped>
