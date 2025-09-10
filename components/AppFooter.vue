@@ -70,13 +70,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 const currentYear = computed(() => new Date().getFullYear())
-const footerDescription = ref('Empowering proprietary plantation growers for a sustainable future through unified representation and agricultural innovation.')
+const footerDescription = ref('Empowering proprietary plantations for a sustainable future through unified representation and agricultural innovation.')
 const { $config } = useNuxtApp()
 const quickLinks = ref([
   { title: 'Home', path: '/' },
   { title: 'About Us', path: '/aboutus' },
   { title: 'Announcements', path: '/announcements' },
-  { title: 'Products', path: '/products' },
+  { title: 'Services', path: '/services' },
   { title: 'Membership', url: $config.public.registerUrl, external: true }
 ])
 const socialLinks = ref([

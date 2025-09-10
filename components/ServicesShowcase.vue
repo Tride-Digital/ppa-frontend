@@ -4,20 +4,18 @@
       <div class="text-center mx-auto mb-10">
         <div class="section-title">
           <div class="divider-line">
-            <span class="subtitle">Best Recommended Services</span>
-            <h2 class="main-title">Popular Services we offer for all</h2>
+            <span class="subtitle">{{ subtitle }}</span>
+            <h2 class="main-title">{{ mainTitle }}</h2>
           </div>
         </div>
         <p class="lead">
-          Explore our most trusted agricultural products and services designed to support farmers,
-          businesses, and communities. From high-quality crops to sustainable solutions, we bring
-          you the best to grow, trade, and thrive.
+          {{ lead }}
         </p>
       </div>
       <v-row align="stretch" dense class="mt-6">
         <v-col v-for="(svc, i) in itemsToRender" :key="i" cols="12" sm="6" md="6" lg="3" class="d-flex">
           <div class="svc-card">
-            <div class="svc-media">
+            <div class="svc-media" @click="goToServices">
               <img :src="svc.image" class="svc-img" :alt="svc.title" />
               <div class="svc-overlay">
                 <h3 class="svc-title">{{ svc.title }}</h3>
@@ -28,7 +26,7 @@
         </v-col>
       </v-row>
       <div class="see-more-wrap mt-6">
-        <v-btn color="primary" variant="outlined" size="large" class="see-more-btn">
+        <v-btn color="primary" variant="outlined" size="large" class="see-more-btn" @click="goToServices">
           See More
           <v-icon end>mdi-arrow-right</v-icon>
         </v-btn>
@@ -47,7 +45,12 @@ type ServiceItem = {
   image: string
   href?: string
 }
-const props = defineProps<{ items?: ServiceItem[] }>()
+const props = defineProps<{ 
+  items?: ServiceItem[]
+  subtitle?: string
+  mainTitle?: string
+  lead?: string
+}>()
 useTheme()
 const localItems: ServiceItem[] = [
   {
@@ -76,6 +79,12 @@ const localItems: ServiceItem[] = [
   },
 ]
 const itemsToRender = computed(() => (props.items?.length ? props.items : localItems))
+const subtitle = computed(() => props.subtitle || 'Best Recommended Services')
+const mainTitle = computed(() => props.mainTitle || 'Popular Services we offer for all')
+const lead = computed(() => props.lead || 'Explore our most trusted agricultural products and services designed to support farmers, businesses, and communities. From high-quality crops to sustainable solutions, we bring you the best to grow, trade, and thrive.')
+function goToServices() {
+  window.location.href = '/services'
+}
 </script>
 
 <style scoped>
