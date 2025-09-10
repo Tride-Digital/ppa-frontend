@@ -280,19 +280,19 @@ const relatedArticles = computed(() => {
 const comments = ref<Comment[]>([
   {
     id: 1,
-    author: 'Priya Jayasuriya',
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b634?w=45&h=45&fit=crop&crop=face',
+    author: 'Insha Asif',
+    avatar: 'https://img.freepik.com/premium-photo/young-malay-woman-smiling-portrait_849906-15912.jpg',
     date: '2025-08-16',
-    content: 'Excellent article! The insights shared here have been particularly effective on our estate. The practical approach has helped us make better decisions and improve our overall plantation management. Thank you for sharing these comprehensive insights with the community.',
-    likes: 12
+    content: 'This value addition approach has transformed our estate operations! We\'ve seen a 35% increase in premium pricing after implementing these processing improvements. The investment pays for itself within the first year.',
+    likes: 18
   },
   {
     id: 2,
-    author: 'Ravi Fernando',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=45&h=45&fit=crop&crop=face',
+    author: 'Anwar Hussain',
+    avatar: 'https://t4.ftcdn.net/jpg/00/60/02/53/360_F_60025318_jeZht6tkRBhVLYuXNYZE9MPfLZYpWOF5.jpg',
     date: '2025-08-15',
-    content: 'As a fellow planter, I can attest to the effectiveness of these methods. We\'ve seen remarkable improvements in our estate\'s productivity after implementing similar strategies.',
-    likes: 8
+    content: 'As a fellow plantation owner, I can confirm these value creation strategies work. We\'ve successfully expanded into premium export markets using similar approaches. The key is consistent quality and proper certification.',
+    likes: 14
   }
 ])
 

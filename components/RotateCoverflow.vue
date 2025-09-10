@@ -25,7 +25,10 @@
         @swiper="onSwiper"
         @progress="onProgress"
       >
-        <SwiperSlide v-for="(item, i) in items" :key="i">
+        <SwiperSlide
+          v-for="(item, i) in items"
+          :key="item.blogId ?? i"
+        >
           <article class="destination-box" @click="handleItemClick(item)">
             <div class="destination-img">
               <img :src="item.image" :alt="item.title" loading="lazy" decoding="async"/>
@@ -33,11 +36,6 @@
                 <div class="media-left">
                   <h4 class="box-title title">{{ item.title }}</h4>
                   <span class="destination-subtitle trip_count">{{ item.subtitle }}</span>
-                </div>
-                <div class="click-indicator">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
                 </div>
               </div>
             </div>
@@ -56,56 +54,73 @@ import 'swiper/css/effect-coverflow'
 import 'swiper/css/navigation'
 import { computed, ref } from 'vue'
 
+const { selectPost, getPostById } = useValueAdditionStore()
+
 const props = defineProps({
   items: {
     type: Array,
     default: () => [
       { 
-        title: 'Tea Processing Excellence', 
-        subtitle: 'Fresh green leaves move through advanced withering, rolling, fermentation, and drying processes, with modern grading and packaging techniques that create superior flavor, enhanced aroma, and increased market value throughout the entire processing chain.', 
-        image: '/images/value-addition/v6.webp',
-        blogId: 101 // Value Addition Store IDs start from 101
+        title: 'Pepper Processing',
+        subtitle: 'Freshly harvested berries are sun-dried and expertly graded into black, white, or ground pepper, ready for premium export markets.',
+        image: '/images/value-addition/v1.webp',
+        blogId: 101
       },
       { 
-        title: 'SMART Agriculture Revolution', 
-        subtitle: 'Modern precision agriculture techniques using advanced soil sensors, real-time data analytics, and automated nutrient management systems optimize crop yields while reducing costs through intelligent farming decisions.', 
-        image: '/images/value-addition/v1.webp',
+        title: 'Coconut Oil Extraction',
+        subtitle: 'Kernels are dried, pressed, and refined into pure oil for food, beauty, and wellness markets.',
+        image: '/images/value-addition/v2.webp',
         blogId: 102
       },
       { 
-        title: 'Sustainable Processing Revolution', 
-        subtitle: 'Environmentally friendly processing methods that maintain premium quality while reducing environmental impact and ensuring long-term sustainability through eco-conscious techniques and renewable energy integration.', 
-        image: '/images/value-addition/v2.webp',
+        title: 'Cashew Processing',
+        subtitle: 'Raw cashew nuts are steamed, shelled, peeled, and roasted to produce high-quality kernels for snacks, confectionery, and exports.',
+        image: '/images/value-addition/v3.webp',
         blogId: 103
       },
       { 
-        title: 'Climate Resilience Innovation', 
-        subtitle: 'Innovative techniques to adapt plantation operations to changing climate conditions while maintaining productivity and profitability through resilience-building strategies and weather-smart technologies.', 
-        image: '/images/value-addition/v3.webp',
+        title: 'Cinnamon Processing',
+        subtitle: 'Bark is peeled, dried, and value-added into quills or powder, serving both culinary and medicinal markets.',
+        image: '/images/value-addition/v4.webp',
         blogId: 104
       },
       { 
-        title: 'Digital Marketing Excellence', 
-        subtitle: 'Modern digital strategies to connect Sri Lankan plantation products with global markets and achieve premium pricing through authentic brand building and targeted customer engagement that realizes maximum value from quality products.', 
-        image: '/images/value-addition/v4.webp',
+        title: 'Coffee Processing',
+        subtitle: 'Harvested beans are carefully fermented, sun-dried, expertly roasted, and finely ground to craft premium coffee for both local and international markets.',
+        image: '/images/value-addition/v5.webp',
         blogId: 105
       },
       { 
-        title: 'Industry Collaboration Power', 
-        subtitle: 'United plantation owners sharing knowledge, resources, and best practices to strengthen the entire industry through collective action and strategic partnerships that create value impossible to achieve individually.', 
-        image: '/images/value-addition/v5.webp',
+        title: 'Tea Processing',
+        subtitle: 'Fresh green leaves move through withering, rolling, fermentation, and drying, before being graded and packed, creating higher flavor, aroma, and market value across the value chain.',
+        image: '/images/value-addition/v6.webp',
         blogId: 106
-      }
+      },
+      { 
+        title: 'Mace Processing',
+        subtitle: 'The bright red aril covering nutmeg seeds is carefully dried and ground into flakes or powder, valued as a premium spice and flavoring agent.',
+        image: '/images/value-addition/v7.webp',
+        blogId: 107
+      },
+      { 
+        title: 'Clove Processing',
+        subtitle: 'Clove buds are handpicked, sun-dried, and processed into spice or essential oil for food and pharmaceuticals.',
+        image: '/images/value-addition/v8.webp',
+        blogId: 108
+      },
+      { 
+        title: 'Turmeric Processing',
+        subtitle: 'Fresh rhizomes are cleaned, boiled, sun-dried, and polished before being ground into vibrant powder, widely used in food, medicine, and cosmetics.',
+        image: '/images/value-addition/v9.webp',
+        blogId: 109
+      },
     ]
   },
   navigation: { type: [Boolean, Object], default: true },
   showTitle: { type: Boolean, default: true },
-  subtitleText: { type: String, default: 'Our Excellence' },
-  titleText: { type: String, default: 'Value Addition Process' }
+  subtitleText: { type: String, default: 'Our Products' },        
+  titleText:   { type: String, default: 'Value Addition Process' } 
 })
-
-// Use the VALUE ADDITION store specifically
-const { selectPost, getPostById } = useValueAdditionStore()
 
 const modules = [EffectCoverflow, Navigation, A11y, Autoplay]
 const autoplayConfig = {
@@ -126,16 +141,12 @@ const middleIndex = computed(() => {
 })
 const swiperRef = ref(null)
 
-// Enhanced navigation method for VALUE ADDITION content
 const handleItemClick = async (item) => {
   if (item.blogId) {
     try {
-      // Get the blog post data from VALUE ADDITION store
       const blogPost = getPostById(item.blogId)
       if (blogPost) {
-        // Store the selected post
         selectPost(blogPost)
-        // Navigate to the blog detail page with 'value' prefix
         await navigateTo(`/blog/value/${blogPost.id}`)
       } else {
         console.warn(`Value Addition blog post with ID ${item.blogId} not found`)
@@ -172,7 +183,6 @@ function applyFiveVisible(swiper){
 </script>
 
 <style scoped>
-/* Same styles as before - keeping the existing styles */
 .section-title {
   text-align: center;
   margin-bottom: 30px;
@@ -305,15 +315,6 @@ function applyFiveVisible(swiper){
 }
 @media (min-width: 768px) {
   .destination-subtitle { font-size: 14px; }
-}
-.click-indicator {
-  opacity: 0.8;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
-}
-.destination-box:hover .click-indicator {
-  opacity: 1;
-  transform: translateX(5px);
 }
 .destination-swiper :deep(.swiper-slide:not(.swiper-slide-active)) {
   filter: blur(2px) brightness(0.85);

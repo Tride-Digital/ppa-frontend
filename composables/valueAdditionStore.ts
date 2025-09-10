@@ -1,4 +1,3 @@
-// composables/valueAdditionStore.ts
 import { ref, computed } from 'vue'
 
 // Type Definitions
@@ -18,7 +17,7 @@ export interface ValueAdditionPost {
   tags: string[]
   description: string
   relatedTopics: string[]
-  processStage: string // Specific to value addition
+  processStage: string
 }
 
 export interface Comment {
@@ -30,132 +29,231 @@ export interface Comment {
   likes: number
 }
 
-// State
-const selectedPost = ref<ValueAdditionPost | null>(null)
+// ---------- State ----------
+const selectedPostRef = ref<ValueAdditionPost | null>(null)
 
 const valueAdditionPosts = ref<ValueAdditionPost[]>([
   {
     id: 101,
-    title: "Ceylon Tea Processing Excellence: From Leaf to Premium Package",
-    category: "Processing",
-    categoryColor: "brown",
-    publishDate: "2025-08-20",
-    readingTime: "12 min read",
-    views: 1850,
-    introduction: "Fresh green tea leaves move through advanced withering, rolling, fermentation, and drying processes, with modern grading and packaging techniques that create superior flavor, enhanced aroma, and increased market value throughout the entire processing chain.",
-    featuredImage: "/images/value-addition/v6.webp",
-    imageCaption: "Modern Ceylon tea processing facility showcasing precision equipment for optimal flavor and aroma development",
-    mainContent: "Ceylon tea processing excellence transforms simple green leaves into premium products that command top prices in global markets. The withering process utilizes climate-controlled chambers maintaining precise temperature (24-26°C) and humidity (65-70%) levels, ensuring optimal moisture reduction from 80% to 68% while preserving essential oils that give Ceylon tea its distinctive character. Advanced rolling machines with variable pressure settings protect leaf integrity while promoting proper cell breakdown necessary for optimal fermentation, with modern machines capable of processing 500kg batches with consistent quality. Temperature-controlled fermentation chambers with continuous monitoring allow tea masters to achieve exact oxidation levels between 85-95% humidity and 26-28°C, creating consistent flavor profiles that meet international buyer specifications. Modern drying systems use precisely controlled hot air circulation at 87-93°C to ensure uniform moisture reduction to 3-4% while preserving natural aromatics. Automated optical sorting systems classify leaves by size, color, and quality with 99.7% accuracy, ensuring consistent grading standards that meet BOPF, Pekoe, and Broken Orange Pekoe classifications. Innovative packaging technologies including nitrogen flushing and advanced moisture barriers extend shelf life to 24-36 months while preserving fresh, vibrant flavors.",
-    conclusion: "Modern tea processing excellence has elevated Ceylon tea from a traditional commodity to a premium product commanding 40-60% price premiums in global markets. These precision methods ensure every cup delivers exceptional quality that has made Ceylon tea the preferred choice of discerning consumers worldwide, securing Sri Lanka's position as the world's finest tea producer.",
-    tags: ["Ceylon Tea", "Tea Processing", "Value Addition", "Quality Enhancement", "Export Premium", "Processing Excellence"],
-    description: "Discover how advanced tea processing techniques transform fresh leaves into premium Ceylon tea that commands top prices in global markets.",
-    relatedTopics: ["tea processing", "value addition", "quality enhancement", "ceylon tea", "processing excellence", "premium tea"],
-    processStage: "Processing & Packaging"
+    title: 'Pepper Processing',
+    category: 'Spices',
+    categoryColor: 'gray',
+    publishDate: '2025-08-09',
+    readingTime: '7 min read',
+    views: 2210,
+    introduction:
+      'Freshly harvested berries are sun-dried and expertly graded into black, white, or ground pepper, ready for premium export markets.',
+    featuredImage: '/images/value-addition/v1.webp',
+    imageCaption:
+      'Sun-drying and grading of pepper berries prior to export.',
+    mainContent:
+      'Pepper processing begins with selective harvesting at optimal ripeness, followed by washing and sun-drying until moisture falls below 12%. For black pepper, whole berries are dried intact; for white pepper, the outer pericarp is removed after controlled soaking before drying. Precision grading separates lots by size and density to achieve consistent pungency and volatile oil content. Final stages include metal detection, optical sorting, and hygienic packing for whole or milled formats.',
+    conclusion:
+      'Careful drying and grading deliver consistent quality, enabling premium pricing and strong acceptance in international spice markets.',
+    tags: ['pepper', 'black pepper', 'white pepper', 'grading', 'spice processing'],
+    description:
+      'How pepper berries are dried, graded, and packed into high-value spice formats.',
+    relatedTopics: ['pepper grading', 'pepper drying', 'spice export'],
+    processStage: 'Processing & Grading'
   },
   {
     id: 102,
-    title: "SMART Agriculture Revolution: Precision Farming for Maximum Value",
-    category: "Technology",
-    categoryColor: "green",
-    publishDate: "2025-08-18",
-    readingTime: "10 min read",
-    views: 1420,
-    introduction: "Modern precision agriculture techniques using advanced soil sensors, real-time data analytics, and automated nutrient management systems optimize crop yields while reducing costs through intelligent farming decisions that maximize value at every stage.",
-    featuredImage: "/images/value-addition/v1.webp",
-    imageCaption: "SMART agriculture sensors monitoring soil conditions in real-time across a modern Sri Lankan plantation",
-    mainContent: "SMART agriculture revolution transforms traditional farming into precision science that maximizes value creation at every stage of production. IoT soil sensors deployed every 50 meters provide real-time monitoring of pH levels (optimal 5.5-6.5 for tea), moisture content (60-70% field capacity), and NPK ratios, with data transmitted to cloud systems for instant analysis. Machine learning algorithms process 10,000+ data points daily to predict optimal fertilizer application timing, reducing costs by 25-30% while increasing yields by 15-20%. Automated irrigation systems respond to actual soil conditions rather than predetermined schedules, delivering precise water quantities based on plant growth stage, weather forecasts, and soil moisture readings. Drone technology equipped with multispectral cameras identifies stressed plants, disease outbreaks, and nutrient deficiencies 2-3 weeks before visible symptoms appear, enabling preventive interventions that protect crop quality. GPS-guided variable-rate fertilizer spreaders apply nutrients with centimeter-level precision, ensuring each plant receives exactly what it needs for optimal growth. Mobile applications provide plantation managers with real-time dashboards showing field conditions, weather alerts, and recommended actions, enabling management of multiple sites from anywhere in the world.",
-    conclusion: "SMART agriculture revolution delivers measurable returns through 20-25% increased yields, 30% reduced input costs, and premium prices for consistently high-quality crops. This technology-driven approach ensures plantation competitiveness in global markets while building sustainable operations for future generations.",
-    tags: ["SMART Agriculture", "Precision Farming", "IoT Technology", "Data Analytics", "Yield Optimization", "Cost Reduction"],
-    description: "Learn how SMART agriculture technologies maximize crop value through precision farming and data-driven decision making.",
-    relatedTopics: ["smart agriculture", "precision farming", "iot sensors", "data analytics", "yield optimization", "automated systems"],
-    processStage: "Cultivation & Monitoring"
+    title: 'Coconut Oil Extraction',
+    category: 'Oils',
+    categoryColor: 'amber',
+    publishDate: '2025-08-10',
+    readingTime: '8 min read',
+    views: 1980,
+    introduction:
+      'Kernels are dried, pressed, and refined into pure oil for food, beauty, and wellness markets.',
+    featuredImage: '/images/value-addition/v2.webp',
+    imageCaption:
+      'Copra drying and cold-pressing line for virgin coconut oil.',
+    mainContent:
+      'Mature coconuts are de-husked, split, and dried into copra under controlled conditions. Depending on the product, oil is obtained via expeller pressing or cold-pressing of fresh kernel to produce virgin coconut oil. Further steps include filtration, optional refining/bleaching/deodorizing for RBD grades, and nitrogen-flushed packing to preserve freshness. By-products such as coconut cake are valorized as animal feed or flour.',
+    conclusion:
+      'Process control and hygienic packing ensure stable flavor, high lauric content, and shelf life suitable for global F&B and cosmetics.',
+    tags: ['coconut oil', 'virgin coconut oil', 'RBD', 'cold press', 'copra'],
+    description:
+      'From kernel to bottle: extracting premium coconut oil for diverse markets.',
+    relatedTopics: ['oil extraction', 'copra drying', 'cold pressing'],
+    processStage: 'Extraction & Refinement'
   },
   {
     id: 103,
-    title: "Sustainable Processing Revolution: Eco-Value Creation Methods",
-    category: "Sustainability",
-    categoryColor: "amber",
-    publishDate: "2025-08-16",
-    readingTime: "9 min read",
-    views: 1290,
-    introduction: "Environmentally friendly processing methods that maintain premium quality while reducing environmental impact and ensuring long-term sustainability through eco-conscious techniques and renewable energy integration that add value through green certification.",
-    featuredImage: "/images/value-addition/v2.webp",
-    imageCaption: "Sustainable processing facility powered by renewable energy with zero-waste production systems",
-    mainContent: "Sustainable processing revolution creates additional value streams while protecting environmental resources for future generations. Solar-powered drying systems replace traditional fuel-fired dryers, reducing carbon emissions by 80% while maintaining precise temperature control for optimal product quality. Bio-waste processing units convert tea dust, rubber wood chips, and processing residues into valuable biomass pellets that generate 40% of facility power requirements. Water recycling systems capture and purify processing water through multi-stage filtration, reducing freshwater consumption by 70% while maintaining strict quality standards. Eco-friendly chemical alternatives replace harmful processing agents - natural enzymes accelerate fermentation, biodegradable lubricants protect machinery, and organic pest control methods eliminate toxic residues. Energy-efficient LED lighting systems reduce electricity consumption by 60% while providing optimal working conditions for quality control operations. Carbon footprint tracking systems monitor all processing stages, enabling facilities to achieve carbon-neutral certification that commands 15-20% premium prices in eco-conscious markets. Waste-to-wealth programs convert organic waste into high-value compost, biochar, and natural fertilizers that supply 30% of plantation nutrient requirements.",
-    conclusion: "Sustainable processing revolution demonstrates that environmental responsibility and economic success create synergistic value. Green certifications open premium markets while cost savings from renewable energy and waste reduction improve profitability by 25-30%, ensuring long-term competitive advantage.",
-    tags: ["Sustainable Processing", "Renewable Energy", "Zero Waste", "Green Certification", "Environmental Value", "Eco-Innovation"],
-    description: "Explore how sustainable processing methods create additional value through environmental responsibility and green certifications.",
-    relatedTopics: ["sustainable processing", "renewable energy", "zero waste", "green certification", "environmental value", "eco-innovation"],
-    processStage: "Eco-Processing & Certification"
+    title: 'Cashew Processing',
+    category: 'Nuts',
+    categoryColor: 'orange',
+    publishDate: '2025-08-11',
+    readingTime: '9 min read',
+    views: 1735,
+    introduction:
+      'Raw cashew nuts are steamed, shelled, peeled, and roasted to produce high-quality kernels for snacks, confectionery, and exports.',
+    featuredImage: '/images/value-addition/v3.webp',
+    imageCaption:
+      'Steaming and shelling line producing whole cashew kernels.',
+    mainContent:
+      'Raw cashew nuts are pre-cleaned and steam-conditioned to soften shells and deactivate irritants. Mechanical shelling and careful peeling preserve kernel integrity and color. Grading sorts kernels by size and wholeness (W180–W450, splits, pieces). Light roasting develops flavor while reducing moisture to 2–3%, followed by metal detection and MAP packing to prevent rancidity.',
+    conclusion:
+      'Controlled steaming and gentle handling maximize whole-kernel yield, enabling premium categories and export-grade quality.',
+    tags: ['cashew', 'steaming', 'shelling', 'roasting', 'grading'],
+    description:
+      'End-to-end cashew processing for high-yield, premium kernels.',
+    relatedTopics: ['nut processing', 'kernel grading', 'moisture control'],
+    processStage: 'Shelling & Roasting'
   },
   {
     id: 104,
-    title: "Climate Resilience: Value Protection Through Adaptation Innovation",
-    category: "Climate",
-    categoryColor: "blue",
-    publishDate: "2025-08-14",
-    readingTime: "11 min read",
-    views: 1380,
-    introduction: "Innovative techniques to adapt plantation operations to changing climate conditions while maintaining productivity and profitability through resilience-building strategies and weather-smart technologies that protect value creation capacity.",
-    featuredImage: "/images/value-addition/v3.webp",
-    imageCaption: "Climate-resilient plantation implementing innovative adaptation strategies for long-term value protection",
-    mainContent: "Climate resilience innovation protects value creation capacity against increasingly unpredictable weather patterns threatening plantation operations worldwide. Advanced weather monitoring stations with AI-powered forecasting provide 7-14 day precision forecasts with 95% accuracy, enabling proactive protection measures that prevent crop losses. Drought-resistant crop varieties developed through selective breeding maintain 80-90% normal yields even during 30% below-average rainfall years, while requiring 40% less irrigation water. Smart irrigation systems with soil moisture sensors and weather integration optimize water usage, reducing consumption by 50% while maintaining optimal growing conditions through precise scheduling and micro-climate management. Shade management systems using adjustable canopy covers protect sensitive crops from extreme heat (>32°C) and intense UV radiation, maintaining quality standards during heat stress periods. Multi-layered crop systems with climate-tolerant species create beneficial microclimates that moderate temperature extremes and improve overall ecosystem resilience. Emergency response protocols activated by weather alerts protect harvested crops through rapid deployment of mobile drying units, temporary storage facilities, and expedited processing schedules. Insurance integration with weather data provides parametric coverage that compensates for climate-related losses within 48 hours of verified weather events.",
-    conclusion: "Climate resilience innovation ensures consistent value creation despite increasing weather volatility. Adaptation investments of 10-15% of operational costs protect 100% of revenue potential while opening opportunities for climate-smart certification premiums that enhance long-term profitability.",
-    tags: ["Climate Resilience", "Weather Adaptation", "Risk Management", "Crop Protection", "Value Protection", "Smart Agriculture"],
-    description: "Discover innovative climate adaptation strategies that protect plantation value creation against weather uncertainties.",
-    relatedTopics: ["climate resilience", "weather adaptation", "risk management", "crop protection", "value protection", "adaptation innovation"],
-    processStage: "Risk Management & Protection"
+    title: 'Cinnamon Processing',
+    category: 'Spices',
+    categoryColor: 'brown',
+    publishDate: '2025-08-12',
+    readingTime: '8 min read',
+    views: 2650,
+    introduction:
+      'Bark is peeled, dried, and value-added into quills or powder, serving both culinary and medicinal markets.',
+    featuredImage: '/images/value-addition/v4.webp',
+    imageCaption:
+      'Hand-crafted cinnamon quills graded by uniformity and aroma.',
+    mainContent:
+      'After harvest, outer bark is scraped to expose the delicate inner bark, which is expertly peeled and formed into quills. Controlled drying preserves volatile oils and the signature sweet aroma. Grading assesses quill diameter, color, and uniformity prior to precision cutting, powdering, and packaging. Strict hygiene and low-moisture storage protect quality and minimize mold risk.',
+    conclusion:
+      'Artisanal peeling with modern QA yields consistent quills and powders prized in premium spice segments.',
+    tags: ['cinnamon', 'quills', 'spice grading', 'drying', 'powdering'],
+    description:
+      'From peeled bark to graded quills and powder with preserved aromatics.',
+    relatedTopics: ['cinnamomum verum', 'volatile oils', 'quill grading'],
+    processStage: 'Peeling & Quilling'
   },
   {
     id: 105,
-    title: "Digital Marketing Excellence: Premium Value Realization Globally",
-    category: "Marketing",
-    categoryColor: "purple",
-    publishDate: "2025-08-12",
-    readingTime: "8 min read",
-    views: 1150,
-    introduction: "Modern digital strategies to connect Sri Lankan plantation products with global markets and achieve premium pricing through authentic brand building and targeted customer engagement that realizes maximum value from quality products.",
-    featuredImage: "/images/value-addition/v4.webp",
-    imageCaption: "Digital marketing dashboard displaying global reach and premium pricing achievements for Sri Lankan plantation products",
-    mainContent: "Digital marketing excellence transforms quality products into premium global brands that command top-tier pricing and customer loyalty. Social media storytelling showcases the complete plantation-to-plate journey, highlighting traditional craftsmanship, sustainable practices, and the dedicated people behind each product, generating 300% higher engagement than generic product marketing. Content marketing through professional photography, educational videos, and virtual plantation tours builds emotional connections that convert 25% of viewers into customers while commanding 40% price premiums over commodity products. Search engine optimization targeting premium keywords like 'single-origin Ceylon tea' and 'estate-grown rubber' captures high-intent customers willing to pay 50-80% premiums for authenticity and quality. Influencer partnerships with celebrity chefs, wellness advocates, and sustainability leaders provide authentic endorsements that reach targeted demographics, generating $15-20 return for every marketing dollar invested. E-commerce platforms with integrated customer relationship management systems track purchasing patterns, enabling personalized recommendations that increase average order values by 35-40%. Email marketing automation nurtures customer relationships through educational content, exclusive offers, and seasonal promotions, maintaining 65% customer retention rates compared to 23% industry averages.",
-    conclusion: "Digital marketing excellence unlocks the full value potential of premium plantation products by connecting quality with customers willing to pay for authenticity. Strategic digital investments of 8-12% of revenue generate 200-300% returns through premium pricing and direct market access.",
-    tags: ["Digital Marketing", "Premium Pricing", "Brand Building", "Global Markets", "Customer Engagement", "Value Realization"],
-    description: "Learn how digital marketing strategies help plantation products achieve premium pricing and global market recognition.",
-    relatedTopics: ["digital marketing", "premium pricing", "brand building", "global markets", "customer engagement", "value realization"],
-    processStage: "Marketing & Value Realization"
+    title: 'Coffee Processing',
+    category: 'Beverages',
+    categoryColor: 'chocolate',
+    publishDate: '2025-08-13',
+    readingTime: '10 min read',
+    views: 1870,
+    introduction:
+      'Harvested beans are carefully fermented, sun-dried, expertly roasted, and finely ground to craft premium coffee for both local and international markets.',
+    featuredImage: '/images/value-addition/v5.webp',
+    imageCaption:
+      'Washed-process parchment drying before precision roasting.',
+    mainContent:
+      'Selective picking ensures uniform ripeness. Washed or natural processing is chosen based on desired flavor profile, with controlled fermentation to develop clarity or fruity complexity. Sun or mechanical drying brings moisture to 10–12% before hulling and density/size grading. Roast profiles are dialed in by batch to highlight origin traits, followed by degassing and protective packing with one-way valves.',
+    conclusion:
+      'Tight control at each stage—from cherry to roast—unlocks distinctive cup quality and stable shelf life.',
+    tags: ['coffee', 'washed', 'natural', 'roasting', 'grading'],
+    description:
+      'Designing process and roast to deliver origin-forward specialty coffee.',
+    relatedTopics: ['fermentation control', 'roast profiling', 'moisture targets'],
+    processStage: 'Roasting & Grinding'
   },
   {
     id: 106,
-    title: "Industry Collaboration: Collective Value Creation Through Unity",
-    category: "Collaboration",
-    categoryColor: "teal",
-    publishDate: "2025-08-10",
-    readingTime: "7 min read",
-    views: 1680,
-    introduction: "United plantation owners sharing knowledge, resources, and best practices to strengthen the entire industry through collective action and strategic partnerships that create value impossible to achieve individually.",
-    featuredImage: "/images/value-addition/v5.webp",
-    imageCaption: "Sri Lankan plantation owners collaborating on innovative value creation strategies through the PPA alliance",
-    mainContent: "Industry collaboration through strategic alliances creates exponential value growth that transforms individual plantation success into sector-wide prosperity. Knowledge sharing platforms enable experienced plantation owners to mentor newcomers while innovative practitioners demonstrate breakthrough techniques, accelerating industry-wide adoption of best practices that increase sector competitiveness. Resource pooling allows member plantations to access expensive equipment, advanced technologies, and specialized expertise through cost-sharing arrangements, reducing individual investment requirements by 60-70% while accessing premium capabilities. Collective bargaining power enables alliance members to negotiate 15-25% better prices for inputs, secure premium rates for outputs, and access international markets requiring larger volumes than individual plantations can provide. Joint research and development initiatives funded through member contributions drive innovation in processing techniques, sustainable practices, and market development strategies, with shared costs reducing individual R&D expenses by 80%. Collaborative marketing initiatives leverage combined reputation and quality standards to build stronger brand recognition in international markets, with alliance certification commanding 20-30% price premiums. Quality standardization programs ensure all member products meet internationally recognized standards, enabling participation in premium market segments previously accessible only to large corporations.",
-    conclusion: "Industry collaboration transforms individual plantation operations into a formidable value creation force capable of competing effectively against global agribusiness corporations. Through shared knowledge, pooled resources, and collective action, alliance members achieve 40-60% higher profitability than independent operations.",
-    tags: ["Industry Collaboration", "Collective Value", "Resource Pooling", "Knowledge Sharing", "Alliance Benefits", "Sector Transformation"],
-    description: "Discover how industry collaboration creates collective value that strengthens individual plantations and the entire sector.",
-    relatedTopics: ["industry collaboration", "collective value", "resource pooling", "knowledge sharing", "alliance benefits", "sector transformation"],
-    processStage: "Collaboration & Scaling"
+    title: 'Tea Processing',
+    category: 'Beverages',
+    categoryColor: 'green',
+    publishDate: '2025-08-20',
+    readingTime: '12 min read',
+    views: 1850,
+    introduction:
+      'Fresh green leaves move through withering, rolling, fermentation, and drying, before being graded and packed, creating higher flavor, aroma, and market value across the value chain.',
+    featuredImage: '/images/value-addition/v6.webp',
+    imageCaption:
+      'Modern tea line with climate-controlled withering and precision sorting.',
+    mainContent:
+      'Withering reduces leaf moisture while preserving essential oils. Rolling promotes cell rupture for even oxidation, followed by temperature- and humidity-controlled fermentation to achieve target flavor development. Drying stabilizes to 3–4% moisture, then optical sorting and sieving deliver consistent BOPF, Pekoe, and other grades. Nitrogen-flushed, moisture-barrier packaging protects freshness for extended shelf life.',
+    conclusion:
+      'Precision across withering to packing elevates quality, enabling premium positioning in global tea markets.',
+    tags: ['tea', 'withering', 'fermentation', 'drying', 'grading'],
+    description:
+      'How carefully managed stages turn fresh leaves into premium tea.',
+    relatedTopics: ['oxidation control', 'leaf grading', 'shelf-life'],
+    processStage: 'Withering to Packing'
+  },
+  {
+    id: 107,
+    title: 'Mace Processing',
+    category: 'Spices',
+    categoryColor: 'orange',
+    publishDate: '2025-08-15',
+    readingTime: '6 min read',
+    views: 1320,
+    introduction:
+      'The bright red aril covering nutmeg seeds is carefully dried and ground into flakes or powder, valued as a premium spice and flavoring agent.',
+    featuredImage: '/images/value-addition/v7.webp',
+    imageCaption:
+      'Careful drying of mace arils to preserve color and aroma.',
+    mainContent:
+      'Fresh mace arils are separated from nutmeg seeds and dried gently to protect color and essential oils. Grading assesses color intensity, cleanliness, and flake size. Milling into flakes or powder is performed under low heat to minimize volatile loss, followed by sieving, metal detection, and aroma-protective packaging.',
+    conclusion:
+      'Color-preserving drying and hygienic milling produce high-value mace with strong market demand.',
+    tags: ['mace', 'nutmeg', 'drying', 'milling', 'grading'],
+    description:
+      'Producing vibrant, aromatic mace flakes and powder for premium applications.',
+    relatedTopics: ['myristica fragrans', 'volatile oils', 'color retention'],
+    processStage: 'Drying & Milling'
+  },
+  {
+    id: 108,
+    title: 'Clove Processing',
+    category: 'Spices',
+    categoryColor: 'purple',
+    publishDate: '2025-08-16',
+    readingTime: '7 min read',
+    views: 1605,
+    introduction:
+      'Clove buds are handpicked, sun-dried, and processed into spice or essential oil for food and pharmaceuticals.',
+    featuredImage: '/images/value-addition/v8.webp',
+    imageCaption:
+      'Sun-dried clove buds prior to grading and oil distillation.',
+    mainContent:
+      'Unopened clove buds are harvested at the correct pigment stage and dried to 10–12% moisture to lock in eugenol-rich aromas. Grading ensures uniform size and low foreign matter. For essential oil, steam distillation captures key volatiles, while whole buds and ground cloves are packed in barrier materials to prevent oxidation.',
+    conclusion:
+      'Timely harvest, proper drying, and airtight packing preserve potency across culinary and medicinal uses.',
+    tags: ['clove', 'eugenol', 'steam distillation', 'drying', 'grading'],
+    description:
+      'From bud to bottle: dried cloves and essential oil production.',
+    relatedTopics: ['essential oils', 'aroma preservation', 'oxidation control'],
+    processStage: 'Drying & Oil Distillation'
+  },
+  {
+    id: 109,
+    title: 'Turmeric Processing',
+    category: 'Spices',
+    categoryColor: 'yellow',
+    publishDate: '2025-08-17',
+    readingTime: '7 min read',
+    views: 1788,
+    introduction:
+      'Fresh rhizomes are cleaned, boiled, sun-dried, and polished before being ground into vibrant powder, widely used in food, medicine, and cosmetics.',
+    featuredImage: '/images/value-addition/v9.webp',
+    imageCaption:
+      'Boiled and sun-dried turmeric rhizomes ready for polishing.',
+    mainContent:
+      'Rhizomes are sorted, washed, and boiled to gelatinize starch and set color. Sun or mechanical drying reduces moisture to safe storage levels before drum or hand polishing removes rough surfaces. Milling and sieving achieve consistent fineness, while curcumin content and color (ASTA) are verified before oxygen- and light-barrier packing.',
+    conclusion:
+      'Standardized boiling and careful milling create vivid, stable turmeric powder with strong functional value.',
+    tags: ['turmeric', 'curcumin', 'boiling', 'polishing', 'milling'],
+    description:
+      'Standardized steps that produce bright, shelf-stable turmeric powder.',
+    relatedTopics: ['color retention', 'ASTA color', 'particle size'],
+    processStage: 'Boiling & Grinding'
   }
 ])
 
-// Composable Function
+// ---------- Composable Function ----------
 export const useValueAdditionStore = () => {
   // Actions
   const selectPost = (post: ValueAdditionPost): void => {
-    selectedPost.value = post
+    selectedPostRef.value = post
   }
 
   const getPostById = (id: number): ValueAdditionPost | undefined => {
     return valueAdditionPosts.value.find(post => post.id === id)
   }
 
-  // Enhanced related posts logic for value addition content
+  // Related posts logic for value addition content
   const getRelatedPosts = (currentPostId: number, limit: number = 3): ValueAdditionPost[] => {
     const currentPost = getPostById(currentPostId)
     if (!currentPost) return []
@@ -164,26 +262,22 @@ export const useValueAdditionStore = () => {
       .filter(post => post.id !== currentPostId)
       .map(post => {
         let score = 0
-        
+
         // Same process stage gets highest score
-        if (post.processStage === currentPost.processStage) {
-          score += 15
-        }
-        
+        if (post.processStage === currentPost.processStage) score += 15
+
         // Same category gets high score
-        if (post.category === currentPost.category) {
-          score += 10
-        }
-        
+        if (post.category === currentPost.category) score += 10
+
         // Shared tags get medium score
-        const sharedTags = post.tags.filter(tag => 
-          currentPost.tags.some(currentTag => 
+        const sharedTags = post.tags.filter(tag =>
+          currentPost.tags.some(currentTag =>
             currentTag.toLowerCase().includes(tag.toLowerCase()) ||
             tag.toLowerCase().includes(currentTag.toLowerCase())
           )
         )
         score += sharedTags.length * 3
-        
+
         // Shared related topics get medium score
         const sharedTopics = post.relatedTopics.filter(topic =>
           currentPost.relatedTopics.some(currentTopic =>
@@ -192,7 +286,7 @@ export const useValueAdditionStore = () => {
           )
         )
         score += sharedTopics.length * 2
-        
+
         return { post, score }
       })
       .sort((a, b) => b.score - a.score)
@@ -207,7 +301,7 @@ export const useValueAdditionStore = () => {
   }
 
   const getPostsByCategory = (category: string): ValueAdditionPost[] => {
-    return valueAdditionPosts.value.filter(post => 
+    return valueAdditionPosts.value.filter(post =>
       post.category.toLowerCase() === category.toLowerCase()
     )
   }
@@ -229,8 +323,8 @@ export const useValueAdditionStore = () => {
     )
   }
 
-  // Computed Properties
-  const selectedPost = computed(() => selectedPost.value)
+  // ---------- Computed Properties ----------
+  const selectedPost = computed(() => selectedPostRef.value)
   const allPosts = computed(() => valueAdditionPosts.value)
   const totalPosts = computed(() => valueAdditionPosts.value.length)
 

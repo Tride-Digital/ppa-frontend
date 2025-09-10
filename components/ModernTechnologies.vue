@@ -92,7 +92,7 @@ export default {
           alt: 'SMART soil management sensors and IoT technology in plantation', 
           title: 'SMART Soil Technology',
           description: 'Advanced IoT sensors, real-time monitoring, and data analytics transform soil management for optimal crop performance.',
-          blogId: 201 // Modern Tech Store IDs start from 201
+          blogId: 201 
         },
         { 
           image: '/images/modern-technologies/m2.webp?w=500&h=400&fit=crop', 
@@ -122,13 +122,6 @@ export default {
           description: 'E-commerce platforms, customer analytics, and automated marketing systems for global market reach.',
           blogId: 205 
         },
-        { 
-          image: '/images/modern-technologies/m6.webp?w=500&h=400&fit=crop', 
-          alt: 'Collaboration platform showing resource sharing and knowledge management systems', 
-          title: 'Collaboration Platforms',
-          description: 'Knowledge sharing systems and resource management platforms for plantation alliance coordination.',
-          blogId: 206 
-        }
       ]
     }
   },
@@ -156,7 +149,6 @@ export default {
     this.clearAutoPlay();
   },
   methods: {
-    // Enhanced navigation method for MODERN TECH content
     async handleCardClick(card) {
       if (card && card.blogId) {
         try {
@@ -271,7 +263,6 @@ export default {
 </script>
 
 <style scoped>
-/* Same styles as before - keeping the existing modern card styles */
 .section-title {
   text-align: center;
   margin-bottom: 50px;

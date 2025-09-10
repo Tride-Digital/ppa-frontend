@@ -18,7 +18,7 @@ export interface ModernTechPost {
   tags: string[]
   description: string
   relatedTopics: string[]
-  techCategory: string // Specific to modern technology
+  techCategory: string 
 }
 
 export interface Comment {
@@ -146,8 +146,7 @@ export const useModernTechStore = () => {
       .filter(post => post.id !== currentPostId)
       .map(post => {
         let score = 0
-        
-        // Same tech category gets highest score
+
         if (post.techCategory === currentPost.techCategory) {
           score += 15
         }
