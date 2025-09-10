@@ -1,5 +1,5 @@
 <template>
-  <section  class="stats-hero" :style="{ '--bg-url': `url(${backgroundUrl})` }" aria-label="Key stats over hero image" ref="sectionRef">
+  <section  class="stats-hero" :style="{ '--bg-url': `url(${currentBackgroundUrl})` }" aria-label="Key stats over hero image" ref="sectionRef">
     <div class="stats-layer">
       <div v-for="(s, i) in stats" :key="i" class="stat" :style="posStyle(s)">
         <div class="ring outer"></div>
@@ -18,7 +18,15 @@
 
 <script setup lang="ts">
 const props = defineProps({
-  backgroundUrl: { type: String, default: '/images/state.png' },
+  backgroundUrl: { 
+    type: [String, Array] as PropType<string | string[]>, 
+    default: () => [
+      '/images/state/state.png',
+      '/images/state/state2.png',
+      '/images/state/state3.webp'
+    ]
+  },
+  autoChangeInterval: { type: Number, default: 5000 }, // 5 seconds
   size: { type: Number, default: 220 },
   stats: {
     type: Array as () => Array<{
@@ -39,6 +47,31 @@ const props = defineProps({
 const sectionRef = ref<HTMLElement>()
 const animatedValues = ref<number[]>([])
 const hasAnimated = ref(false)
+const currentBackgroundIndex = ref(0)
+const currentBackgroundUrl = ref('')
+const backgroundInterval = ref<NodeJS.Timeout | null>(null)
+const initializeBackground = () => {
+  if (Array.isArray(props.backgroundUrl)) {
+    currentBackgroundUrl.value = props.backgroundUrl[0]
+    startBackgroundRotation()
+  } else {
+    currentBackgroundUrl.value = props.backgroundUrl
+  }
+}
+const startBackgroundRotation = () => {
+  if (Array.isArray(props.backgroundUrl) && props.backgroundUrl.length > 1) {
+    backgroundInterval.value = setInterval(() => {
+      currentBackgroundIndex.value = (currentBackgroundIndex.value + 1) % props.backgroundUrl.length
+      currentBackgroundUrl.value = props.backgroundUrl[currentBackgroundIndex.value]
+    }, props.autoChangeInterval)
+  }
+}
+const stopBackgroundRotation = () => {
+  if (backgroundInterval.value) {
+    clearInterval(backgroundInterval.value)
+    backgroundInterval.value = null
+  }
+}
 const parseValue = (value: string) => {
   const match = value.match(/(\$?)(\d+)(.*)/)
   if (match) {
@@ -51,6 +84,7 @@ const parseValue = (value: string) => {
   return { prefix: '', number: 0, suffix: '' }
 }
 onMounted(() => {
+  initializeBackground()
   animatedValues.value = new Array(props.stats.length).fill(0)
   const observer = new IntersectionObserver(
     (entries) => {
@@ -70,8 +104,13 @@ onMounted(() => {
   }
   onUnmounted(() => {
     observer.disconnect()
+    stopBackgroundRotation()
   })
 })
+watch(() => props.backgroundUrl, () => {
+  stopBackgroundRotation()
+  initializeBackground()
+}, { deep: true })
 const startAnimation = () => {
   props.stats.forEach((stat, index) => {
     const parsed = parseValue(stat.value)
@@ -124,6 +163,7 @@ function splitLabel(label: string) {
   overflow: hidden;
   margin-top: 20px;
   margin-bottom: 20px;
+  transition: background-image 0.8s ease-in-out;
 }
 @media (min-width: 768px) {
   .stats-hero {
