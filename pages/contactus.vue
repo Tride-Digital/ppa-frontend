@@ -8,7 +8,7 @@
     </v-row>
     <v-row justify="center">
       <v-col v-for="director in directorContacts" :key="director.name" cols="12" sm="6" md="4" lg="2.4" xl="2.4" class="mb-4 d-flex">
-        <v-card class="director-card h-100 flex-grow-1" elevation="3" hover @click="navigateToDirector(director.slug)" style="cursor: pointer;">
+        <v-card class="director-card h-100 flex-grow-1" elevation="3" hover @click="navigateToDirector(director.id)" style="cursor: pointer;">
           <v-card-text class="text-center pa-8">
             <div class="director-image-container mb-5">
               <v-img :src="director.image" :alt="director.name" class="director-image" cover>
@@ -19,7 +19,7 @@
                 </template>
               </v-img>
             </div>
-            <h3 class="director-name">{{ director.name }}</h3>
+            <h3 class="director-name">Director : {{ director.name }}</h3>
           </v-card-text>
         </v-card>
       </v-col>
@@ -34,19 +34,19 @@ definePageMeta({
 })
 const router = useRouter()
 const directorContacts = ref([
-  { name: 'Director : D M Kobbekaduwe', image: '/images/team/Dammika.jpg',slug: 'd-m-kobbekaduwe'},
-  { name: 'Director : Rehan Jayatilake', image: '/images/team/Rehan.jpg',slug: 'rehan-jayatilake'},
-  { name: 'Director : Ravindra Hewavitharana', image: '/images/team/Ravindra.jpg',slug: 'ravindra-hewavitharana'},
-  { name: 'Director : S M P Jayantha', image: '/images/team/Jayantha.jpg',slug: 's-m-p-jayantha'},
-  { name: 'Director : Dr W G Somaratne', image: '/images/team/Somarathne.jpg',slug: 'w-g-somaratne'},
-  { name: 'Director : Mr Upananda Karunarathne', image: '/images/team/Upananda.jpg',slug: 'upananda-karunarathne'},
-  { name: 'Director : Attorney Wijitha Manamperi', image: '/images/team/Vijitha.jpg',slug: 'wijitha-manamperi'},
-  { name: 'Director : Nalin Amunugama', image: '/images/team/Nalin.jpg',slug: 'nalin-amunugama'},
-  { name: 'Director : Januka Karunasena', image: '/images/team/Januka.jpg',slug: 'januka-karunasena'},
-  { name: 'Director : Prof Sarath P Nissanka', image: '/images/team/Nissanka 2.jpg',slug: 'sarath-p-nissanka'}
+  { name: 'D M Kobbekaduwe', image: '/images/team/Dammika.jpg', id: 1},
+  { name: 'Rehan Jayatilake', image: '/images/team/Rehan.jpg', id: 2},
+  { name: 'Ravindra Hewavitharana', image: '/images/team/Ravindra.jpg', id: 3},
+  { name: 'S M P Jayantha', image: '/images/team/Jayantha.jpg', id: 4},
+  { name: 'Dr W G Somaratne', image: '/images/team/Somarathne.jpg', id: 5},
+  { name: 'Mr Upananda Karunarathne', image: '/images/team/Upananda.jpg', id: 6},
+  { name: 'Attorney Wijitha Manamperi', image: '/images/team/Vijitha.jpg', id: 7},
+  { name: 'Nalin Amunugama', image: '/images/team/Nalin.jpg', id: 8},
+  { name: 'Januka Karunasena', image: '/images/team/Januka.jpg', id: 9},
+  { name: 'Prof Sarath P Nissanka', image: '/images/team/Nissanka 2.jpg', id: 10}
 ])
-const navigateToDirector = (slug) => {
-  router.push(`/director/${slug}`)
+const navigateToDirector = (id) => {
+  router.push(`/director/${id}`)
 }
 </script>
 

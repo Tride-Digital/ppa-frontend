@@ -1,53 +1,41 @@
 <template>
   <v-container class="py-12" max-width="1200">
     <v-row v-if="director">
-      <!-- Back Button -->
       <v-col cols="12" class="mb-4">
-        <v-btn 
-          variant="outlined" 
-          color="primary" 
-          @click="$router.back()"
-          prepend-icon="mdi-arrow-left"
-        >
+        <v-btn variant="outlined" color="primary" @click="$router.back()" prepend-icon="mdi-arrow-left">
           Back to Leadership Team
         </v-btn>
       </v-col>
-
-      <!-- Director Profile -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" class="mb-6">
         <v-card class="director-profile-card" elevation="4">
-          <div class="director-image-wrapper">
-            <v-img 
-              :src="director.image" 
-              :alt="director.name" 
-              class="director-profile-image"
-              cover
-            >
-              <template #error>
-                <div class="error-placeholder">
-                  <v-icon size="120" color="white">mdi-account-tie</v-icon>
-                </div>
-              </template>
-            </v-img>
-          </div>
-          <v-card-text class="text-center pa-6">
-            <h1 class="director-profile-name">{{ director.name }}</h1>
-            <p class="director-title">{{ director.position }}</p>
-          </v-card-text>
+          <v-row no-gutters>
+            <v-col cols="12" sm="4" md="3">
+              <div class="director-image-wrapper">
+                <v-img :src="director.image" :alt="director.name" class="director-profile-image" cover>
+                  <template #error>
+                    <div class="error-placeholder">
+                      <v-icon size="80" color="white">mdi-account-tie</v-icon>
+                    </div>
+                  </template>
+                </v-img>
+              </div>
+            </v-col>
+            <v-col cols="12" sm="8" md="9">
+              <v-card-text class="pa-6 d-flex flex-column justify-center h-100">
+                <h1 class="director-profile-name mb-2">{{ director.name }}</h1>
+                <p class="director-title mb-0">{{ director.position }}</p>
+              </v-card-text>
+            </v-col>
+          </v-row>
         </v-card>
       </v-col>
-
-      <!-- Director Details -->
-      <v-col cols="12" md="8">
+      <v-col cols="12">
         <v-card class="director-details-card" elevation="2">
           <v-card-text class="pa-8">
-            <!-- About Section -->
             <div class="mb-8">
               <h2 class="section-title mb-4">About {{ director.name.replace('Director : ', '') }}</h2>
               <p class="director-description">{{ director.description }}</p>
             </div>
-
-            <!-- Qualifications Section -->
             <div class="mb-8">
               <h2 class="section-title mb-4">Qualifications</h2>
               <ul class="qualifications-list">
@@ -57,21 +45,14 @@
                 </li>
               </ul>
             </div>
-
-            <!-- Services Section -->
             <div class="mb-6">
               <h2 class="section-title mb-4">Services Provided</h2>
               <v-row>
-                <v-col v-for="service in director.services" :key="service" cols="12" sm="6" class="py-2">
-                  <v-chip color="navtext" variant="outlined" size="large">
-                    <v-icon start>mdi-check-circle</v-icon>
-                    {{ service }}
-                  </v-chip>
+                <v-col v-for="(service, index) in directorServices" :key="index" cols="12" sm="6" md="4" class="mb-4">
+                  <ServiceCard :service="service" :category-label="'Director Services'" @learn-more="learnMoreService" @add-to-cart="addToCart"/>
                 </v-col>
               </v-row>
             </div>
-
-            <!-- Contact Information -->
             <div class="contact-section">
               <h2 class="section-title mb-4">Contact Information</h2>
               <v-row>
@@ -99,8 +80,6 @@
         </v-card>
       </v-col>
     </v-row>
-
-    <!-- Director Not Found -->
     <v-row v-else>
       <v-col cols="12" class="text-center">
         <v-card class="pa-8" elevation="2">
@@ -118,15 +97,14 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import ServiceCard from '~/components/ServiceCard.vue'
 
 const route = useRoute()
 const router = useRouter()
-
-// Director data (in a real app, this would come from an API)
 const directorsData = {
-  'd-m-kobbekaduwe': {
-    name: 'Director : D M Kobbekaduwe',
-    position: 'Senior Director',
+  1: {
+    name: 'D M Kobbekaduwe',
+    position: 'Director',
     image: '/images/team/Dammika.jpg',
     description: 'With over 25 years of experience in strategic planning and organizational development, D M Kobbekaduwe has been instrumental in driving PPA\'s growth and success. His expertise spans across multiple sectors including finance, technology, and business development.',
     qualifications: [
@@ -139,16 +117,13 @@ const directorsData = {
       'Strategic Planning',
       'Business Development',
       'Corporate Governance',
-      'Risk Management',
-      'Financial Advisory',
-      'Project Management'
     ],
     email: 'dkobbekaduwe@ppa.lk',
     phone: '+94 11 234 5678'
   },
-  'rehan-jayatilake': {
-    name: 'Director : Rehan Jayatilake',
-    position: 'Director - Operations',
+  2: {
+    name: 'Rehan Jayatilake',
+    position: 'Director',
     image: '/images/team/Rehan.jpg',
     description: 'Rehan Jayatilake brings extensive experience in operations management and process optimization. His leadership has been crucial in streamlining PPA\'s operational efficiency and service delivery excellence.',
     qualifications: [
@@ -160,17 +135,14 @@ const directorsData = {
     services: [
       'Operations Management',
       'Process Optimization',
-      'Quality Assurance',
       'Supply Chain Management',
-      'Performance Analytics',
-      'Team Leadership'
     ],
     email: 'rehan@ppa.lk',
     phone: '+94 11 234 5679'
   },
-  'ravindra-hewavitharana': {
-    name: 'Director : Ravindra Hewavitharana',
-    position: 'Director - Technology',
+  3: {
+    name: 'Ravindra Hewavitharana',
+    position: 'Director',
     image: '/images/team/Ravindra.jpg',
     description: 'Ravindra Hewavitharana is a technology visionary with deep expertise in digital transformation and innovation. He leads PPA\'s technological initiatives and digital strategy implementation.',
     qualifications: [
@@ -183,16 +155,13 @@ const directorsData = {
       'Digital Transformation',
       'IT Strategy',
       'Cybersecurity',
-      'Cloud Solutions',
-      'Software Development',
-      'Technology Consulting'
     ],
     email: 'ravindra@ppa.lk',
     phone: '+94 11 234 5680'
   },
-  's-m-p-jayantha': {
-    name: 'Director : S M P Jayantha',
-    position: 'Director - Finance',
+  4: {
+    name: 'S M P Jayantha',
+    position: 'Director',
     image: '/images/team/Jayantha.jpg',
     description: 'S M P Jayantha is a seasoned finance professional with comprehensive experience in financial management, investment strategies, and regulatory compliance.',
     qualifications: [
@@ -205,16 +174,13 @@ const directorsData = {
       'Financial Planning',
       'Investment Advisory',
       'Tax Consulting',
-      'Audit Services',
-      'Risk Assessment',
-      'Regulatory Compliance'
     ],
     email: 'jayantha@ppa.lk',
     phone: '+94 11 234 5681'
   },
-  'w-g-somaratne': {
-    name: 'Director : Dr W G Somaratne',
-    position: 'Director - Research & Development',
+  5: {
+    name: 'Dr W G Somaratne',
+    position: 'Director',
     image: '/images/team/Somarathne.jpg',
     description: 'Dr W G Somaratne is a distinguished researcher and academic with extensive experience in innovation management and strategic research initiatives.',
     qualifications: [
@@ -224,19 +190,16 @@ const directorsData = {
       'Certified Innovation Manager'
     ],
     services: [
-      'Research & Development',
       'Innovation Management',
-      'Academic Consulting',
       'Strategic Research',
       'Policy Development',
-      'Training & Development'
     ],
     email: 'somaratne@ppa.lk',
     phone: '+94 11 234 5682'
   },
-  'upananda-karunarathne': {
-    name: 'Director : Mr Upananda Karunarathne',
-    position: 'Director - Human Resources',
+  6: {
+    name: 'Mr Upananda Karunarathne',
+    position: 'Director',
     image: '/images/team/Upananda.jpg',
     description: 'Upananda Karunarathne is an HR expert specializing in organizational development, talent management, and employee engagement strategies.',
     qualifications: [
@@ -249,16 +212,13 @@ const directorsData = {
       'Human Resource Management',
       'Talent Acquisition',
       'Performance Management',
-      'Training & Development',
-      'Employee Relations',
-      'Organizational Development'
     ],
     email: 'upananda@ppa.lk',
     phone: '+94 11 234 5683'
   },
-  'wijitha-manamperi': {
-    name: 'Director : Attorney Wijitha Manamperi',
-    position: 'Director - Legal Affairs',
+  7: {
+    name: 'Attorney Wijitha Manamperi',
+    position: 'Director',
     image: '/images/team/Vijitha.jpg',
     description: 'Attorney Wijitha Manamperi is a distinguished legal professional with expertise in corporate law, compliance, and regulatory affairs.',
     qualifications: [
@@ -270,17 +230,14 @@ const directorsData = {
     services: [
       'Legal Advisory',
       'Corporate Law',
-      'Contract Management',
-      'Regulatory Compliance',
-      'Dispute Resolution',
       'Legal Documentation'
     ],
     email: 'wijitha@ppa.lk',
     phone: '+94 11 234 5684'
   },
-  'nalin-amunugama': {
-    name: 'Director : Nalin Amunugama',
-    position: 'Director - Marketing',
+  8: {
+    name: 'Nalin Amunugama',
+    position: 'Director',
     image: '/images/team/Nalin.jpg',
     description: 'Nalin Amunugama is a marketing strategist with extensive experience in brand management, digital marketing, and customer relationship management.',
     qualifications: [
@@ -291,18 +248,15 @@ const directorsData = {
     ],
     services: [
       'Marketing Strategy',
-      'Brand Management',
-      'Digital Marketing',
-      'Customer Relations',
       'Market Research',
       'Advertising Campaigns'
     ],
     email: 'nalin@ppa.lk',
     phone: '+94 11 234 5685'
   },
-  'januka-karunasena': {
-    name: 'Director : Januka Karunasena',
-    position: 'Director - Business Development',
+  9: {
+    name: 'Januka Karunasena',
+    position: 'Director',
     image: '/images/team/Januka.jpg',
     description: 'Januka Karunasena specializes in business development, strategic partnerships, and market expansion initiatives.',
     qualifications: [
@@ -314,17 +268,14 @@ const directorsData = {
     services: [
       'Business Development',
       'Strategic Partnerships',
-      'Market Expansion',
-      'Sales Strategy',
-      'Client Relations',
       'Revenue Growth'
     ],
     email: 'januka@ppa.lk',
     phone: '+94 11 234 5686'
   },
-  'sarath-p-nissanka': {
-    name: 'Director : Prof Sarath P Nissanka',
-    position: 'Director - Academic Affairs',
+  10: {
+    name: 'Prof Sarath P Nissanka',
+    position: 'Director',
     image: '/images/team/Nissanka 2.jpg',
     description: 'Prof Sarath P Nissanka is an esteemed academic and researcher with extensive experience in educational leadership and curriculum development.',
     qualifications: [
@@ -335,11 +286,8 @@ const directorsData = {
     ],
     services: [
       'Academic Leadership',
-      'Curriculum Development',
-      'Educational Research',
       'Faculty Development',
       'Quality Assurance',
-      'Academic Consulting'
     ],
     email: 'nissanka@ppa.lk',
     phone: '+94 11 234 5687'
@@ -347,8 +295,91 @@ const directorsData = {
 }
 
 const director = computed(() => {
-  return directorsData[route.params.slug] || null
+  return directorsData[parseInt(route.params.id)] || null
 })
+const directorServices = computed(() => {
+  if (!director.value) return []
+  
+  const serviceIcons = {
+    'Strategic Planning': 'mdi-strategy',
+    'Business Development': 'mdi-trending-up',
+    'Corporate Governance': 'mdi-office-building-cog',
+    'Operations Management': 'mdi-cog',
+    'Process Optimization': 'mdi-chart-line-stacked',
+    'Quality Assurance': 'mdi-quality-high',
+    'Supply Chain Management': 'mdi-truck-delivery',
+    'Performance Analytics': 'mdi-chart-bar',
+    'Team Leadership': 'mdi-account-group',
+    'Digital Transformation': 'mdi-digital-ocean',
+    'IT Strategy': 'mdi-laptop',
+    'Cybersecurity': 'mdi-security',
+    'Cloud Solutions': 'mdi-cloud',
+    'Software Development': 'mdi-code-tags',
+    'Technology Consulting': 'mdi-consultant',
+    'Financial Planning': 'mdi-calculator',
+    'Investment Advisory': 'mdi-chart-pie',
+    'Tax Consulting': 'mdi-file-document-multiple',
+    'Audit Services': 'mdi-magnify',
+    'Risk Assessment': 'mdi-alert-circle',
+    'Regulatory Compliance': 'mdi-gavel',
+    'Research & Development': 'mdi-flask',
+    'Innovation Management': 'mdi-lightbulb',
+    'Academic Consulting': 'mdi-school',
+    'Strategic Research': 'mdi-book-search',
+    'Policy Development': 'mdi-file-edit',
+    'Training & Development': 'mdi-teach',
+    'Human Resource Management': 'mdi-account-tie',
+    'Talent Acquisition': 'mdi-account-search',
+    'Performance Management': 'mdi-chart-timeline-variant',
+    'Employee Relations': 'mdi-handshake',
+    'Organizational Development': 'mdi-sitemap',
+    'Legal Advisory': 'mdi-scale-balance',
+    'Corporate Law': 'mdi-bank',
+    'Contract Management': 'mdi-file-contract',
+    'Dispute Resolution': 'mdi-account-question',
+    'Legal Documentation': 'mdi-file-document',
+    'Marketing Strategy': 'mdi-bullhorn',
+    'Brand Management': 'mdi-tag',
+    'Digital Marketing': 'mdi-web',
+    'Customer Relations': 'mdi-account-heart',
+    'Market Research': 'mdi-chart-donut',
+    'Advertising Campaigns': 'mdi-advertisement',
+    'Strategic Partnerships': 'mdi-handshake-outline',
+    'Market Expansion': 'mdi-map-marker-radius',
+    'Sales Strategy': 'mdi-cash-register',
+    'Client Relations': 'mdi-account-multiple',
+    'Revenue Growth': 'mdi-trending-up',
+    'Academic Leadership': 'mdi-school-outline',
+    'Curriculum Development': 'mdi-book-multiple',
+    'Educational Research': 'mdi-book-search-outline',
+    'Faculty Development': 'mdi-teach',
+    'Quality Assurance': 'mdi-quality-high',
+    'Academic Consulting': 'mdi-school'
+  }
+
+  return director.value.services.map(serviceName => ({
+    name: serviceName,
+    image: '/images/services/service.png', // Default image
+    description: `Professional ${serviceName.toLowerCase()} services tailored to your specific needs`,
+    icon: serviceIcons[serviceName] || 'mdi-check-circle'
+  }))
+})
+
+const learnMoreService = (category, service) => {
+  navigateTo({
+    path: '/singleService',
+    query: {
+      category: category,
+      service: service.name,
+      description: service.description,
+      image: service.image
+    }
+  })
+}
+
+const addToCart = (category, service) => {
+  // Add your cart logic here
+}
 
 definePageMeta({
   title: 'Director Profile - PPA'
@@ -359,6 +390,7 @@ definePageMeta({
 .director-profile-card {
   border-radius: 16px;
   overflow: hidden;
+  min-height: 400px;
 }
 
 .director-image-wrapper {
@@ -386,16 +418,18 @@ definePageMeta({
 }
 
 .director-profile-name {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 600;
   color: rgb(var(--v-theme-section-title));
   margin-bottom: 0.5rem;
+  line-height: 1.2;
 }
 
 .director-title {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: rgb(var(--v-theme-navtext));
   font-weight: 500;
+  line-height: 1.3;
 }
 
 .director-details-card {
@@ -467,11 +501,11 @@ definePageMeta({
 
 @media (max-width: 768px) {
   .director-profile-name {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
   
   .director-title {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
   
   .section-title {
@@ -483,7 +517,21 @@ definePageMeta({
   }
   
   .director-image-wrapper {
-    height: 300px;
+    height: 350px;
+  }
+  
+  .director-profile-card {
+    min-height: 350px;
+  }
+}
+
+@media (max-width: 599px) {
+  .director-image-wrapper {
+    height: 450px;
+  }
+  
+  .director-profile-card {
+    height: 570px;
   }
 }
 </style>
