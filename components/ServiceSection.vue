@@ -23,44 +23,9 @@
         </v-col>
       </v-row>
       <v-row v-if="activeCategory !== -1">
-        <v-col v-for="(subItem, subIndex) in navigationItems[activeCategory].subItems" :key="subIndex" cols="12" sm="6" md="4" lg="3" class="mb-6">
-          <v-card class="service-card h-100" elevation="4" hover  @click="handleServiceClick(navigationItems[activeCategory].label, subItem.name)">
-            <div class="card-image-container">
-              <v-img
-                :src="subItem.image"
-                :alt="subItem.name"
-                height="200"
-                cover
-                class="card-image"
-              >
-                <template v-slot:placeholder>
-                  <div class="d-flex align-center justify-center fill-height">
-                    <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
-                  </div>
-                </template>
-              </v-img>
-              <div class="image-overlay">
-                <v-chip size="small" color="primary" variant="elevated" class="category-chip">
-                  {{ navigationItems[activeCategory].label }}
-                </v-chip>
-              </div>
-            </div>
-            <v-card-title class="service-name">{{ subItem.name }}</v-card-title>
-            <v-card-text class="service-description">
-              {{ subItem.description || getServiceDescription(navigationItems[activeCategory].label, subItem.name) }}
-            </v-card-text>
-            <v-card-actions class="card-actions">
-              <v-btn variant="outlined" color="primary" size="small" @click.stop="learnMoreService(navigationItems[activeCategory].label, subItem)">
-                Learn More
-                <v-icon right>mdi-arrow-right</v-icon>
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn variant="outlined" color="primary" size="small" @click.stop="addToCart(navigationItems[activeCategory].label, subItem)" class="add-to-cart-btn">
-                <v-icon left>mdi-cart-plus</v-icon>
-                Add to Cart
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+        <v-col 
+          v-for="(subItem, subIndex) in navigationItems[activeCategory].subItems" :key="subIndex" cols="12" sm="6" md="4" lg="3" class="mb-6">
+          <ServiceCard :service="subItem" :category-label="navigationItems[activeCategory].label" @service-click="handleServiceClick"@learn-more="learnMoreService"@add-to-cart="addToCart"/>
         </v-col>
       </v-row>
       <v-row v-else>
@@ -80,6 +45,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import ServiceCard from './ServiceCard.vue'
 
 const sectionDescription = ref('Discover the diverse range of high-quality services offered by our plantation experts across Sri Lanka')
 const activeCategory = ref(-1)
@@ -418,20 +384,6 @@ const learnMoreService = (category, service) => {
 const addToCart = (category, service) => {
   console.log('Add to cart:', category, '->', service.name)
 }
-const getServiceDescription = (category, service) => {
-  const descriptions = {
-    'Land': 'Professional land management and acquisition services tailored to your plantation needs.',
-    'Finance': 'Comprehensive financial planning and advisory services for agricultural investments.',
-    'Agronomy': 'Expert agricultural consultation from planting to harvest optimization.',
-    'Processing': 'Advanced post-harvest processing and value-addition services.',
-    'Support': 'Complete operational support including HR, training, and digital solutions.',
-    'Supply Chain': 'End-to-end logistics and market access solutions.',
-    'ESG': 'Sustainable practices and compliance management services.',
-    'Certifications': 'International certification and compliance assistance.',
-    'KPIs': 'Performance measurement and analytics for plantation optimization.'
-  }
-  return descriptions[category] || 'Professional services designed to enhance your plantation operations.'
-}
 </script>
 
 <style scoped>
@@ -505,59 +457,6 @@ const getServiceDescription = (category, service) => {
   font-size: 1rem;
   white-space: nowrap;
 }
-.service-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  background-color: rgb(var(--v-theme-service-card-bg));
-}
-.service-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgb(var(--v-theme-card-shadow-hover));
-}
-.card-image-container {
-  position: relative;
-  overflow: hidden;
-}
-.card-image {
-  transition: transform 0.3s ease;
-}
-.service-card:hover .card-image {
-  transform: scale(1.05);
-}
-.image-overlay {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-}
-.category-chip {
-  backdrop-filter: blur(10px);
-  background-color: rgba(var(--v-theme-primary), 0.9) !important;
-  color: rgb(var(--v-theme-on-primary)) !important;
-}
-.service-name {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: rgb(var(--v-theme-section-title));
-  padding-bottom: 8px;
-  line-height: 1.3;
-}
-.service-description {
-  color: rgb(var(--v-theme-section-subtitle));
-  font-size: 0.95rem;
-  line-height: 1.5;
-  padding-top: 0;
-}
-.card-actions {
-  padding: 16px;
-  gap: 8px;
-  background-color: rgb(var(--v-theme-service-card-bg));
-}
-.add-to-cart-btn {
-  text-transform: none;
-  font-weight: 500;
-}
 .no-selection {
   padding: 2rem;
 }
@@ -566,36 +465,6 @@ const getServiceDescription = (category, service) => {
 }
 .no-selection p {
   color: rgb(var(--v-theme-section-subtitle));
-}
-:deep(.v-card) {
-  background-color: rgb(var(--v-theme-service-card-bg)) !important;
-}
-:deep(.v-card-title) {
-  color: rgb(var(--v-theme-section-title)) !important;
-}
-:deep(.v-card-text) {
-  color: rgb(var(--v-theme-section-subtitle)) !important;
-}
-:deep(.v-card-actions) {
-  padding-top: 8px;
-  background-color: rgb(var(--v-theme-service-card-bg)) !important;
-}
-:deep(.v-btn) {
-  text-transform: none;
-  font-weight: 500;
-}
-:deep(.v-btn--variant-text) {
-  color: rgb(var(--v-theme-navtext)) !important;
-}
-:deep(.v-btn--variant-outlined) {
-  color: rgb(var(--v-theme-navtext)) !important;
-  border-color: rgb(var(--v-theme-navtext)) !important;
-}
-:deep(.v-btn--variant-outlined:hover) {
-  background-color: rgba(var(--v-theme-navtext), 0.1) !important;
-}
-:deep(.v-btn .v-icon) {
-  color: inherit !important;
 }
 @media (max-width: 1200px) {
   .nav-container {
@@ -635,19 +504,6 @@ const getServiceDescription = (category, service) => {
   .nav-text {
     font-size: 0.85rem;
   }
-  .card-image {
-    height: 160px;
-  }
-  .card-actions {
-    flex-direction: column;
-    gap: 8px;
-  }
-  .card-actions .v-btn {
-    width: 100%;
-  }
-  .card-actions .v-spacer {
-    display: none;
-  }
 }
 @media (max-width: 480px) {
   .section-title {
@@ -668,9 +524,6 @@ const getServiceDescription = (category, service) => {
   }
   .nav-icon {
     font-size: 1.2rem;
-  }
-  .card-image {
-    height: 140px;
   }
 }
 </style>
