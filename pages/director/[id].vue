@@ -98,9 +98,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import ServiceCard from '~/components/ServiceCard.vue'
+import { useCart } from '~/composables/useCart'
 
 const route = useRoute()
 const router = useRouter()
+const { addToCart: addToGlobalCart } = useCart()
 const directorsData = {
   1: {
     name: 'D M Kobbekaduwe',
@@ -114,9 +116,9 @@ const directorsData = {
       'Advanced Certificate in Corporate Governance'
     ],
     services: [
-      'Strategic Planning',
-      'Business Development',
-      'Corporate Governance',
+      { name: 'Initial Discussion & Scoping', image: '/images/services/Initial Discussion & Scoping.png', description: 'Comprehensive consultation and project scoping for your plantation needs', category: 'Land' },
+      { name: 'Land Identification (9 Provinces)', image: '/images/services/Land Identification.png', description: 'Expert land identification services across all 9 provinces of Sri Lanka', category: 'Land' },
+      { name: 'Title Reports & Deed Transfers', image: '/images/services/service.png', description: 'Professional legal documentation and property transfer services', category: 'Land' },
     ],
     email: 'dkobbekaduwe@ppa.lk',
     phone: '+94 11 234 5678'
@@ -133,9 +135,9 @@ const directorsData = {
       'Lean Management Certification'
     ],
     services: [
-      'Operations Management',
-      'Process Optimization',
-      'Supply Chain Management',
+      { name: 'Initial Discussion & Scoping', image: '/images/services/Initial Discussion & Scoping.png', description: 'Comprehensive consultation and project scoping for your plantation needs', category: 'Land' },
+      { name: 'Land Identification (9 Provinces)', image: '/images/services/Land Identification.png', description: 'Expert land identification services across all 9 provinces of Sri Lanka', category: 'Land' },
+      { name: 'Title Reports & Deed Transfers', image: '/images/services/service.png', description: 'Professional legal documentation and property transfer services', category: 'Land' },
     ],
     email: 'rehan@ppa.lk',
     phone: '+94 11 234 5679'
@@ -152,9 +154,9 @@ const directorsData = {
       'AWS Solutions Architect Certification'
     ],
     services: [
-      'Digital Transformation',
-      'IT Strategy',
-      'Cybersecurity',
+      { name: 'Initial Discussion & Scoping', image: '/images/services/Initial Discussion & Scoping.png', description: 'Comprehensive consultation and project scoping for your plantation needs', category: 'Land' },
+      { name: 'Land Identification (9 Provinces)', image: '/images/services/Land Identification.png', description: 'Expert land identification services across all 9 provinces of Sri Lanka', category: 'Land' },
+      { name: 'Title Reports & Deed Transfers', image: '/images/services/service.png', description: 'Professional legal documentation and property transfer services', category: 'Land' },
     ],
     email: 'ravindra@ppa.lk',
     phone: '+94 11 234 5680'
@@ -171,9 +173,9 @@ const directorsData = {
       'Advanced Diploma in Taxation'
     ],
     services: [
-      'Financial Planning',
-      'Investment Advisory',
-      'Tax Consulting',
+      { name: 'Initial Discussion & Scoping', image: '/images/services/Initial Discussion & Scoping.png', description: 'Comprehensive consultation and project scoping for your plantation needs', category: 'Land' },
+      { name: 'Land Identification (9 Provinces)', image: '/images/services/Land Identification.png', description: 'Expert land identification services across all 9 provinces of Sri Lanka', category: 'Land' },
+      { name: 'Title Reports & Deed Transfers', image: '/images/services/service.png', description: 'Professional legal documentation and property transfer services', category: 'Land' },
     ],
     email: 'jayantha@ppa.lk',
     phone: '+94 11 234 5681'
@@ -190,9 +192,9 @@ const directorsData = {
       'Certified Innovation Manager'
     ],
     services: [
-      'Innovation Management',
-      'Strategic Research',
-      'Policy Development',
+      { name: 'Initial Discussion & Scoping', image: '/images/services/Initial Discussion & Scoping.png', description: 'Comprehensive consultation and project scoping for your plantation needs', category: 'Land' },
+      { name: 'Land Identification (9 Provinces)', image: '/images/services/Land Identification.png', description: 'Expert land identification services across all 9 provinces of Sri Lanka', category: 'Land' },
+      { name: 'Title Reports & Deed Transfers', image: '/images/services/service.png', description: 'Professional legal documentation and property transfer services', category: 'Land' },
     ],
     email: 'somaratne@ppa.lk',
     phone: '+94 11 234 5682'
@@ -209,9 +211,9 @@ const directorsData = {
       'Advanced Certificate in Organizational Development'
     ],
     services: [
-      'Human Resource Management',
-      'Talent Acquisition',
-      'Performance Management',
+      { name: 'Initial Discussion & Scoping', image: '/images/services/Initial Discussion & Scoping.png', description: 'Comprehensive consultation and project scoping for your plantation needs', category: 'Land' },
+      { name: 'Land Identification (9 Provinces)', image: '/images/services/Land Identification.png', description: 'Expert land identification services across all 9 provinces of Sri Lanka', category: 'Land' },
+      { name: 'Title Reports & Deed Transfers', image: '/images/services/service.png', description: 'Professional legal documentation and property transfer services', category: 'Land' },
     ],
     email: 'upananda@ppa.lk',
     phone: '+94 11 234 5683'
@@ -228,9 +230,9 @@ const directorsData = {
       'Certified Compliance Professional'
     ],
     services: [
-      'Legal Advisory',
-      'Corporate Law',
-      'Legal Documentation'
+      { name: 'Initial Discussion & Scoping', image: '/images/services/Initial Discussion & Scoping.png', description: 'Comprehensive consultation and project scoping for your plantation needs', category: 'Land' },
+      { name: 'Land Identification (9 Provinces)', image: '/images/services/Land Identification.png', description: 'Expert land identification services across all 9 provinces of Sri Lanka', category: 'Land' },
+      { name: 'Title Reports & Deed Transfers', image: '/images/services/service.png', description: 'Professional legal documentation and property transfer services', category: 'Land' },
     ],
     email: 'wijitha@ppa.lk',
     phone: '+94 11 234 5684'
@@ -247,9 +249,9 @@ const directorsData = {
       'Advanced Certificate in Brand Management'
     ],
     services: [
-      'Marketing Strategy',
-      'Market Research',
-      'Advertising Campaigns'
+      { name: 'Initial Discussion & Scoping', image: '/images/services/Initial Discussion & Scoping.png', description: 'Comprehensive consultation and project scoping for your plantation needs', category: 'Land' },
+      { name: 'Land Identification (9 Provinces)', image: '/images/services/Land Identification.png', description: 'Expert land identification services across all 9 provinces of Sri Lanka', category: 'Land' },
+      { name: 'Title Reports & Deed Transfers', image: '/images/services/service.png', description: 'Professional legal documentation and property transfer services', category: 'Land' },
     ],
     email: 'nalin@ppa.lk',
     phone: '+94 11 234 5685'
@@ -266,9 +268,9 @@ const directorsData = {
       'Advanced Diploma in Strategic Management'
     ],
     services: [
-      'Business Development',
-      'Strategic Partnerships',
-      'Revenue Growth'
+      { name: 'Initial Discussion & Scoping', image: '/images/services/Initial Discussion & Scoping.png', description: 'Comprehensive consultation and project scoping for your plantation needs', category: 'Land' },
+      { name: 'Land Identification (9 Provinces)', image: '/images/services/Land Identification.png', description: 'Expert land identification services across all 9 provinces of Sri Lanka', category: 'Land' },
+      { name: 'Title Reports & Deed Transfers', image: '/images/services/service.png', description: 'Professional legal documentation and property transfer services', category: 'Land' },
     ],
     email: 'januka@ppa.lk',
     phone: '+94 11 234 5686'
@@ -285,102 +287,92 @@ const directorsData = {
       'Certified Academic Leader'
     ],
     services: [
-      'Academic Leadership',
-      'Faculty Development',
-      'Quality Assurance',
+      { name: 'Initial Discussion & Scoping', image: '/images/services/Initial Discussion & Scoping.png', description: 'Comprehensive consultation and project scoping for your plantation needs', category: 'Land' },
+      { name: 'Land Identification (9 Provinces)', image: '/images/services/Land Identification.png', description: 'Expert land identification services across all 9 provinces of Sri Lanka', category: 'Land' },
+      { name: 'Title Reports & Deed Transfers', image: '/images/services/service.png', description: 'Professional legal documentation and property transfer services', category: 'Land' },
     ],
     email: 'nissanka@ppa.lk',
     phone: '+94 11 234 5687'
   }
 }
-
 const director = computed(() => {
   return directorsData[parseInt(route.params.id)] || null
 })
 const directorServices = computed(() => {
   if (!director.value) return []
-  
-  const serviceIcons = {
-    'Strategic Planning': 'mdi-strategy',
-    'Business Development': 'mdi-trending-up',
-    'Corporate Governance': 'mdi-office-building-cog',
-    'Operations Management': 'mdi-cog',
-    'Process Optimization': 'mdi-chart-line-stacked',
-    'Quality Assurance': 'mdi-quality-high',
-    'Supply Chain Management': 'mdi-truck-delivery',
-    'Performance Analytics': 'mdi-chart-bar',
-    'Team Leadership': 'mdi-account-group',
-    'Digital Transformation': 'mdi-digital-ocean',
-    'IT Strategy': 'mdi-laptop',
-    'Cybersecurity': 'mdi-security',
-    'Cloud Solutions': 'mdi-cloud',
-    'Software Development': 'mdi-code-tags',
-    'Technology Consulting': 'mdi-consultant',
-    'Financial Planning': 'mdi-calculator',
-    'Investment Advisory': 'mdi-chart-pie',
-    'Tax Consulting': 'mdi-file-document-multiple',
-    'Audit Services': 'mdi-magnify',
-    'Risk Assessment': 'mdi-alert-circle',
-    'Regulatory Compliance': 'mdi-gavel',
-    'Research & Development': 'mdi-flask',
-    'Innovation Management': 'mdi-lightbulb',
-    'Academic Consulting': 'mdi-school',
-    'Strategic Research': 'mdi-book-search',
-    'Policy Development': 'mdi-file-edit',
-    'Training & Development': 'mdi-teach',
-    'Human Resource Management': 'mdi-account-tie',
-    'Talent Acquisition': 'mdi-account-search',
-    'Performance Management': 'mdi-chart-timeline-variant',
-    'Employee Relations': 'mdi-handshake',
-    'Organizational Development': 'mdi-sitemap',
-    'Legal Advisory': 'mdi-scale-balance',
-    'Corporate Law': 'mdi-bank',
-    'Contract Management': 'mdi-file-contract',
-    'Dispute Resolution': 'mdi-account-question',
-    'Legal Documentation': 'mdi-file-document',
-    'Marketing Strategy': 'mdi-bullhorn',
-    'Brand Management': 'mdi-tag',
-    'Digital Marketing': 'mdi-web',
-    'Customer Relations': 'mdi-account-heart',
-    'Market Research': 'mdi-chart-donut',
-    'Advertising Campaigns': 'mdi-advertisement',
-    'Strategic Partnerships': 'mdi-handshake-outline',
-    'Market Expansion': 'mdi-map-marker-radius',
-    'Sales Strategy': 'mdi-cash-register',
-    'Client Relations': 'mdi-account-multiple',
-    'Revenue Growth': 'mdi-trending-up',
-    'Academic Leadership': 'mdi-school-outline',
-    'Curriculum Development': 'mdi-book-multiple',
-    'Educational Research': 'mdi-book-search-outline',
-    'Faculty Development': 'mdi-teach',
-    'Quality Assurance': 'mdi-quality-high',
-    'Academic Consulting': 'mdi-school'
-  }
-
-  return director.value.services.map(serviceName => ({
-    name: serviceName,
-    image: '/images/services/service.png', // Default image
-    description: `Professional ${serviceName.toLowerCase()} services tailored to your specific needs`,
-    icon: serviceIcons[serviceName] || 'mdi-check-circle'
-  }))
+  return director.value.services
 })
-
-const learnMoreService = (category, service) => {
-  navigateTo({
-    path: '/singleService',
-    query: {
-      category: category,
-      service: service.name,
-      description: service.description,
-      image: service.image
-    }
-  })
+const getServiceId = (serviceName) => {
+  const serviceMap = {
+    'Initial Discussion & Scoping': 1,
+    'Land Identification (9 Provinces)': 2,
+    'Title Reports & Deed Transfers': 3,
+    'Legal & Succession Advisory': 4,
+    'Estate/Company Registration': 5,
+    'Project Reports (DPRs)': 6,
+    'Budgeting & Cost Estimates': 7,
+    'Accounts & Tax Advisory': 8,
+    'Statutory Reporting & Compliance': 9,
+    'Investment Appraisal (NPV, IRR, ROI)': 10,
+    'Land, Topography & Soil Surveys': 11,
+    'Farm Layout & Planting Design': 12,
+    'Agronomy Consultancy (Planting → Harvest)': 13,
+    'Irrigation / Fertigation & Crop Protection': 14,
+    'Nurseries': 15,
+    'Mechanization & Estate Engineering': 16,
+    'Post-Harvest Handling': 17,
+    'Crop Processing (Tea, Rubber, Coconut, Spices)': 18,
+    'Product Development & Value-Added Lines': 19,
+    'Branding & Packaging Services': 20,
+    'Export Market Entry & Premium Positioning': 21,
+    'HRM Systems (Recruitment, Payroll, IR)': 22,
+    'Worker Training & Upskilling': 23,
+    'Labour Law & EPF/ETF Compliance': 24,
+    'Plantation Digital Identity': 25,
+    'Farm Management Dashboards': 26,
+    'Traceability / Blockchain / R & D': 27,
+    'Transport & Cold Chain Logistics': 28,
+    'Export/Import Facilitation & Customs': 29,
+    'E-commerce & B2B Platforms': 30,
+    'Packaging Design & Storytelling': 31,
+    'Digital Marketing Campaigns': 32,
+    'Trade Fairs & Global Exhibitions': 33,
+    'Environmental: Soil & Water Health': 34,
+    'Social: Worker Welfare Audits': 35,
+    'Governance: ESG Audits & Certifications': 36,
+    'Rainforest Alliance': 37,
+    'Organic (EU/USDA/JAS/SL)': 38,
+    'Fairtrade International': 39,
+    'GlobalG.A.P. & UTZ': 40,
+    'SMETA & SA8000': 41,
+    'ISO Standards': 42,
+    'B Corp Certification': 43,
+    'GRI / SASB Reporting': 44,
+    'Yield per Hectare (kg/ha/year)': 45,
+    'ROI per Acre (Annualized)': 46,
+    'Value-Added % (Raw vs. Branded)': 47,
+    'Export Readiness Index': 48,
+    'Worker Welfare Score': 49,
+    'ESG Audit Score': 50,
+    'Carbon Credit Revenues': 51
+  }
+  return serviceMap[serviceName] || 1
 }
-
+const learnMoreService = (service) => {
+  const serviceId = getServiceId(service.name)
+  navigateTo(`/service/${serviceId}`)
+}
 const addToCart = (category, service) => {
-  // Add your cart logic here
+  addToGlobalCart(category, {
+    name: service.name,
+    description: `${service.description} - by ${director.value.name}`,
+    image: service.image,
+    icon: service.icon,
+    director: director.value.name
+  })
+  
+  console.log(`Added "${service.name}" by ${director.value.name} to cart`)
 }
-
 definePageMeta({
   title: 'Director Profile - PPA'
 })
@@ -392,22 +384,18 @@ definePageMeta({
   overflow: hidden;
   min-height: 400px;
 }
-
 .director-image-wrapper {
   height: 400px;
   overflow: hidden;
 }
-
 .director-profile-image {
   width: 100%;
   height: 100%;
 }
-
 .director-profile-image .v-img__img {
   object-fit: cover;
   object-position: center top;
 }
-
 .error-placeholder {
   width: 100%;
   height: 100%;
@@ -416,7 +404,6 @@ definePageMeta({
   justify-content: center;
   background-color: rgba(var(--v-theme-primary), 0.1);
 }
-
 .director-profile-name {
   font-size: 2rem;
   font-weight: 600;
@@ -424,18 +411,15 @@ definePageMeta({
   margin-bottom: 0.5rem;
   line-height: 1.2;
 }
-
 .director-title {
   font-size: 1.3rem;
   color: rgb(var(--v-theme-navtext));
   font-weight: 500;
   line-height: 1.3;
 }
-
 .director-details-card {
   border-radius: 16px;
 }
-
 .section-title {
   font-size: 1.5rem;
   font-weight: 600;
@@ -443,19 +427,16 @@ definePageMeta({
   border-bottom: 2px solid rgb(var(--v-theme-accent));
   padding-bottom: 0.5rem;
 }
-
 .director-description {
   font-size: 1.1rem;
   line-height: 1.7;
   color: rgb(var(--v-theme-on-surface));
   text-align: justify;
 }
-
 .qualifications-list {
   list-style: none;
   padding: 0;
 }
-
 .qualifications-list li {
   padding: 0.8rem 0;
   font-size: 1.1rem;
@@ -464,72 +445,58 @@ definePageMeta({
   display: flex;
   align-items: center;
 }
-
 .qualifications-list li:last-child {
   border-bottom: none;
 }
-
 .contact-section {
   background-color: rgba(var(--v-theme-primary), 0.05);
   border-radius: 12px;
   padding: 1.5rem;
 }
-
 .contact-item {
   border-radius: 12px;
   transition: all 0.3s ease;
 }
-
 .contact-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(var(--v-theme-primary), 0.2);
 }
-
 .contact-label {
   font-weight: 600;
   color: rgb(var(--v-theme-section-title));
   margin: 0;
   font-size: 0.9rem;
 }
-
 .contact-value {
   font-size: 1rem;
   color: rgb(var(--v-theme-on-surface));
   margin: 0;
   font-weight: 500;
 }
-
 @media (max-width: 768px) {
   .director-profile-name {
     font-size: 1.6rem;
   }
-  
   .director-title {
     font-size: 1.1rem;
   }
-  
   .section-title {
     font-size: 1.3rem;
   }
-  
   .director-description {
     font-size: 1rem;
   }
-  
   .director-image-wrapper {
     height: 350px;
   }
-  
   .director-profile-card {
     min-height: 350px;
   }
 }
-
 @media (max-width: 599px) {
   .director-image-wrapper {
     height: 450px;
   }
-  
   .director-profile-card {
     height: 570px;
   }

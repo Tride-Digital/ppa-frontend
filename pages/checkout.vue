@@ -1,0 +1,261 @@
+<template>
+  <div class="checkout-page">
+    <v-container class="py-8">
+      <v-row justify="center">
+        <v-col cols="12" lg="8">
+          <v-card class="checkout-card" elevation="4">
+            <v-card-title class="checkout-header">
+              <v-icon class="mr-3" size="32">mdi-clipboard-check</v-icon>
+              <span class="checkout-title">Checkout</span>
+            </v-card-title>
+            <v-card-text class="checkout-content">
+              <div class="services-summary mb-6">
+                <h3 class="summary-title mb-4">
+                  <v-icon class="mr-2">mdi-cart</v-icon>
+                  Selected Services ({{ cartItems.length }})
+                </h3>
+                <v-list class="services-list">
+                  <v-list-item v-for="(item, index) in cartItems" :key="index" class="service-item">
+                    <template v-slot:prepend>
+                      <v-avatar size="40" class="service-avatar">
+                        <v-icon size="20" color="section-title">mdi-leaf</v-icon>
+                      </v-avatar>
+                    </template>
+                    <v-list-item-title class="service-name">{{ item.name }}</v-list-item-title>
+                    <v-list-item-subtitle class="service-category">{{ item.category }}</v-list-item-subtitle>
+                  </v-list-item>
+                </v-list>
+              </div>
+              <v-divider class="mb-6"></v-divider>
+              <div class="checkout-form">
+                <h3 class="form-title mb-4">
+                  <v-icon class="mr-2">mdi-account-edit</v-icon>
+                  Contact Information
+                </h3>
+                <v-form ref="checkoutForm" v-model="formValid" @submit.prevent="submitOrder">
+                  <v-row>
+                    <v-col cols="12" md="6">
+                      <v-text-field v-model="form.name" label="Full Name" :rules="nameRules" required variant="outlined" prepend-inner-icon="mdi-account" class="form-field"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field v-model="form.email" label="Email Address" :rules="emailRules" required variant="outlined" prepend-inner-icon="mdi-email" class="form-field"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field v-model="form.phone" label="Phone Number" :rules="phoneRules" required variant="outlined" prepend-inner-icon="mdi-phone" class="form-field"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                      <v-select v-model="form.district" :items="districts" label="District" :rules="districtRules" required variant="outlined" prepend-inner-icon="mdi-map-marker" class="form-field"></v-select>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field v-model="form.address" label="Address"  :rules="addressRules" required  variant="outlined" prepend-inner-icon="mdi-home" class="form-field"></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-textarea v-model="form.comment" label="Additional Comments (Optional)" variant="outlined" prepend-inner-icon="mdi-comment-text" rows="4" class="form-field" placeholder="Any specific requirements or comments about your selected services..." ></v-textarea>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </div>
+            </v-card-text>
+            <v-card-actions class="checkout-actions">
+              <v-btn variant="outlined" @click="goBack" class="back-btn" size="large">
+                <v-icon left>mdi-arrow-left</v-icon>
+                Back to Services
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" variant="flat" size="large" :disabled="!formValid || loading" :loading="loading" @click="submitOrder" class="submit-btn">
+                <v-icon left>mdi-send</v-icon>
+                Submit Request
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-dialog v-model="showSuccessDialog" max-width="500px" persistent>
+      <v-card class="success-card">
+        <v-card-text class="text-center py-8">
+          <v-icon size="64" color="success" class="mb-4">mdi-check-circle</v-icon>
+          <h2 class="text-h5 mb-4">Request Submitted Successfully!</h2>
+          <p class="text-body-1 mb-4">
+            Thank you for your interest in our services. We have received your request and will contact you soon.
+          </p>
+          <p class="text-body-2 text-medium-emphasis">
+            Reference ID: #{{ referenceId }}
+          </p>
+        </v-card-text>
+        <v-card-actions class="justify-center pb-6">
+          <v-btn color="primary" variant="flat" @click="goToHome" size="large">
+            <v-icon left>mdi-home</v-icon>
+            Back to Home
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useCart } from '~/composables/useCart'
+
+const router = useRouter()
+const { cartItems, clearCart } = useCart()
+const form = ref({
+  name: '',
+  email: '',
+  phone: '',
+  district: '',
+  address: '',
+  comment: ''
+})
+const formValid = ref(false)
+const loading = ref(false)
+const showSuccessDialog = ref(false)
+const referenceId = ref('')
+const districts = [
+  'Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo', 'Galle', 'Gampaha',
+  'Hambantota', 'Jaffna', 'Kalutara', 'Kandy', 'Kegalle', 'Kilinochchi', 'Kurunegala',
+  'Mannar', 'Matale', 'Matara', 'Moneragala', 'Mullaitivu', 'Nuwara Eliya', 'Polonnaruwa',
+  'Puttalam', 'Ratnapura', 'Trincomalee', 'Vavuniya'
+]
+const nameRules = [
+  v => !!v || 'Name is required',
+  v => (v && v.length >= 2) || 'Name must be at least 2 characters'
+]
+const emailRules = [
+  v => !!v || 'Email is required',
+  v => /.+@.+\..+/.test(v) || 'Email must be valid'
+]
+const phoneRules = [
+  v => !!v || 'Phone number is required',
+  v => (v && v.length >= 10) || 'Phone number must be at least 10 digits'
+]
+const districtRules = [
+  v => !!v || 'District is required'
+]
+const addressRules = [
+  v => !!v || 'Address is required',
+  v => (v && v.length >= 10) || 'Address must be at least 10 characters'
+]
+onMounted(() => {
+  if (cartItems.value.length === 0) {
+    router.push('/services')
+  }
+})
+const generateReferenceId = () => {
+  return 'PPA' + Date.now().toString().slice(-6) + Math.floor(Math.random() * 100).toString().padStart(2, '0')
+}
+const submitOrder = async () => {
+  if (!formValid.value) return
+  loading.value = true
+  try {
+    const submittedServices = [...cartItems.value]
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    referenceId.value = generateReferenceId()
+    clearCart()
+    showSuccessDialog.value = true
+  } catch (error) {
+  } finally {
+    loading.value = false
+  }
+}
+const goBack = () => {
+  router.push('/services')
+}
+const goToHome = () => {
+  showSuccessDialog.value = false
+  router.push('/')
+}
+useHead({
+  title: 'Checkout - PPA Services',
+  meta: [
+    { name: 'description', content: 'Complete your service request with PPA - Professional plantation services in Sri Lanka' }
+  ]
+})
+</script>
+
+<style scoped>
+.checkout-page {
+  background-color: rgb(var(--v-theme-background));
+  min-height: 100vh;
+}
+.checkout-card {
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+.checkout-header {
+  background: rgb(var(--v-theme-primary-darken-1));
+  color: white;
+  padding: 24px;
+}
+.checkout-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.checkout-content {
+  padding: 32px;
+}
+.services-summary {
+  background: rgba(var(--v-theme-primary-rgb), 0.05);
+  border-radius: 12px;
+  padding: 20px;
+}
+.summary-title {
+  color: rgb(var(--v-theme-section-title));
+  font-weight: 600;
+}
+.services-list {
+  background: transparent;
+}
+.service-item {
+  background: rgba(var(--v-theme-surface-rgb), 0.8);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(var(--v-theme-primary-rgb), 0.1);
+}
+.service-avatar {
+  background: rgba(var(--v-theme-primary-rgb), 0.1) !important;
+}
+.service-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.service-category {
+  color: rgb(var(--v-theme-primary-darken-1));
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+.form-title {
+  color: rgb(var(--v-theme-section-title));
+  font-weight: 600;
+}
+.form-field {
+  margin-bottom: 8px;
+}
+.checkout-actions {
+  padding: 24px 32px;
+  background: rgba(var(--v-theme-surface-variant-rgb), 0.3);
+}
+.back-btn, .submit-btn {
+  text-transform: none;
+  font-weight: 600;
+  border-radius: 8px;
+}
+.success-card {
+  border-radius: 16px !important;
+}
+@media (max-width: 768px) {
+  .checkout-content {
+    padding: 20px;
+  }
+  .checkout-actions {
+    padding: 20px;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .back-btn, .submit-btn {
+    width: 100%;
+  }
+}
+</style>
