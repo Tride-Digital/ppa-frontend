@@ -370,8 +370,6 @@ const addToCart = (category, service) => {
     icon: service.icon,
     director: director.value.name
   })
-  
-  console.log(`Added "${service.name}" by ${director.value.name} to cart`)
 }
 definePageMeta({
   title: 'Director Profile - PPA'

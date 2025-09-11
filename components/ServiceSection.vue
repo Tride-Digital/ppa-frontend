@@ -371,7 +371,6 @@ const selectCategory = (index) => {
   activeCategory.value = activeCategory.value === index ? -1 : index
 } 
 const handleServiceClick = (category, service) => {
-  console.log('Service clicked:', category, '->', service)
 }
 const learnMoreService = (service) => {
   const serviceId = getServiceId(service.name)

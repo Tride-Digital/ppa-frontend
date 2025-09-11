@@ -29,15 +29,12 @@ export const useCart = () => {
         category: category,
         id: getServiceId(service.name)
       })
-      console.log('Item added to cart. Total items:', cartItems.value.length)
     } else {
-      console.log('Item already in cart')
     }
   }
 
   const removeFromCart = (index) => {
     cartItems.value.splice(index, 1)
-    console.log('Item removed from cart. Total items:', cartItems.value.length)
   }
 
   const clearCart = () => {
