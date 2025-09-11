@@ -98,7 +98,7 @@ const goToAdmin = () => {
     window.open(config.public.adminAppUrl, '_blank')
 };
 const goToRegister = () => {
-    window.open(config.public.registerUrl, '_blank')
+  router.push('/providerselector');
 };
 </script>
 
