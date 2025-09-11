@@ -50,6 +50,9 @@
       <v-btn flat @click="goToRegister" class="nav-link">Join PPA</v-btn>
       <v-btn flat @click="goToAdmin" class="nav-link">Log In</v-btn>
       <div class="d-flex align-center mx-2">
+        <CartNavButton :cart-items="cartItems" @toggle-cart="handleToggleCart" @cart-click="handleCartClick"/>
+      </div>
+      <div class="d-flex align-center mx-2">
         <v-btn icon @click="toggleTheme" class="theme-toggle-btn">
           <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
         </v-btn>
@@ -68,6 +71,8 @@ import { useDisplay, useTheme } from 'vuetify';
 import { ref, computed } from "vue";
 import { useRouter } from 'vue-router';
 import LanguageSelector from './LanguageSelector.vue';
+import CartNavButton from './cart/CartNavButton.vue';
+import { useCart } from '~/composables/useCart';
 const config = useRuntimeConfig();
 const { mobile } = useDisplay();
 const isMobile = computed(() => mobile.value);
@@ -76,11 +81,18 @@ const theme = useTheme();
 const sidebar = ref(false);
 const search = ref('');
 const isDarkTheme = computed(() => theme.global.current.value.dark);
+const { cartItems, toggleCartModal, openCartModal } = useCart();
 const toggleTheme = () => {
     const newTheme = isDarkTheme.value ? 'light' : 'dark';
     theme.global.name.value = newTheme;
     localStorage.setItem('theme', newTheme);
 };
+const handleToggleCart = () => {
+  toggleCartModal()
+}
+const handleCartClick = () => {
+  openCartModal()
+}
 
 const menuItems = ref([
     { title: 'Home', path: '/', icon: 'mdi-home' },
