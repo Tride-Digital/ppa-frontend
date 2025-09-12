@@ -44,7 +44,7 @@
                       <v-text-field v-model="form.phone" label="Phone Number" :rules="phoneRules" required variant="outlined" prepend-inner-icon="mdi-phone" class="form-field"></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
-                      <v-select v-model="form.district" :items="districts" label="District" :rules="districtRules" required variant="outlined" prepend-inner-icon="mdi-map-marker" class="form-field"></v-select>
+                      <v-select v-model="form.district" :items="districts" item-title="district_en" item-value="district_en" label="District" :rules="districtRules" required variant="outlined" prepend-inner-icon="mdi-map-marker" class="form-field" :loading="loadingDistricts"></v-select>
                     </v-col>
                     <v-col cols="12">
                       <v-text-field v-model="form.address" label="Address"  :rules="addressRules" required  variant="outlined" prepend-inner-icon="mdi-home" class="form-field"></v-text-field>
@@ -71,6 +71,8 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <!-- Success Dialog -->
     <v-dialog v-model="showSuccessDialog" max-width="500px" persistent>
       <v-card class="success-card">
         <v-card-text class="text-center py-8">
@@ -82,11 +84,33 @@
           <p class="text-body-2 text-medium-emphasis">
             Reference ID: #{{ referenceId }}
           </p>
+          <v-chip v-if="emailSent" color="success" size="small" class="mt-2">
+            <v-icon left size="small">mdi-email-check</v-icon>
+            Confirmation email sent
+          </v-chip>
         </v-card-text>
         <v-card-actions class="justify-center pb-6">
           <v-btn color="primary" variant="flat" @click="goToHome" size="large">
             <v-icon left>mdi-home</v-icon>
             Back to Home
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Error Dialog -->
+    <v-dialog v-model="showErrorDialog" max-width="500px">
+      <v-card class="error-card">
+        <v-card-text class="text-center py-8">
+          <v-icon size="64" color="error" class="mb-4">mdi-alert-circle</v-icon>
+          <h2 class="text-h5 mb-4">Submission Failed</h2>
+          <p class="text-body-1 mb-4">
+            {{ errorMessage }}
+          </p>
+        </v-card-text>
+        <v-card-actions class="justify-center pb-6">
+          <v-btn color="primary" variant="flat" @click="showErrorDialog = false" size="large">
+            Try Again
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -98,7 +122,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCart } from '~/composables/useCart'
-
+const config = useRuntimeConfig();
 const router = useRouter()
 const { cartItems, clearCart } = useCart()
 const form = ref({
@@ -109,16 +133,17 @@ const form = ref({
   address: '',
   comment: ''
 })
+
+// State variables
 const formValid = ref(false)
 const loading = ref(false)
+const loadingDistricts = ref(false)
 const showSuccessDialog = ref(false)
+const showErrorDialog = ref(false)
 const referenceId = ref('')
-const districts = [
-  'Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo', 'Galle', 'Gampaha',
-  'Hambantota', 'Jaffna', 'Kalutara', 'Kandy', 'Kegalle', 'Kilinochchi', 'Kurunegala',
-  'Mannar', 'Matale', 'Matara', 'Moneragala', 'Mullaitivu', 'Nuwara Eliya', 'Polonnaruwa',
-  'Puttalam', 'Ratnapura', 'Trincomalee', 'Vavuniya'
-]
+const emailSent = ref(false)
+const errorMessage = ref('')
+const districts = ref([])
 const nameRules = [
   v => !!v || 'Name is required',
   v => (v && v.length >= 2) || 'Name must be at least 2 characters'
@@ -138,24 +163,74 @@ const addressRules = [
   v => !!v || 'Address is required',
   v => (v && v.length >= 10) || 'Address must be at least 10 characters'
 ]
-onMounted(() => {
+const fetchDistricts = async () => {
+  loadingDistricts.value = true
+  try {
+    const response = await $fetch(`${config.public.backendUrl}/gn_division_list/all_district`)
+    districts.value = response
+  } catch (error) {
+    console.error('Error fetching districts:', error)
+    districts.value = []
+  } finally {
+    loadingDistricts.value = false
+  }
+}
+onMounted(async () => {
   if (cartItems.value.length === 0) {
     router.push('/services')
+    return
   }
+  await fetchDistricts()
 })
-const generateReferenceId = () => {
-  return 'PPA' + Date.now().toString().slice(-6) + Math.floor(Math.random() * 100).toString().padStart(2, '0')
-}
+
 const submitOrder = async () => {
   if (!formValid.value) return
   loading.value = true
+  errorMessage.value = ''
+  
   try {
-    const submittedServices = [...cartItems.value]
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    referenceId.value = generateReferenceId()
-    clearCart()
-    showSuccessDialog.value = true
+    const requestData = {
+      name: form.value.name,
+      email: form.value.email,
+      phone: form.value.phone,
+      district: form.value.district.toLowerCase(),
+      address: form.value.address,
+      comment: form.value.comment || '',
+      services: cartItems.value.map(item => ({
+        id: item.id,
+        name: item.name,
+        category: item.category
+      }))
+    }
+    const response = await $fetch(`${config.public.backendUrl}/service-requests/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: requestData
+    })
+    if (response.success) {
+      referenceId.value = response.reference_id
+      emailSent.value = response.email_sent || false
+      clearCart()
+      showSuccessDialog.value = true
+    } else {
+      throw new Error(response.message || 'Failed to submit request')
+    }
+
   } catch (error) {
+    console.error('Error submitting order:', error)
+    if (error.data && error.data.detail) {
+      errorMessage.value = error.data.detail
+    } else if (error.data && error.data.message) {
+      errorMessage.value = error.data.message
+    } else if (error.message) {
+      errorMessage.value = error.message
+    } else {
+      errorMessage.value = 'An unexpected error occurred. Please try again.'
+    }
+    
+    showErrorDialog.value = true
   } finally {
     loading.value = false
   }
@@ -242,7 +317,7 @@ useHead({
   font-weight: 600;
   border-radius: 8px;
 }
-.success-card {
+.success-card, .error-card {
   border-radius: 16px !important;
 }
 @media (max-width: 768px) {
