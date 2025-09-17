@@ -219,18 +219,19 @@ const contactInfo = ref([
 }
 .footer-social-btn {
   margin-right: 8px;
-  transition: color 0.3s ease, background-color 0.3s ease;
+  color: rgb(var(--v-theme-text));
+  transition: background-color 0.3s ease;
 }
 .footer-social-btn:hover {
-  color: rgb(var(--v-theme-footer-link-hover));
-  background-color: rgb(var(--v-theme-footer-social-btn-bg));
+  color: rgb(var(--v-theme-text)) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 .custom-x-icon {
   filter: brightness(0) invert(1);
-  transition: filter 0.3s ease;
+  transition: none;
 }
 .footer-social-btn:hover .custom-x-icon {
-  filter: brightness(0) invert(1) sepia(1) hue-rotate(88deg) saturate(2);
+  filter: brightness(0) invert(1);
 }
 .footer-divider {
   border-color: rgb(var(--v-theme-footer-border));
