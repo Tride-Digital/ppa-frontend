@@ -16,7 +16,7 @@
     </div>
     <v-card-title class="service-name">{{ service.name }}</v-card-title>
     <v-card-text class="service-description">
-      {{ service.description || getServiceDescription(categoryLabel, service.name) }}
+      {{ service.shortDescription }}
     </v-card-text>
     <v-card-actions class="card-actions">
       <v-btn variant="outlined" color="primary" size="small" @click.stop="handleLearnMore">
@@ -42,87 +42,13 @@ const handleServiceClick = () => {
   emit('service-click', props.categoryLabel, props.service.name)
 }
 const handleLearnMore = () => {
-  // Instead of emitting, navigate directly to the service page
-  // You'll need to implement a way to map service names to IDs
-  const serviceId = getServiceId(props.service.name)
-  navigateTo(`/service/${serviceId}`)
-}
-
-// Helper function to map service names to IDs
-const getServiceId = (serviceName) => {
-  const serviceMap = {
-    'Initial Discussion & Scoping': 1,
-    'Land Identification (9 Provinces)': 2,
-    'Title Reports & Deed Transfers': 3,
-    'Legal & Succession Advisory': 4,
-    'Estate/Company Registration': 5,
-    'Project Reports (DPRs)': 6,
-    'Budgeting & Cost Estimates': 7,
-    'Accounts & Tax Advisory': 8,
-    'Statutory Reporting & Compliance': 9,
-    'Investment Appraisal (NPV, IRR, ROI)': 10,
-    'Land, Topography & Soil Surveys': 11,
-    'Farm Layout & Planting Design': 12,
-    'Agronomy Consultancy (Planting → Harvest)': 13,
-    'Irrigation / Fertigation & Crop Protection': 14,
-    'Nurseries': 15,
-    'Mechanization & Estate Engineering': 16,
-    'Post-Harvest Handling': 17,
-    'Crop Processing (Tea, Rubber, Coconut, Spices)': 18,
-    'Product Development & Value-Added Lines': 19,
-    'Branding & Packaging Services': 20,
-    'Export Market Entry & Premium Positioning': 21,
-    'HRM Systems (Recruitment, Payroll, IR)': 22,
-    'Worker Training & Upskilling': 23,
-    'Labour Law & EPF/ETF Compliance': 24,
-    'Plantation Digital Identity': 25,
-    'Farm Management Dashboards': 26,
-    'Traceability / Blockchain / R & D': 27,
-    'Transport & Cold Chain Logistics': 28,
-    'Export/Import Facilitation & Customs': 29,
-    'E-commerce & B2B Platforms': 30,
-    'Packaging Design & Storytelling': 31,
-    'Digital Marketing Campaigns': 32,
-    'Trade Fairs & Global Exhibitions': 33,
-    'Environmental: Soil & Water Health': 34,
-    'Social: Worker Welfare Audits': 35,
-    'Governance: ESG Audits & Certifications': 36,
-    'Rainforest Alliance': 37,
-    'Organic (EU/USDA/JAS/SL)': 38,
-    'Fairtrade International': 39,
-    'GlobalG.A.P. & UTZ': 40,
-    'SMETA & SA8000': 41,
-    'ISO Standards': 42,
-    'B Corp Certification': 43,
-    'GRI / SASB Reporting': 44,
-    'Yield per Hectare (kg/ha/year)': 45,
-    'ROI per Acre (Annualized)': 46,
-    'Value-Added % (Raw vs. Branded)': 47,
-    'Export Readiness Index': 48,
-    'Worker Welfare Score': 49,
-    'ESG Audit Score': 50,
-    'Carbon Credit Revenues': 51
-    // Add all your services here...
+  const serviceId = props.service.id
+  if (serviceId) {
+    navigateTo(`/service/${serviceId}`)
   }
-  return serviceMap[serviceName] || 1
 }
-
 const handleAddToCart = () => {
   emit('add-to-cart', props.categoryLabel, props.service)
-}
-const getServiceDescription = (category, service) => {
-  const descriptions = {
-    'Land': 'Professional land management and acquisition services tailored to your plantation needs.',
-    'Finance': 'Comprehensive financial planning and advisory services for agricultural investments.',
-    'Agronomy': 'Expert agricultural consultation from planting to harvest optimization.',
-    'Processing': 'Advanced post-harvest processing and value-addition services.',
-    'Support': 'Complete operational support including HR, training, and digital solutions.',
-    'Supply Chain': 'End-to-end logistics and market access solutions.',
-    'ESG': 'Sustainable practices and compliance management services.',
-    'Certifications': 'International certification and compliance assistance.',
-    'KPIs': 'Performance measurement and analytics for plantation optimization.'
-  }
-  return descriptions[category] || 'Professional services designed to enhance your plantation operations.'
 }
 </script>
 

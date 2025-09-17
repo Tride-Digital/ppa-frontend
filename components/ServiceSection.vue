@@ -4,15 +4,27 @@
       <v-row justify="center">
         <v-col cols="12" class="text-center">
           <h2 class="section-title">Our Services</h2>
-          <p class="section-subtitle"> {{ sectionDescription }}</p>
+          <p class="section-subtitle">{{ sectionDescription }}</p>
         </v-col>
       </v-row>
-      <v-row justify="center" class="mb-8">
+      <v-row v-if="loading" justify="center" class="mb-8">
+        <v-col cols="12" class="text-center">
+          <v-progress-circular indeterminate color="primary" size="50"></v-progress-circular>
+          <p class="mt-4">Loading services...</p>
+        </v-col>
+      </v-row>
+      <v-row v-else-if="error" justify="center" class="mb-8">
+        <v-col cols="12" class="text-center">
+          <v-alert type="error" variant="tonal">
+            Failed to load services. Please try again later.
+          </v-alert>
+        </v-col>
+      </v-row>
+      <v-row v-else justify="center" class="mb-8">
         <v-col cols="12">
           <nav class="services-nav">
             <div class="nav-container">
-              <div 
-                v-for="(navItem, index) in navigationItems" :key="index"class="nav-item-wrapper">
+              <div v-for="(navItem, index) in navigationItems" :key="index" class="nav-item-wrapper">
                 <div class="nav-item" :class="{ active: activeCategory === index }" @click="selectCategory(index)">
                   <v-icon class="nav-icon" :color="navtext">{{ navItem.icon }}</v-icon>
                   <span class="nav-text">{{ navItem.label }}</span>
@@ -22,13 +34,12 @@
           </nav>
         </v-col>
       </v-row>
-      <v-row v-if="activeCategory !== -1">
-        <v-col 
-          v-for="(subItem, subIndex) in navigationItems[activeCategory].subItems" :key="subIndex" cols="12" sm="6" md="4" lg="3" class="mb-6">
-          <ServiceCard :service="subItem" :category-label="navigationItems[activeCategory].label" @service-click="handleServiceClick"@learn-more="learnMoreService"@add-to-cart="addToCart"/>
+      <v-row v-if="activeCategory !== -1 && !loading">
+        <v-col v-for="(subItem, subIndex) in navigationItems[activeCategory]?.subItems" :key="subIndex" cols="12" sm="6" md="4" lg="3" class="mb-6">
+          <ServiceCard :service="subItem" :category-label="navigationItems[activeCategory].label" @service-click="handleServiceClick" @learn-more="learnMoreService" @add-to-cart="addToCartHandler"/>
         </v-col>
       </v-row>
-      <v-row v-else>
+      <v-row v-else-if="!loading">
         <v-col cols="12" class="text-center py-10">
           <div class="no-selection">
             <v-icon size="64" color="primary" class="mb-4">mdi-hand-pointing-up</v-icon>
@@ -47,390 +58,38 @@
 import { ref, onMounted } from 'vue'
 import ServiceCard from './ServiceCard.vue'
 import { useCart } from '~/composables/useCart'
+import { useServices } from '~/composables/useServices'
 const { addToCart } = useCart()
+const {
+  loading, 
+  error, 
+  fetchAllServices, 
+  transformServiceCategories,
+  getServiceIdByName 
+} = useServices()
 const sectionDescription = ref('Discover the diverse range of high-quality services offered by our plantation experts across Sri Lanka')
 const activeCategory = ref(-1)
-const navigationItems = ref([
-  {
-    icon: 'mdi-map',
-    label: 'Land',
-    subItems: [
-      {
-        name: 'Initial Discussion & Scoping',
-        image: '/images/services/Initial Discussion & Scoping.png',
-        description: 'Comprehensive consultation and project scoping for your plantation needs'
-      },
-      {
-        name: 'Land Identification (9 Provinces)',
-        image: '/images/services/Land Identification.png',
-        description: 'Expert land identification services across all 9 provinces of Sri Lanka'
-      },
-      {
-        name: 'Title Reports & Deed Transfers',
-        image: '/images/services/service.png',
-        description: 'Professional legal documentation and property transfer services'
-      },
-      {
-        name: 'Legal & Succession Advisory',
-        image: '/images/services/service.png',
-        description: 'Expert legal guidance for property succession and ownership matters'
-      },
-      {
-        name: 'Estate/Company Registration',
-        image: '/images/services/service.png',
-        description: 'Complete estate and company registration services'
-      }
-    ]
-  },
-  {
-    icon: 'mdi-bank',
-    label: 'Finance',
-    subItems: [
-      {
-        name: 'Project Reports (DPRs)',
-        image: '/images/services/service.png',
-        description: 'Detailed project reports and feasibility studies for investments'
-      },
-      {
-        name: 'Budgeting & Cost Estimates',
-        image: '/images/services/service.png',
-        description: 'Accurate budgeting and cost estimation for plantation projects'
-      },
-      {
-        name: 'Accounts & Tax Advisory',
-        image: '/images/services/service.png',
-        description: 'Professional accounting and tax advisory services'
-      },
-      {
-        name: 'Statutory Reporting & Compliance',
-        image: '/images/services/service.png',
-        description: 'Complete statutory reporting and regulatory compliance management'
-      },
-      {
-        name: 'Investment Appraisal (NPV, IRR, ROI)',
-        image: '/images/services/service.png',
-        description: 'Comprehensive investment analysis and financial modeling'
-      }
-    ]
-  },
-  {
-    icon: 'mdi-sprout',
-    label: 'Agronomy',
-    subItems: [
-      {
-        name: 'Land, Topography & Soil Surveys',
-        image: '/images/services/service.png',
-        description: 'Comprehensive land assessment and soil analysis services'
-      },
-      {
-        name: 'Farm Layout & Planting Design',
-        image: '/images/services/service.png',
-        description: 'Expert farm planning and optimal planting design'
-      },
-      {
-        name: 'Agronomy Consultancy (Planting → Harvest)',
-        image: '/images/services/service.png',
-        description: 'End-to-end agricultural guidance from planting to harvest'
-      },
-      {
-        name: 'Irrigation / Fertigation & Crop Protection',
-        image: '/images/services/service.png',
-        description: 'Advanced irrigation systems and crop protection solutions'
-      },
-      {
-        name: 'Nurseries',
-        image: '/images/services/service.png',
-        description: 'Professional nursery management and seedling production'
-      },
-      {
-        name: 'Mechanization & Estate Engineering',
-        image: '/images/services/service.png',
-        description: 'Modern mechanization and engineering solutions for estates'
-      }
-    ]
-  },
-  {
-    icon: 'mdi-factory',
-    label: 'Processing',
-    subItems: [
-      {
-        name: 'Post-Harvest Handling',
-        image: '/images/services/service.png',
-        description: 'Expert post-harvest handling and storage solutions'
-      },
-      {
-        name: 'Crop Processing (Tea, Rubber, Coconut, Spices)',
-        image: '/images/services/service.png',
-        description: 'Specialized processing for various plantation crops'
-      },
-      {
-        name: 'Product Development & Value-Added Lines',
-        image: '/images/services/service.png',
-        description: 'Innovative product development and value addition services'
-      },
-      {
-        name: 'Branding & Packaging Services',
-        image: '/images/services/service.png',
-        description: 'Professional branding and packaging design services'
-      },
-      {
-        name: 'Export Market Entry & Premium Positioning',
-        image: '/images/services/service.png',
-        description: 'Strategic market entry and premium positioning services'
-      }
-    ]
-  },
-  {
-    icon: 'mdi-account-hard-hat',
-    label: 'Support',
-    subItems: [
-      {
-        name: 'HRM Systems (Recruitment, Payroll, IR)',
-        image: '/images/services/service.png',
-        description: 'Complete human resource management solutions'
-      },
-      {
-        name: 'Worker Training & Upskilling',
-        image: '/images/services/service.png',
-        description: 'Comprehensive worker training and skill development programs'
-      },
-      {
-        name: 'Labour Law & EPF/ETF Compliance',
-        image: '/images/services/service.png',
-        description: 'Expert guidance on labor law and statutory compliance'
-      },
-      {
-        name: 'Plantation Digital Identity',
-        image: '/images/services/service.png',
-        description: 'Digital transformation and identity solutions for plantations'
-      },
-      {
-        name: 'Farm Management Dashboards',
-        image: '/images/services/service.png',
-        description: 'Advanced farm management and monitoring dashboards'
-      },
-      {
-        name: 'Traceability / Blockchain / R & D',
-        image: '/images/services/service.png',
-        description: 'Cutting-edge traceability and research solutions'
-      }
-    ]
-  },
-  {
-    icon: 'mdi-truck',
-    label: 'Supply Chain',
-    subItems: [
-      {
-        name: 'Transport & Cold Chain Logistics',
-        image: '/images/services/service.png',
-        description: 'Efficient transport and cold chain logistics solutions'
-      },
-      {
-        name: 'Export/Import Facilitation & Customs',
-        image: '/images/services/service.png',
-        description: 'Complete export/import facilitation and customs services'
-      },
-      {
-        name: 'E-commerce & B2B Platforms',
-        image: '/images/services/service.png',
-        description: 'Modern e-commerce and B2B platform solutions'
-      },
-      {
-        name: 'Packaging Design & Storytelling',
-        image: '/images/services/service.png',
-        description: 'Creative packaging design and brand storytelling'
-      },
-      {
-        name: 'Digital Marketing Campaigns',
-        image: '/images/services/service.png',
-        description: 'Strategic digital marketing and campaign management'
-      },
-      {
-        name: 'Trade Fairs & Global Exhibitions',
-        image: '/images/services/service.png',
-        description: 'International trade fair and exhibition participation'
-      }
-    ]
-  },
-  {
-    icon: 'mdi-earth',
-    label: 'ESG',
-    subItems: [
-      {
-        name: 'Environmental: Soil & Water Health',
-        image: '/images/services/service.png',
-        description: 'Comprehensive environmental health and sustainability services'
-      },
-      {
-        name: 'Social: Worker Welfare Audits',
-        image: '/images/services/service.png',
-        description: 'Worker welfare audits and social responsibility programs'
-      },
-      {
-        name: 'Governance: ESG Audits & Certifications',
-        image: '/images/services/service.png',
-        description: 'ESG audits and governance certification services'
-      }
-    ]
-  },
-  {
-    icon: 'mdi-certificate',
-    label: 'Certifications',
-    subItems: [
-      {
-        name: 'Rainforest Alliance',
-        image: '/images/services/certifications/rainforest-alliance.webp',
-        description: 'Rainforest Alliance certification and compliance'
-      },
-      {
-        name: 'Organic (EU/USDA/JAS/SL)',
-        image: '/images/services/certifications/Organic.png',
-        description: 'Multiple organic certifications for global markets'
-      },
-      {
-        name: 'Fairtrade International',
-        image: '/images/services/certifications/Fairtrade_International.jpg',
-        description: 'Fairtrade International certification and support'
-      },
-      {
-        name: 'GlobalG.A.P. & UTZ',
-        image: '/images/services/certifications/Gloable G.P.A.png',
-        description: 'GlobalG.A.P. and UTZ certification services'
-      },
-      {
-        name: 'SMETA & SA8000',
-        image: '/images/services/certifications/SMETA & SA8000.png',
-        description: 'SMETA and SA8000 social compliance certifications'
-      },
-      {
-        name: 'ISO Standards',
-        image: '/images/services/certifications/ISO.png',
-        description: 'Various ISO standard certifications and implementation'
-      },
-      {
-        name: 'B Corp Certification',
-        image: '/images/services/certifications/B Corp.png',
-        description: 'B Corp certification for sustainable business practices'
-      },
-      {
-        name: 'GRI / SASB Reporting',
-        image: 'images/services/certifications/GRI & SASB.png',
-        description: 'GRI and SASB sustainability reporting services'
-      }
-    ]
-  },
-  {
-    icon: 'mdi-chart-line',
-    label: 'KPIs',
-    subItems: [
-      {
-        name: 'Yield per Hectare (kg/ha/year)',
-        image: '/images/services/service.png',
-        description: 'Comprehensive yield analysis and optimization metrics'
-      },
-      {
-        name: 'ROI per Acre (Annualized)',
-        image: '/images/services/service.png',
-        description: 'Return on investment analysis and tracking'
-      },
-      {
-        name: 'Value-Added % (Raw vs. Branded)',
-        image: '/images/services/service.png',
-        description: 'Value addition measurement and optimization'
-      },
-      {
-        name: 'Export Readiness Index',
-        image: '/images/services/service.png',
-        description: 'Export readiness assessment and improvement metrics'
-      },
-      {
-        name: 'Worker Welfare Score',
-        image: '/images/services/service.png',
-        description: 'Worker welfare measurement and improvement tracking'
-      },
-      {
-        name: 'ESG Audit Score',
-        image: '/images/services/service.png',
-        description: 'ESG performance measurement and reporting'
-      },
-      {
-        name: 'Carbon Credit Revenues',
-        image: '/images/services/service.png',
-        description: 'Carbon credit generation and revenue tracking'
-      }
-    ]
+const navigationItems = ref([])
+onMounted(async () => {
+  const data = await fetchAllServices()
+  if (data && data.length > 0) {
+    navigationItems.value = transformServiceCategories(data)
+    activeCategory.value = 0
   }
-])
-// Cart functionality
-const showCartModal = ref(false)
-// Load cart from localStorage on mount
-onMounted(() => {
-  activeCategory.value = 0
 })
 const selectCategory = (index) => {
   activeCategory.value = activeCategory.value === index ? -1 : index
-} 
+}
 const handleServiceClick = (category, service) => {
 }
 const learnMoreService = (service) => {
-  const serviceId = getServiceId(service.name)
-  navigateTo(`/service/${serviceId}`)
-}
-const getServiceId = (serviceName) => {
-  const serviceMap = {
-    'Initial Discussion & Scoping': 1,
-    'Land Identification (9 Provinces)': 2,
-    'Title Reports & Deed Transfers': 3,
-    'Legal & Succession Advisory': 4,
-    'Estate/Company Registration': 5,
-    'Project Reports (DPRs)': 6,
-    'Budgeting & Cost Estimates': 7,
-    'Accounts & Tax Advisory': 8,
-    'Statutory Reporting & Compliance': 9,
-    'Investment Appraisal (NPV, IRR, ROI)': 10,
-    'Land, Topography & Soil Surveys': 11,
-    'Farm Layout & Planting Design': 12,
-    'Agronomy Consultancy (Planting → Harvest)': 13,
-    'Irrigation / Fertigation & Crop Protection': 14,
-    'Nurseries': 15,
-    'Mechanization & Estate Engineering': 16,
-    'Post-Harvest Handling': 17,
-    'Crop Processing (Tea, Rubber, Coconut, Spices)': 18,
-    'Product Development & Value-Added Lines': 19,
-    'Branding & Packaging Services': 20,
-    'Export Market Entry & Premium Positioning': 21,
-    'HRM Systems (Recruitment, Payroll, IR)': 22,
-    'Worker Training & Upskilling': 23,
-    'Labour Law & EPF/ETF Compliance': 24,
-    'Plantation Digital Identity': 25,
-    'Farm Management Dashboards': 26,
-    'Traceability / Blockchain / R & D': 27,
-    'Transport & Cold Chain Logistics': 28,
-    'Export/Import Facilitation & Customs': 29,
-    'E-commerce & B2B Platforms': 30,
-    'Packaging Design & Storytelling': 31,
-    'Digital Marketing Campaigns': 32,
-    'Trade Fairs & Global Exhibitions': 33,
-    'Environmental: Soil & Water Health': 34,
-    'Social: Worker Welfare Audits': 35,
-    'Governance: ESG Audits & Certifications': 36,
-    'Rainforest Alliance': 37,
-    'Organic (EU/USDA/JAS/SL)': 38,
-    'Fairtrade International': 39,
-    'GlobalG.A.P. & UTZ': 40,
-    'SMETA & SA8000': 41,
-    'ISO Standards': 42,
-    'B Corp Certification': 43,
-    'GRI / SASB Reporting': 44,
-    'Yield per Hectare (kg/ha/year)': 45,
-    'ROI per Acre (Annualized)': 46,
-    'Value-Added % (Raw vs. Branded)': 47,
-    'Export Readiness Index': 48,
-    'Worker Welfare Score': 49,
-    'ESG Audit Score': 50,
-    'Carbon Credit Revenues': 51
+  const serviceId = service.id || getServiceIdByName(service.name)
+  if (serviceId) {
+    navigateTo(`/service/${serviceId}`)
   }
-  return serviceMap[serviceName] || 1
+}
+const addToCartHandler = (category, service) => {
+  addToCart(category, service)
 }
 </script>
 
