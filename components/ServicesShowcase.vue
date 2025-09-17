@@ -15,7 +15,7 @@
       <v-row align="stretch" dense class="mt-6">
         <v-col v-for="(svc, i) in itemsToRender" :key="i" cols="12" sm="6" md="6" lg="3" class="d-flex">
           <div class="svc-card">
-            <div class="svc-media" @click="goToServices">
+            <div class="svc-media" @click="goToServiceCategory(svc.title)">
               <img :src="svc.image" class="svc-img" :alt="svc.title" />
               <div class="svc-overlay">
                 <h3 class="svc-title">{{ svc.title }}</h3>
@@ -54,27 +54,27 @@ const props = defineProps<{
 useTheme()
 const localItems: ServiceItem[] = [
   {
-    title: 'Business Registration & Legal Services',
+    title: 'Investor & Land Services',
     description:
-      'We provide comprehensive business registration and legal services to help you establish and grow your business.',
+      'We provide comprehensive investor and land services to help you establish and grow your business.',
     image: '/images/services/service-1.png',
   },
   {
-    title: 'Agricultural Consultancy',
+    title: 'Project Planning & Finance',
     description:
-      'We offer expert agricultural consultancy services to help farmers and businesses optimize their operations and achieve sustainable growth.',
+      'We offer expert project planning and finance services to help businesses optimize their operations and achieve sustainable growth.',
     image: '/images/services/service-2.png',
   },
   {
-    title: 'Value Added Services',
+    title: 'Agronomy & Farm Development',
     description:
-      'We provide a range of value-added services to enhance the quality and marketability of agricultural products.',
+      'We provide a range of agronomy and farm development services to enhance the quality and marketability of agricultural products.',
     image: '/images/services/service-3.png',
   },
   {
-    title: 'Export & Trade Facilitation',
+    title: 'Processing & Value Addition',
     description:
-      'We assist businesses in navigating the complexities of export and trade, ensuring smooth and efficient transactions across borders.',
+      'We assist businesses in navigating the complexities of processing and value addition, ensuring smooth and efficient transactions across borders.',
     image: '/images/services/service-4.png',
   },
 ]
@@ -84,6 +84,20 @@ const mainTitle = computed(() => props.mainTitle || 'Popular Services we offer f
 const lead = computed(() => props.lead || 'Explore our most trusted agricultural products and services designed to support farmers, businesses, and communities. From high-quality crops to sustainable solutions, we bring you the best to grow, trade, and thrive.')
 function goToServices() {
   window.location.href = '/services'
+}
+function goToServiceCategory(serviceTitle: string) {
+  const categoryMap: { [key: string]: number } = {
+    'Investor & Land Services': 0,
+    'Project Planning & Finance': 1,
+    'Agronomy & Farm Development': 2,
+    'Processing & Value Addition': 3
+  }
+  const categoryIndex = categoryMap[serviceTitle]
+  if (categoryIndex !== undefined) {
+    window.location.href = `/services?category=${categoryIndex}`
+  } else {
+    goToServices()
+  }
 }
 </script>
 
