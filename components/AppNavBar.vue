@@ -24,9 +24,9 @@
                 <v-list-item @click="goToAdmin" link>
                     <v-list-item-title>Log In</v-list-item-title>
                 </v-list-item>
-                <div class="d-flex">
+                <!-- <div class="d-flex">
                     <LanguageSelector/>
-                </div>
+                </div> -->
             </v-list>
         </v-navigation-drawer>
         <v-fab-transition>
@@ -58,9 +58,9 @@
         </v-btn>
       </div>
       <v-btn flat v-for="item in menuItems.slice(6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
-      <div class="d-flex align-center mx-3">
+      <!-- <div class="d-flex align-center mx-3">
         <LanguageSelector/>
-      </div>
+      </div> -->
     </v-toolbar-items>
   </v-toolbar>
 </v-app-bar>

@@ -54,7 +54,7 @@
         </v-col>
         <v-col cols="12" md="6" class="text-md-end">
           <div class="footer-legal">
-          <LanguageSelector class="mr-4" />
+          <!-- <LanguageSelector class="mr-4" /> -->
             <a href="/privacy" class="footer-legal-link footer-primary-text footer-link-base">Privacy Policy</a>
             <span class="footer-separator footer-secondary-text">|</span>
             <a href="/terms" class="footer-legal-link footer-primary-text footer-link-base">Terms of Service</a>
