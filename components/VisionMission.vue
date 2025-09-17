@@ -58,7 +58,7 @@ const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
 }
 .eyebrow {
   text-align: center;
-  color: rgb(var(--v-theme-vision-mission-eyebrow));
+  color: rgb(var(--v-theme-title-subtitle));
   font-family: ui-serif, Georgia, 'Times New Roman', Times, serif;
   font-size: 22px;
   margin: 0 0 6px;

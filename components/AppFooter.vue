@@ -54,7 +54,7 @@
         </v-col>
         <v-col cols="12" md="6" class="text-md-end">
           <div class="footer-legal">
-          <LanguageSelector class="mr-4" />
+          <!-- <LanguageSelector class="mr-4" /> -->
             <a href="/privacy" class="footer-legal-link footer-primary-text footer-link-base">Privacy Policy</a>
             <span class="footer-separator footer-secondary-text">|</span>
             <a href="/terms" class="footer-legal-link footer-primary-text footer-link-base">Terms of Service</a>
@@ -71,13 +71,12 @@
 import { ref, computed } from 'vue'
 const currentYear = computed(() => new Date().getFullYear())
 const footerDescription = ref('Empowering proprietary plantations for a sustainable future through unified representation and agricultural innovation.')
-const { $config } = useNuxtApp()
 const quickLinks = ref([
   { title: 'Home', path: '/' },
   { title: 'About Us', path: '/aboutus' },
   { title: 'Announcements', path: '/announcements' },
   { title: 'Services', path: '/services' },
-  { title: 'Join PPA', url: $config.public.registerUrl, external: true }
+  { title: 'Join PPA', path: '/providerselector' }
 ])
 const socialLinks = ref([
   { name: 'Facebook', icon: 'mdi-facebook', url: 'https://www.facebook.com/share/1BZSphvAiV/?mibextid=wwXIfr' },
@@ -220,18 +219,19 @@ const contactInfo = ref([
 }
 .footer-social-btn {
   margin-right: 8px;
-  transition: color 0.3s ease, background-color 0.3s ease;
+  color: rgb(var(--v-theme-text));
+  transition: background-color 0.3s ease;
 }
 .footer-social-btn:hover {
-  color: rgb(var(--v-theme-footer-link-hover));
-  background-color: rgb(var(--v-theme-footer-social-btn-bg));
+  color: rgb(var(--v-theme-text)) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 .custom-x-icon {
   filter: brightness(0) invert(1);
-  transition: filter 0.3s ease;
+  transition: none;
 }
 .footer-social-btn:hover .custom-x-icon {
-  filter: brightness(0) invert(1) sepia(1) hue-rotate(88deg) saturate(2);
+  filter: brightness(0) invert(1);
 }
 .footer-divider {
   border-color: rgb(var(--v-theme-footer-border));

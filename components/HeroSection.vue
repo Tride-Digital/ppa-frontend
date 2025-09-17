@@ -33,7 +33,7 @@
               </Transition>
               <div class="hero-buttons-fixed">
                 <v-btn color="primary" size="large" class="me-4 mb-3" to="/aboutus">Learn More</v-btn>
-                <v-btn @click="goToRegister" color="white" size="large" class="mb-3">Join PPA</v-btn>
+                <v-btn color="white" size="large" class="mb-3" to="/providerselector">Join PPA</v-btn>
               </div>
             </div>
           </v-col>
@@ -48,7 +48,6 @@ import { ref, reactive, shallowReactive, computed, onMounted, onUnmounted } from
 import { VueFlux, FluxPreloader, FluxControls, FluxPagination, Img, Fade } from 'vue-flux'
 import 'vue-flux/style.css'
 
-const config = useRuntimeConfig()
 const vueflux = ref(null)
 const isTransitioning = ref(false)
 const autoplayTimer = ref(null)
@@ -81,7 +80,6 @@ const travelY    = '5px'
 const leaveDelay = 0
 const currentIndex = ref(0)
 const pendingIndex = ref(null)
-const goToRegister = () => window.open(config.public.registerUrl, '_blank')
 const startAutoplay = () => {
   if (autoplayTimer.value) {
     clearInterval(autoplayTimer.value)
