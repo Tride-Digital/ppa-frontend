@@ -47,7 +47,11 @@
 import { ref, onMounted } from 'vue'
 import ServiceCard from './ServiceCard.vue'
 import { useCart } from '~/composables/useCart'
+import { useRoute } from 'vue-router'
+
 const { addToCart } = useCart()
+const route = useRoute()
+
 const sectionDescription = ref('Discover the diverse range of high-quality services offered by our plantation experts across Sri Lanka')
 const activeCategory = ref(-1)
 const navigationItems = ref([
@@ -365,7 +369,17 @@ const navigationItems = ref([
 const showCartModal = ref(false)
 // Load cart from localStorage on mount
 onMounted(() => {
-  activeCategory.value = 0
+  const categoryParam = route.query.category
+  if (categoryParam !== undefined) {
+    const categoryIndex = parseInt(categoryParam)
+    if (categoryIndex >= 0 && categoryIndex < navigationItems.value.length) {
+      activeCategory.value = categoryIndex
+    } else {
+      activeCategory.value = 0
+    }
+  } else {
+    activeCategory.value = 0
+  }
 })
 const selectCategory = (index) => {
   activeCategory.value = activeCategory.value === index ? -1 : index
