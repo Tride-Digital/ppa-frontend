@@ -71,13 +71,12 @@
 import { ref, computed } from 'vue'
 const currentYear = computed(() => new Date().getFullYear())
 const footerDescription = ref('Empowering proprietary plantations for a sustainable future through unified representation and agricultural innovation.')
-const { $config } = useNuxtApp()
 const quickLinks = ref([
   { title: 'Home', path: '/' },
   { title: 'About Us', path: '/aboutus' },
   { title: 'Announcements', path: '/announcements' },
   { title: 'Services', path: '/services' },
-  { title: 'Join PPA', url: $config.public.registerUrl, external: true }
+  { title: 'Join PPA', path: '/providerselector' }
 ])
 const socialLinks = ref([
   { name: 'Facebook', icon: 'mdi-facebook', url: 'https://www.facebook.com/share/1BZSphvAiV/?mibextid=wwXIfr' },
