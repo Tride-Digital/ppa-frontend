@@ -1,19 +1,8 @@
 <template>
   <div class="blog-page">
-    <!-- Show Blog Details Component when a post is selected -->
-    <BlogDetails 
-      v-if="showDetails && selectedPost" 
-      :blog-post="selectedPost"
-      @close="closeDetails"
-      @navigate-to-post="handlePostNavigation"
-    />
-    
-    <!-- Show Blog Listing when no post is selected -->
-    <div v-else class="blog-listing">
-      <!-- Unified Blog Section -->
+    <div class="blog-listing">
       <section class="unified-blog-section py-12">
         <v-container>
-          <!-- Centered Header -->
           <v-row class="mb-12" justify="center">
             <v-col cols="12" class="text-center">
               <h2 class="section-title mb-4">{{ headerSection.title }}</h2>
@@ -21,60 +10,25 @@
               <div class="header-divider mx-auto mt-6"></div>
             </v-col>
           </v-row>
-
-          <!-- Blog Cards Grid -->
           <v-row class="blog-grid">
-            <v-col
-              v-for="(post, index) in paginatedPosts"
-              :key="post.id"
-              cols="12"
-              md="6"
-              lg="4"
-              class="blog-col"
-            >
-              <v-card
-                class="blog-card"
-                elevation="0"
-                hover
-                @click="navigateToPost(post)"
-                :style="{ animationDelay: `${index * 0.1}s` }"
-              >
-                <!-- Blog Image -->
+            <v-col v-for="(post, index) in paginatedPosts" :key="post.id" cols="12" md="6" lg="4" class="blog-col">
+              <v-card class="blog-card" elevation="0" hover @click="navigateToPost(post)" :style="{ animationDelay: `${index * 0.1}s` }">
                 <div class="image-container">
-                  <v-img
-                    :src="post.image"
-                    :alt="post.title"
-                    height="280"
-                    cover
-                    class="blog-image"
-                  >
+                  <v-img :src="post.image" :alt="post.title" height="280" cover class="blog-image">
                     <template #placeholder>
                       <v-row class="fill-height ma-0" align="center" justify="center">
                         <v-progress-circular indeterminate color="primary" />
                       </v-row>
                     </template>
-                    
-                    <!-- Category Badge -->
-                    <v-chip
-                      class="category-chip"
-                      :color="post.categoryColor"
-                      variant="elevated"
-                      size="small"
-                      label
-                    >
+                    <v-chip class="category-chip" :color="post.categoryColor" variant="elevated" size="small" label>
                       {{ post.category }}
                     </v-chip>
-
-                    <!-- Overlay on hover -->
                     <div class="image-overlay">
                       <v-icon size="32" color="white">mdi-arrow-right</v-icon>
                     </div>
                   </v-img>
                 </div>
-
-                <!-- Card Content -->
                 <v-card-text class="blog-content pa-6">
-                  <!-- Meta Information -->
                   <div class="meta-info mb-4">
                     <div class="meta-item">
                       <v-icon size="16" class="me-1">mdi-calendar-outline</v-icon>
@@ -85,83 +39,36 @@
                       <span>{{ post.readingTime }}</span>
                     </div>
                   </div>
-
-                  <!-- Title -->
                   <h3 class="blog-title mb-3">{{ post.title }}</h3>
-
-                  <!-- Description -->
                   <p class="blog-description mb-4">{{ post.description }}</p>
-
-                  <!-- Tags -->
                   <div class="tags-section mb-5">
-                    <v-chip
-                      v-for="tag in post.tags.slice(0, 3)"
-                      :key="tag"
-                      size="small"
-                      variant="outlined"
-                      class="me-2 mb-1 tag-chip"
-                      color="primary"
-                    >
+                    <v-chip v-for="tag in post.tags.slice(0, 3)" :key="tag" size="small" variant="outlined" class="me-2 mb-1 tag-chip" color="primary">
                       {{ tag }}
                     </v-chip>
-                    <v-chip
-                      v-if="post.tags.length > 3"
-                      size="small"
-                      variant="text"
-                      class="more-tags"
-                    >
+                    <v-chip v-if="post.tags.length > 3" size="small" variant="text" class="more-tags">
                       +{{ post.tags.length - 3 }} more
                     </v-chip>
                   </div>
-
-                  <!-- Read More Button -->
                   <div class="read-more-section">
-                    <v-btn
-                      :text="readMoreLabel"
-                      color="primary"
-                      variant="flat"
-                      size="default"
-                      block
-                      class="read-more-btn"
-                      append-icon="mdi-arrow-right"
-                      @click.stop="navigateToPost(post)"
-                    />
+                    <v-btn :text="readMoreLabel" color="primary" variant="flat" size="default" block class="read-more-btn" append-icon="mdi-arrow-right" @click.stop="navigateToPost(post)"/>
                   </div>
                 </v-card-text>
               </v-card>
             </v-col>
           </v-row>
-
-          <!-- Simple Pagination -->
           <v-row v-if="totalPages > 1" justify="center" class="mt-12">
             <v-col cols="12" class="text-center">
               <div class="simple-pagination">
-                <v-btn
-                  icon="mdi-chevron-left"
-                  :disabled="currentPage === 1"
-                  @click="currentPage--; scrollToTop()"
-                  class="nav-btn"
-                  size="default"
-                />
-                
+                <v-btn icon="mdi-chevron-left" :disabled="currentPage === 1" @click="currentPage--; scrollToTop()" class="nav-btn" size="default"/>
                 <div class="page-info">
                   <span class="current-page">{{ currentPage }}</span>
                   <span class="page-separator">of</span>
                   <span class="total-pages">{{ totalPages }}</span>
                 </div>
-                
-                <v-btn
-                  icon="mdi-chevron-right"
-                  :disabled="currentPage === totalPages"
-                  @click="currentPage++; scrollToTop()"
-                  class="nav-btn"
-                  size="default"
-                />
+                <v-btn icon="mdi-chevron-right" :disabled="currentPage === totalPages" @click="currentPage++; scrollToTop()" class="nav-btn" size="default"/>
               </div>
             </v-col>
           </v-row>
-
-          <!-- Empty State -->
           <v-row v-if="!paginatedPosts.length" justify="center" class="mt-12">
             <v-col cols="12" md="6" class="text-center">
               <div class="empty-state">
@@ -179,53 +86,34 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import BlogDetails from '~/components/BlogDetails.vue'
 
-// SEO Meta
 useHead({
   title: 'PPA Blog - Plantation Industry Insights & Best Practices',
   meta: [
     { name: 'description', content: 'Discover the latest insights, SMART agronomic practices, and industry updates from the Proprietary Planters Association of Sri Lanka.' }
   ]
 })
-
-// Use the blog data composable
-const { getAllPosts, selectPost, closeDetails, selectedPost, showDetails } = useBlogData()
-
-// Reactive Variables
+const { getAllPosts } = useBlogData()
 const currentPage = ref<number>(1)
-
-// Configuration
 const postsPerPage = ref<number>(6)
-
-// Content Variables
 const headerSection = ref({
   title: 'Our Blog',
   subtitle: 'Empowering Sri Lankan proprietary planters with SMART agronomic practices, industry insights, and sustainable plantation management strategies.'
 })
-
 const readMoreLabel = ref('Read More')
-
-// Get blog posts from composable
 const blogPosts = ref(getAllPosts())
-
-// Simplified sorted posts - just show by newest first
 const sortedPosts = computed(() => {
   const posts = [...blogPosts.value]
   return posts.sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime())
 })
-
 const totalPages = computed(() => {
   return Math.ceil(sortedPosts.value.length / postsPerPage.value)
 })
-
 const paginatedPosts = computed(() => {
   const start = (currentPage.value - 1) * postsPerPage.value
   const end = start + postsPerPage.value
   return sortedPosts.value.slice(start, end)
 })
-
-// Methods
 const formatDate = (dateString: string): string => {
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -234,31 +122,13 @@ const formatDate = (dateString: string): string => {
   }
   return new Date(dateString).toLocaleDateString('en-US', options)
 }
-
 const navigateToPost = (post: any): void => {
-  // Use the composable to select the post and show details
-  selectPost(post)
-  
-  // Scroll to top when showing details
-  scrollToTop()
+  navigateTo(`/blogs/${post.id}`)
 }
-
-const handlePostNavigation = (postId: number): void => {
-  // Find the post by ID and navigate to it
-  const post = blogPosts.value.find(p => p.id === postId)
-  if (post) {
-    selectPost(post)
-    scrollToTop()
-  }
-}
-
 const scrollToTop = (): void => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
-
-// Lifecycle
 onMounted(() => {
-  // Any initialization logic if needed
 })
 </script>
 
@@ -268,7 +138,6 @@ onMounted(() => {
   background: linear-gradient(135deg, #f0f9ff 0%, #dcfce7 100%);
   position: relative;
 }
-
 .blog-page::before {
   content: '';
   position: absolute;
@@ -279,18 +148,14 @@ onMounted(() => {
   background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="%23000" opacity="0.02"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
   pointer-events: none;
 }
-
 .blog-listing {
   position: relative;
   z-index: 1;
 }
-
-/* Unified Blog Section */
 .unified-blog-section {
   background: transparent;
   position: relative;
 }
-
 .section-title {
   font-size: 3rem;
   font-weight: 800;
@@ -302,7 +167,6 @@ onMounted(() => {
   background-clip: text;
   letter-spacing: -0.02em;
 }
-
 .header-subtitle {
   font-size: 1.2rem;
   line-height: 1.8;
@@ -314,33 +178,26 @@ onMounted(() => {
   opacity: 0.85;
   font-weight: 400;
 }
-
 .header-divider {
   width: 80px;
   height: 4px;
   background: linear-gradient(135deg, rgb(var(--v-theme-success)) 0%, rgb(var(--v-theme-primary)) 100%);
   border-radius: 2px;
 }
-
-/* Blog Grid Animation */
 .blog-grid {
   perspective: 1000px;
 }
-
 .blog-col {
   animation: fadeInUp 0.8s ease-out forwards;
   opacity: 0;
   transform: translateY(30px);
 }
-
 @keyframes fadeInUp {
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-
-/* Enhanced Blog Cards */
 .blog-card {
   border-radius: 24px;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -354,7 +211,6 @@ onMounted(() => {
   overflow: hidden;
   position: relative;
 }
-
 .blog-card::before {
   content: '';
   position: absolute;
@@ -367,30 +223,24 @@ onMounted(() => {
   transition: opacity 0.3s ease;
   z-index: 1;
 }
-
 .blog-card:hover::before {
   opacity: 1;
 }
-
 .blog-card:hover {
   transform: translateY(-12px) scale(1.02);
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
 }
-
 .image-container {
   position: relative;
   overflow: hidden;
 }
-
 .blog-image {
   transition: transform 0.4s ease;
   border-radius: 24px 24px 0 0;
 }
-
 .blog-card:hover .blog-image {
   transform: scale(1.05);
 }
-
 .category-chip {
   position: absolute;
   top: 16px;
@@ -404,7 +254,6 @@ onMounted(() => {
   font-size: 0.75rem;
   letter-spacing: 0.5px;
 }
-
 .image-overlay {
   position: absolute;
   top: 0;
@@ -419,11 +268,9 @@ onMounted(() => {
   transition: opacity 0.3s ease;
   z-index: 2;
 }
-
 .blog-card:hover .image-overlay {
   opacity: 1;
 }
-
 .blog-content {
   flex-grow: 1;
   display: flex;
@@ -431,21 +278,18 @@ onMounted(() => {
   position: relative;
   z-index: 2;
 }
-
 .meta-info {
   display: flex;
   gap: 16px;
   opacity: 0.7;
   font-size: 0.875rem;
 }
-
 .meta-item {
   display: flex;
   align-items: center;
   color: #64748b;
   font-weight: 500;
 }
-
 .blog-title {
   font-size: 1.4rem;
   font-weight: 700;
@@ -454,11 +298,9 @@ onMounted(() => {
   transition: color 0.3s ease;
   letter-spacing: -0.01em;
 }
-
 .blog-card:hover .blog-title {
   color: rgb(var(--v-theme-success)) !important;
 }
-
 .blog-description {
   line-height: 1.7;
   flex-grow: 1;
@@ -466,32 +308,26 @@ onMounted(() => {
   font-size: 0.95rem;
   font-weight: 400;
 }
-
 .tags-section {
   margin-top: auto;
 }
-
 .tag-chip {
   border-radius: 12px;
   font-weight: 500;
   transition: all 0.3s ease;
   font-size: 0.8rem;
 }
-
 .tag-chip:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(var(--v-theme-success), 0.3);
 }
-
 .more-tags {
   color: #94a3b8 !important;
   font-size: 0.8rem;
 }
-
 .read-more-section {
   margin-top: 20px;
 }
-
 .read-more-btn {
   border-radius: 16px;
   font-weight: 600;
@@ -503,13 +339,10 @@ onMounted(() => {
   color: white !important;
   box-shadow: 0 4px 15px rgba(var(--v-theme-success), 0.4);
 }
-
 .read-more-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(var(--v-theme-success), 0.5);
 }
-
-/* Simple Pagination */
 .simple-pagination {
   display: flex;
   align-items: center;
@@ -523,27 +356,23 @@ onMounted(() => {
   box-shadow: 0 4px 20px rgba(var(--v-theme-success), 0.1);
   display: inline-flex;
 }
-
 .nav-btn {
   background: rgba(var(--v-theme-success), 0.1) !important;
   color: rgb(var(--v-theme-primary)) !important;
   border-radius: 12px;
   transition: all 0.3s ease;
 }
-
 .nav-btn:hover:not(:disabled) {
   background: rgb(var(--v-theme-success)) !important;
   color: white !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(var(--v-theme-success), 0.3);
 }
-
 .nav-btn:disabled {
   background: rgba(148, 163, 184, 0.1) !important;
   color: #94a3b8 !important;
   opacity: 0.5;
 }
-
 .page-info {
   display: flex;
   align-items: center;
@@ -553,25 +382,20 @@ onMounted(() => {
   min-width: 80px;
   justify-content: center;
 }
-
 .current-page {
   color: rgb(var(--v-theme-success));
   font-size: 1.1rem;
   font-weight: 700;
 }
-
 .page-separator {
   color: #64748b;
   font-weight: 400;
   font-size: 0.9rem;
 }
-
 .total-pages {
   color: #64748b;
   font-weight: 500;
 }
-
-/* Empty State */
 .empty-state {
   padding: 60px 20px;
   background: rgba(255, 255, 255, 0.8);
@@ -579,76 +403,59 @@ onMounted(() => {
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
-
-/* Responsive Design */
 @media (max-width: 960px) {
   .section-title {
     font-size: 2.5rem;
   }
-  
   .header-subtitle {
     font-size: 1.1rem;
     padding: 0 1rem;
   }
-
   .blog-card {
     border-radius: 20px;
   }
-
   .blog-card:hover {
     transform: translateY(-8px) scale(1.01);
   }
-
   .simple-pagination {
     padding: 12px 24px;
     gap: 16px;
   }
 }
-
 @media (max-width: 600px) {
   .section-title {
     font-size: 2rem;
   }
-  
   .header-subtitle {
     font-size: 1rem;
   }
-
   .blog-content {
     padding: 20px !important;
   }
-
   .meta-info {
     flex-direction: column;
     gap: 8px;
   }
-
   .blog-title {
     font-size: 1.2rem;
   }
-
   .unified-blog-section {
     padding-top: 2rem !important;
     padding-bottom: 2rem !important;
   }
-
   .simple-pagination {
     padding: 10px 20px;
     gap: 12px;
   }
-
   .page-info {
     min-width: 60px;
     gap: 6px;
   }
 }
-
-/* Performance optimizations */
 .blog-card {
   will-change: transform;
   contain: layout style paint;
 }
-
 .blog-image {
   will-change: transform;
 }

@@ -152,15 +152,12 @@ export default {
     async handleCardClick(card) {
       if (card && card.blogId) {
         try {
-          const { selectPost, getPostById } = useModernTechStore()
+          const { getPostById } = useBlogData()
           const blogPost = getPostById(card.blogId)
           if (blogPost) {
-            // Store the selected post
-            selectPost(blogPost)
-            // Navigate to the blog detail page with 'tech' prefix
-            await this.$router.push(`/blog/tech/${blogPost.id}`)
+            await this.$router.push(`/blogs/${blogPost.id}`)
           } else {
-            console.warn(`Modern Tech blog post with ID ${card.blogId} not found`)
+            console.warn(`Blog post with ID ${card.blogId} not found`)
             await this.$router.push('/blogs')
           }
         } catch (error) {

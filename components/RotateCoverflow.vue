@@ -54,7 +54,7 @@ import 'swiper/css/effect-coverflow'
 import 'swiper/css/navigation'
 import { computed, ref } from 'vue'
 
-const { selectPost, getPostById } = useValueAdditionStore()
+const { getPostById } = useBlogData()
 
 const props = defineProps({
   items: {
@@ -146,10 +146,9 @@ const handleItemClick = async (item) => {
     try {
       const blogPost = getPostById(item.blogId)
       if (blogPost) {
-        selectPost(blogPost)
-        await navigateTo(`/blog/value/${blogPost.id}`)
+        await navigateTo(`/blogs/${blogPost.id}`)
       } else {
-        console.warn(`Value Addition blog post with ID ${item.blogId} not found`)
+        console.warn(`Blog post with ID ${item.blogId} not found`)
         await navigateTo('/blogs')
       }
     } catch (error) {
