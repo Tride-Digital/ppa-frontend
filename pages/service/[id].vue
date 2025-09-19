@@ -40,8 +40,7 @@
             <div class="service-details">
               <h2 class="section-title mb-6 text-on-surface">Service Overview</h2>
               <div class="overview-content">
-                <p class="text-body-1 mb-6 text-on-surface">
-                  {{ service.description }}
+                <p class="text-body-1 mb-6 text-on-surface" v-html="service.description">
                 </p>
                 <h3 v-if="service.keyFeatures && service.keyFeatures.length > 0" class="subsection-title mb-4 text-on-surface">Key Features</h3>
                 <v-row v-if="service.keyFeatures && service.keyFeatures.length > 0" class="mb-6">
