@@ -193,7 +193,7 @@ const submitOrder = async () => {
       name: form.value.name,
       email: form.value.email,
       phone: form.value.phone,
-      district: form.value.district.toLowerCase(),
+      district: form.value.district,
       address: form.value.address,
       comment: form.value.comment || '',
       services: cartItems.value.map(item => ({
