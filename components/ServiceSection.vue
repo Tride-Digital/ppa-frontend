@@ -67,9 +67,11 @@ const {
   transformServiceCategories,
   getServiceIdByName 
 } = useServices()
+
 const sectionDescription = ref('Discover the diverse range of high-quality services offered by our plantation experts across Sri Lanka')
 const activeCategory = ref(-1)
 const navigationItems = ref([])
+
 onMounted(async () => {
   const data = await fetchAllServices()
   if (data && data.length > 0) {
