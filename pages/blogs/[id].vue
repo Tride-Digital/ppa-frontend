@@ -10,23 +10,23 @@
                   Back to Blog
                 </v-btn>
               </div>
-              <v-chip :color="blogPost.categoryColor || 'accent'" variant="elevated" size="large" class="category-badge mb-6">
+              <v-chip :color="getCategoryColor(blogPost.blog_category)" variant="elevated" size="large" class="category-badge mb-6">
                 <v-icon start>mdi-leaf</v-icon>
-                {{ blogPost.category }}
+                {{ blogPost.blog_category }}
               </v-chip>
-              <h1 class="hero-title mb-6">{{ blogPost.title }}</h1>
+              <h1 class="hero-title mb-6">{{ blogPost.blog_name }}</h1>
               <div class="hero-meta">
                 <v-row align="center" justify="center" class="mb-4">
                   <v-col cols="auto">
                     <div class="meta-chips">
                       <v-chip variant="elevated" color="white" prepend-icon="mdi-calendar" class="me-3 mb-2">
-                        <span class="meta-text">{{ formatDate(blogPost.publishDate) }}</span>
+                        <span class="meta-text">{{ formatDate(blogPost.created_date) }}</span>
                       </v-chip>
                       <v-chip variant="elevated" color="white" prepend-icon="mdi-clock-outline" class="me-3 mb-2">
-                        <span class="meta-text">{{ blogPost.readingTime }}</span>
+                        <span class="meta-text">{{ blogPost.reading_time }} min read</span>
                       </v-chip>
                       <v-chip variant="elevated" color="white" prepend-icon="mdi-eye-outline" class="mb-2">
-                        <span class="meta-text">{{ blogPost.views }} views</span>
+                        <span class="meta-text">{{ blogPost.description?.view_count || 0 }} views</span>
                       </v-chip>
                     </div>
                   </v-col>
@@ -49,28 +49,23 @@
                       <h2 class="section-heading">Introduction</h2>
                       <div class="section-divider"></div>
                     </div>
-                    <p class="lead-paragraph">{{ blogPost.introduction }}</p>
+                    <p class="lead-paragraph" v-html="blogPost.description?.introduction"></p>
                   </div>
                   <div class="featured-image mb-8">
                     <div class="image-container">
-                      <v-img :src="blogPost.featuredImage || blogPost.image" :alt="blogPost.title" cover class="featured-img" height="350" :lazy-src="getPlaceholderImage()" @error="handleImageError">
+                      <v-img :src="blogPost.image_url" :alt="blogPost.blog_name" cover class="featured-img" height="350">
                         <template v-slot:placeholder>
                           <div class="d-flex align-center justify-center fill-height">
                             <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
                           </div>
                         </template>
                       </v-img>
-                      <div class="image-overlay">
-                        <v-btn icon variant="elevated" color="white" class="expand-btn" @click="openImageModal">
-                          <v-icon>mdi-magnify-plus</v-icon>
-                        </v-btn>
-                      </div>
                     </div>
-                    <p class="image-caption mt-3">{{ blogPost.imageCaption || 'Featured image for ' + blogPost.title }}</p>
+                    <p class="image-caption mt-3" v-html="formatTextWithLineBreaks(blogPost.description?.image_caption)"></p>
                   </div>
                   <div class="main-content-section mb-8">
                     <div class="content-wrapper">
-                      <p class="main-content-text">{{ blogPost.mainContent }}</p>
+                      <p class="main-content-text" v-html="formatTextWithLineBreaks(blogPost.description?.main_content)"></p>
                     </div>
                   </div>
                   <div class="content-section mb-6">
@@ -80,7 +75,7 @@
                     </div>
                     <div class="conclusion-content">
                       <v-icon class="conclusion-icon" color="accent">mdi-lightbulb-on</v-icon>
-                      <div class="conclusion-text">{{ blogPost.conclusion }}</div>
+                      <div class="conclusion-text" v-html="formatTextWithLineBreaks(blogPost.description?.conclusion)"></div>
                     </div>
                   </div>
                   <div class="tags-section mt-8 pt-6">
@@ -89,7 +84,7 @@
                       <div class="section-divider small"></div>
                     </div>
                     <div class="tags-container">
-                      <v-chip v-for="tag in blogPost.tags" :key="tag" color="primary" variant="outlined" class="tag-chip me-2 mb-2" prepend-icon="mdi-tag">
+                      <v-chip v-for="tag in blogPost.related_topics" :key="tag" color="primary" variant="outlined" class="tag-chip me-2 mb-2" prepend-icon="mdi-tag">
                         {{ tag }}
                       </v-chip>
                     </div>
@@ -100,7 +95,7 @@
           </v-col>
           <v-col cols="12" lg="4" xl="4">
             <div class="sidebar">
-              <v-card class="related-articles" elevation="4">
+              <v-card class="related-articles" elevation="4" v-if="relatedArticles.length">
                 <v-card-title class="related-header pa-4">
                   <v-icon class="me-2" color="primary">mdi-file-document-multiple</v-icon>
                   <span class="related-title">Related Articles</span>
@@ -108,31 +103,28 @@
                 <v-divider></v-divider>
                 <v-card-text class="pa-0">
                   <v-list class="related-list">
-                    <v-list-item v-for="(article, index) in relatedArticles" :key="article.id" @click="navigateToPost(article.id)" class="related-article-item pa-3" :class="{ 'border-bottom': index < relatedArticles.length - 1 }">
+                    <v-list-item v-for="(article, index) in relatedArticles" :key="article.id" @click="navigateToPost(article.id)" class="related-article-item pa-3">
                       <template #prepend>
                         <div class="article-image-wrapper me-3">
-                          <v-img :src="article.featuredImage || article.image" width="64" height="64" cover class="article-thumb" :lazy-src="getPlaceholderImage()" @error="handleRelatedImageError">
+                          <v-img :src="article.image_url" width="64" height="64" cover class="article-thumb">
                             <template v-slot:placeholder>
                               <div class="d-flex align-center justify-center fill-height">
                                 <v-progress-circular size="20" color="grey-lighten-4" indeterminate></v-progress-circular>
                               </div>
                             </template>
                           </v-img>
-                          <div class="image-overlay-small">
-                            <v-icon color="white" size="small">mdi-arrow-right</v-icon>
-                          </div>
                         </div>
                       </template>
                       <div class="article-content">
                         <v-list-item-title class="related-article-title mb-1">
-                          {{ article.title }}
+                          {{ article.name }}
                         </v-list-item-title>
                         <v-list-item-subtitle class="related-article-meta">
                           <v-icon size="small" class="me-1">mdi-calendar</v-icon>
-                          {{ formatDate(article.publishDate) }}
+                          {{ formatDate(article.created_date) }}
                           <span class="mx-2">•</span>
                           <v-icon size="small" class="me-1">mdi-clock</v-icon>
-                          {{ article.readingTime }}
+                          {{ article.reading_time }} min read
                         </v-list-item-subtitle>
                       </div>
                     </v-list-item>
@@ -161,9 +153,10 @@
               </v-card-title>
               <v-divider></v-divider>
               <v-card-text class="pa-4">
-                <v-textarea v-model="newComment" label="Share your thoughts and insights..." variant="outlined" rows="3" class="mb-4" hide-details bg-color="background"/>
+                <v-text-field v-model="newCommentAuthor" label="Your Name" variant="outlined" class="mb-4" />
+                <v-textarea v-model="newCommentText" label="Share your thoughts and insights..." variant="outlined" rows="3" class="mb-4" />
                 <div class="d-flex justify-end">
-                  <v-btn color="primary" @click="addComment" variant="elevated" class="submit-btn" :disabled="!newComment.trim()">
+                  <v-btn color="primary" @click="submitComment" variant="elevated" class="submit-btn" :loading="commentLoading" :disabled="!newCommentText.trim() || !newCommentAuthor.trim()">
                     <v-icon start>mdi-send</v-icon>
                     Post Comment
                   </v-btn>
@@ -171,53 +164,23 @@
               </v-card-text>
             </v-card>
             <div class="comments-list">
-              <v-card v-for="(comment, index) in comments" :key="comment.id" class="comment-card mb-4" elevation="2">
+              <v-card v-for="comment in comments" :key="comment.id" class="comment-card mb-4" elevation="2">
                 <v-card-text class="pa-4">
                   <div class="comment-header mb-3">
                     <div class="d-flex align-center">
                       <v-avatar size="45" class="me-3">
-                        <v-img :src="comment.avatar" :alt="comment.author" :lazy-src="getPlaceholderAvatar()">
-                          <template v-slot:placeholder>
-                            <v-icon size="30">mdi-account</v-icon>
-                          </template>
-                        </v-img>
+                        <v-icon size="30">mdi-account</v-icon>
                       </v-avatar>
                       <div class="comment-meta flex-grow-1">
-                        <div class="comment-author">{{ comment.author }}</div>
+                        <div class="comment-author">{{ comment.user_name }}</div>
                         <div class="comment-date">
                           <v-icon size="small" class="me-1">mdi-clock-outline</v-icon>
-                          {{ formatDate(comment.date) }}
+                          {{ formatDate(comment.created_at) }}
                         </div>
                       </div>
-                      <v-menu>
-                        <template #activator="{ props }">
-                          <v-btn icon variant="text" size="small" v-bind="props">
-                            <v-icon>mdi-dots-vertical</v-icon>
-                          </v-btn>
-                        </template>
-                        <v-list>
-                          <v-list-item @click="reportComment(comment.id)">
-                            <v-list-item-title>Report</v-list-item-title>
-                          </v-list-item>
-                        </v-list>
-                      </v-menu>
                     </div>
                   </div>
-                  <div class="comment-content mb-3">{{ comment.content }}</div>
-                  <div class="comment-actions">
-                    <v-btn variant="text" size="small" color="primary" class="me-2" @click="likeComment(comment.id)">
-                      <v-icon start size="small">mdi-thumb-up</v-icon>
-                      {{ comment.likes }}
-                    </v-btn>
-                    <v-btn variant="text" size="small" color="primary" class="me-2" @click="replyToComment(comment.id)">
-                      <v-icon start size="small">mdi-reply</v-icon>
-                      Reply
-                    </v-btn>
-                    <v-btn variant="text" size="small" color="primary" @click="shareComment(comment.id)">
-                      <v-icon start size="small">mdi-share</v-icon>
-                      Share
-                    </v-btn>
-                  </div>
+                  <div class="comment-content mb-3">{{ comment.comment }}</div>
                 </v-card-text>
               </v-card>
             </div>
@@ -225,26 +188,8 @@
         </v-row>
       </v-container>
     </section>
-    <v-dialog v-model="showImageModal" max-width="90vw" max-height="90vh">
-      <v-card>
-        <v-card-actions class="justify-end pa-2">
-          <v-btn icon @click="showImageModal = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-actions>
-        <v-card-text class="pa-0">
-          <v-img :src="blogPost.featuredImage || blogPost.image" :alt="blogPost.title" contain max-height="80vh"/>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-    <v-btn v-show="showBackToTop" class="back-to-top" color="primary" icon elevation="4" @click="scrollToTop">
-      <v-icon>mdi-arrow-up</v-icon>
-    </v-btn>
-    <v-btn class="share-fab" color="accent" icon elevation="4" @click="sharePost">
-      <v-icon>mdi-share-variant</v-icon>
-    </v-btn>
   </div>
-  <div v-else-if="pending" class="loading-container">
+  <div v-else-if="loading" class="loading-container">
     <v-container>
       <v-row justify="center" align="center" style="min-height: 60vh;">
         <v-col cols="12" class="text-center">
@@ -254,90 +199,77 @@
       </v-row>
     </v-container>
   </div>
-  <div v-else class="error-container">
-    <v-container>
-      <v-row justify="center" align="center" style="min-height: 60vh;">
-        <v-col cols="12" md="6" class="text-center">
-          <v-icon size="96" color="error" class="mb-6">mdi-alert-circle</v-icon>
-          <h2 class="text-h4 mb-4">Blog Post Not Found</h2>
-          <p class="text-body-1 mb-6">The blog post you're looking for doesn't exist or has been removed.</p>
-          <v-btn color="primary" variant="elevated" size="large" @click="navigateBack" prepend-icon="mdi-arrow-left">
-            Back to Blog
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watchEffect } from 'vue'
-import { useBlogData } from '~/composables/useBlogData'
+import { ref, computed, onMounted, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { BlogPost, Comment } from '~/composables/useBlogData'
 
 const route = useRoute()
 const router = useRouter()
-const { getPostById, getRelatedPosts } = useBlogData()
-const pending = ref(true)
-const newComment = ref('')
-const showBackToTop = ref(false)
-const showImageModal = ref(false)
-const blogPost = computed(() => {
-  const id = parseInt(route.params.id as string)
-  return getPostById(id)
-})
-watchEffect(() => {
-  if (blogPost.value) {
-    pending.value = false
-    useHead({
-      title: `${blogPost.value.title} - PPA Blog`,
-      meta: [
-        { name: 'description', content: blogPost.value.description },
-        { property: 'og:title', content: blogPost.value.title },
-        { property: 'og:description', content: blogPost.value.description },
-        { property: 'og:image', content: blogPost.value.featuredImage || blogPost.value.image },
-        { property: 'og:type', content: 'article' },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: blogPost.value.title },
-        { name: 'twitter:description', content: blogPost.value.description },
-        { name: 'twitter:image', content: blogPost.value.featuredImage || blogPost.value.image }
-      ]
-    })
-  } else {
-    setTimeout(() => {
-      pending.value = false
-    }, 1000)
-  }
-})
+const { 
+  getPostById, 
+  addComment, 
+  loading, 
+  error, 
+  getCategoryColor, 
+  formatDate, 
+  parseComments,
+  getRelatedPosts
+} = useBlogData()
+const blogPost = ref<BlogPost | null>(null)
+const comments = ref<Comment[]>([])
 const relatedArticles = computed(() => {
-  if (!blogPost.value) return []
-  return getRelatedPosts(blogPost.value.id, 3)
+  if (blogPost.value) {
+    return getRelatedPosts(blogPost.value)
+  }
+  return []
 })
-const comments = ref([
-  {
-    id: 1,
-    author: 'Insha Asif',
-    avatar: 'https://img.freepik.com/premium-photo/young-malay-woman-smiling-portrait_849906-15912.jpg',
-    date: '2025-08-16',
-    content: 'This value addition approach has transformed our estate operations! We\'ve seen a 35% increase in premium pricing after implementing these processing improvements. The investment pays for itself within the first year.',
-    likes: 18
-  },
-  {
-    id: 2,
-    author: 'Anwar Hussain',
-    avatar: 'https://t4.ftcdn.net/jpg/00/60/02/53/360_F_60025318_jeZht6tkRBhVLYuXNYZE9MPfLZYpWOF5.jpg',
-    date: '2025-08-15',
-    content: 'As a fellow plantation owner, I can confirm these value creation strategies work. We\'ve successfully expanded into premium export markets using similar approaches. The key is consistent quality and proper certification.',
-    likes: 14
+const newCommentAuthor = ref('')
+const newCommentText = ref('')
+const commentLoading = ref(false)
+const loadBlogPost = async () => {
+  const id = parseInt(route.params.id as string)
+  if (isNaN(id)) return
+  try {
+    const post = await getPostById(id)
+    if (post) {
+      blogPost.value = post
+      comments.value = parseComments(post.description?.comments || [])
+      useHead({
+        title: `${post.blog_name} - PPA Blog`,
+        meta: [
+          { name: 'description', content: post.short_description },
+          { property: 'og:title', content: post.blog_name },
+          { property: 'og:description', content: post.short_description },
+          { property: 'og:image', content: post.image_url },
+          { property: 'og:type', content: 'article' }
+        ]
+      })
+    }
+  } catch (err) {
+    console.error('Failed to load blog post:', err)
   }
-])
-const formatDate = (dateString: string): string => {
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
+}
+const submitComment = async () => {
+  if (!blogPost.value || !newCommentText.value.trim() || !newCommentAuthor.value.trim()) return
+  commentLoading.value = true
+  try {
+    const newComment = await addComment(blogPost.value.id, {
+      user_name: newCommentAuthor.value,
+      comment: newCommentText.value
+    })
+    if (newComment) {
+      comments.value.unshift(newComment)
+      newCommentText.value = ''
+      newCommentAuthor.value = ''
+    }
+  } catch (err) {
+    console.error('Failed to add comment:', err)
+  } finally {
+    commentLoading.value = false
   }
-  return new Date(dateString).toLocaleDateString('en-US', options)
 }
 const navigateBack = (): void => {
   router.push('/blogs')
@@ -345,80 +277,13 @@ const navigateBack = (): void => {
 const navigateToPost = (postId: number): void => {
   router.push(`/blogs/${postId}`)
 }
-const scrollToTop = (): void => {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-const addComment = (): void => {
-  if (newComment.value.trim()) {
-    const comment = {
-      id: comments.value.length + 1,
-      author: 'Guest User',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=45&h=45&fit=crop&crop=face',
-      date: new Date().toISOString().split('T')[0],
-      content: newComment.value,
-      likes: 0
-    }
-    comments.value.unshift(comment)
-    newComment.value = ''
-  }
-}
-const handleScroll = (): void => {
-  showBackToTop.value = window.scrollY > 300
-}
-const getPlaceholderImage = (): string => {
-  return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvYWRpbmcuLi48L3RleHQ+PC9zdmc+'
-}
-const getPlaceholderAvatar = (): string => {
-  return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDUiIGhlaWdodD0iNDUiIHZpZXdCb3g9IjAgMCA0NSA0NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMi41IiBjeT0iMjIuNSIgcj0iMjIuNSIgZmlsbD0iI2VlZSIvPjxjaXJjbGUgY3g9IjIyLjUiIGN5PSIxOCIgcj0iNyIgZmlsbD0iI2NjYyIvPjxwYXRoIGQ9Im0xMCAzNWMwLTctNS41LTEyLjUtMTIuNS0xMi41czEyLjUgNS41IDEyLjUgMTIuNSIgZmlsbD0iI2NjYyIvPjwvc3ZnPg=='
-}
-const handleImageError = (error: string | undefined): void => {
-  const imgElement = document.querySelector('.featured-img') as HTMLImageElement
-  if (imgElement) {
-    imgElement.src = getPlaceholderImage()
-  }
-}
-const handleRelatedImageError = (error: string | undefined): void => {
-  const imgElements = document.querySelectorAll('.article-thumb') as NodeListOf<HTMLImageElement>
-  imgElements.forEach(img => {
-    if (img.src === window.location.href) {
-      img.src = getPlaceholderImage()
-    }
-  })
-}
-const openImageModal = (): void => {
-  showImageModal.value = true
-}
-const sharePost = (): void => {
-  if (navigator.share && blogPost.value) {
-    navigator.share({
-      title: blogPost.value.title,
-      text: blogPost.value.description,
-      url: window.location.href
-    })
-  } else {
-    navigator.clipboard.writeText(window.location.href)
-  }
-}
-const likeComment = (commentId: number): void => {
-  const comment = comments.value.find(c => c.id === commentId)
-  if (comment) {
-    comment.likes++
-  }
-}
-const replyToComment = (commentId: number): void => {
-}
-
-const shareComment = (commentId: number): void => {
-}
-
-const reportComment = (commentId: number): void => {
-}
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
+  loadBlogPost()
 })
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
+const formatTextWithLineBreaks = (text: string | undefined) => {
+  if (!text) return '';
+  return text.replace(/\n/g, '<br>');
+};
 </script>
 
 <style scoped>

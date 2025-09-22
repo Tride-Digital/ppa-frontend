@@ -6,42 +6,42 @@
         <h2 class="main-title">{{ titleText }}</h2>
       </div>
     </div>
-    <div class="gutter-mask">
-      <Swiper
-        class="destination-swiper"
-        :modules="modules"
-        effect="coverflow"
-        :centered-slides="true"
-        :grab-cursor="true"
-        :watch-slides-progress="true"
-        :slides-per-view="'auto'"
-        :space-between="-100"
-        :loop="true"
-        :coverflow-effect="coverflowEffect"
-        :autoplay="autoplayConfig"
-        :speed="1000"
-        :initial-slide="middleIndex"
-        aria-label="Value addition processes slider"
-        @swiper="onSwiper"
-        @progress="onProgress"
-      >
+    <div v-if="loading" class="loading-state">
+      <v-progress-circular size="64" indeterminate color="primary" />
+      <p class="mt-4">Loading value addition processes...</p>
+    </div>
+    <div v-else-if="error" class="error-state">
+      <v-icon size="48" color="error" class="mb-2">mdi-alert-circle</v-icon>
+      <p class="text-error">{{ error }}</p>
+      <v-btn color="primary" @click="loadValueAdditionPosts" class="mt-2">
+        <v-icon start>mdi-refresh</v-icon>
+        Retry
+      </v-btn>
+    </div>
+    <div v-else-if="items.length" class="gutter-mask">
+      <Swiper class="destination-swiper" :modules="modules" effect="coverflow" :centered-slides="true" :grab-cursor="true" :watch-slides-progress="true" :slides-per-view="'auto'" :space-between="-100" :loop="true" :coverflow-effect="coverflowEffect" :autoplay="autoplayConfig" :speed="1000" :initial-slide="middleIndex" aria-label="Value addition processes slider" @swiper="onSwiper" @progress="onProgress">
         <SwiperSlide
           v-for="(item, i) in items"
-          :key="item.blogId ?? i"
+          :key="item.id ?? i"
         >
           <article class="destination-box" @click="handleItemClick(item)">
             <div class="destination-img">
-              <img :src="item.image" :alt="item.title" loading="lazy" decoding="async"/>
+              <img :src="item.image_url" :alt="item.blog_name" loading="lazy" decoding="async"/>
               <div class="destination-content">
                 <div class="media-left">
-                  <h4 class="box-title title">{{ item.title }}</h4>
-                  <span class="destination-subtitle trip_count">{{ item.subtitle }}</span>
+                  <h4 class="box-title title">{{ item.blog_name }}</h4>
+                  <span class="destination-subtitle trip_count">{{ item.short_description }}</span>
                 </div>
               </div>
             </div>
           </article>
         </SwiperSlide>
       </Swiper>
+    </div>
+    <div v-else class="empty-state">
+      <v-icon size="64" color="grey-lighten-1" class="mb-4">mdi-factory</v-icon>
+      <h3 class="text-h5 mb-2 text-grey-darken-1">No value addition processes available</h3>
+      <p class="text-grey-darken-1">Check back later for new content!</p>
     </div>
   </section>
 </template>
@@ -52,75 +52,16 @@ import { EffectCoverflow, Navigation, A11y, Autoplay } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/effect-coverflow'
 import 'swiper/css/navigation'
-import { computed, ref } from 'vue'
-
-const { getPostById } = useBlogData()
+import { computed, ref, onMounted } from 'vue'
+import { useBlogData } from '~/composables/useBlogData'
 
 const props = defineProps({
-  items: {
-    type: Array,
-    default: () => [
-      { 
-        title: 'Pepper Processing',
-        subtitle: 'Freshly harvested berries are sun-dried and expertly graded into black, white, or ground pepper, ready for premium export markets.',
-        image: '/images/value-addition/v1.webp',
-        blogId: 101
-      },
-      { 
-        title: 'Coconut Oil Extraction',
-        subtitle: 'Kernels are dried, pressed, and refined into pure oil for food, beauty, and wellness markets.',
-        image: '/images/value-addition/v2.webp',
-        blogId: 102
-      },
-      { 
-        title: 'Cashew Processing',
-        subtitle: 'Raw cashew nuts are steamed, shelled, peeled, and roasted to produce high-quality kernels for snacks, confectionery, and exports.',
-        image: '/images/value-addition/v3.webp',
-        blogId: 103
-      },
-      { 
-        title: 'Cinnamon Processing',
-        subtitle: 'Bark is peeled, dried, and value-added into quills or powder, serving both culinary and medicinal markets.',
-        image: '/images/value-addition/v4.webp',
-        blogId: 104
-      },
-      { 
-        title: 'Coffee Processing',
-        subtitle: 'Harvested beans are carefully fermented, sun-dried, expertly roasted, and finely ground to craft premium coffee for both local and international markets.',
-        image: '/images/value-addition/v5.webp',
-        blogId: 105
-      },
-      { 
-        title: 'Tea Processing',
-        subtitle: 'Fresh green leaves move through withering, rolling, fermentation, and drying, before being graded and packed, creating higher flavor, aroma, and market value across the value chain.',
-        image: '/images/value-addition/v6.webp',
-        blogId: 106
-      },
-      { 
-        title: 'Mace Processing',
-        subtitle: 'The bright red aril covering nutmeg seeds is carefully dried and ground into flakes or powder, valued as a premium spice and flavoring agent.',
-        image: '/images/value-addition/v7.webp',
-        blogId: 107
-      },
-      { 
-        title: 'Clove Processing',
-        subtitle: 'Clove buds are handpicked, sun-dried, and processed into spice or essential oil for food and pharmaceuticals.',
-        image: '/images/value-addition/v8.webp',
-        blogId: 108
-      },
-      { 
-        title: 'Turmeric Processing',
-        subtitle: 'Fresh rhizomes are cleaned, boiled, sun-dried, and polished before being ground into vibrant powder, widely used in food, medicine, and cosmetics.',
-        image: '/images/value-addition/v9.webp',
-        blogId: 109
-      },
-    ]
-  },
   navigation: { type: [Boolean, Object], default: true },
   showTitle: { type: Boolean, default: true },
   subtitleText: { type: String, default: 'Our Products' },        
-  titleText:   { type: String, default: 'Value Addition Process' } 
+  titleText: { type: String, default: 'Value Addition Process' } 
 })
+const { getPostsByType } = useBlogData()
 
 const modules = [EffectCoverflow, Navigation, A11y, Autoplay]
 const autoplayConfig = {
@@ -135,22 +76,37 @@ const coverflowEffect = {
   modifier: 1,
   slideShadows: false
 }
+const items = ref([])
+const loading = ref(false)
+const error = ref(null)
+const swiperRef = ref(null)
 const middleIndex = computed(() => {
-  const len = props.items?.length ?? 1
+  const len = items.value?.length ?? 1
   return Math.floor(len / 2)
 })
-const swiperRef = ref(null)
+const loadValueAdditionPosts = async () => {
+  loading.value = true
+  error.value = null
+  try {
+    const valueAdditionPosts = await getPostsByType(1) // blog_type === 1 for Value Addition
+    if (valueAdditionPosts && valueAdditionPosts.length > 0) {
+      items.value = valueAdditionPosts.slice(0, 12) // Limit to 12 posts for performance
+    } else {
+      items.value = []
+    }
+  } catch (err) {
+    console.error('Failed to load value addition posts:', err)
+    error.value = 'Failed to load value addition posts'
+    items.value = []
+  } finally {
+    loading.value = false
+  }
+}
 
 const handleItemClick = async (item) => {
-  if (item.blogId) {
+  if (item && item.id) {
     try {
-      const blogPost = getPostById(item.blogId)
-      if (blogPost) {
-        await navigateTo(`/blogs/${blogPost.id}`)
-      } else {
-        console.warn(`Blog post with ID ${item.blogId} not found`)
-        await navigateTo('/blogs')
-      }
+      await navigateTo(`/blogs/${item.id}`)
     } catch (error) {
       console.error('Navigation error:', error)
       try {
@@ -169,7 +125,7 @@ const onSwiper = (swiper) => {
 const onProgress = (swiper) => {
   applyFiveVisible(swiper)
 }
-function applyFiveVisible(swiper){
+function applyFiveVisible(swiper) {
   if (!swiper?.slides) return
   swiper.slides.forEach((slideEl) => {
     const p = Math.abs(slideEl.progress ?? 99)
@@ -179,9 +135,39 @@ function applyFiveVisible(swiper){
     slideEl.style.willChange = 'transform, opacity'
   })
 }
+onMounted(() => {
+  loadValueAdditionPosts()
+})
 </script>
 
 <style scoped>
+.loading-state,
+.error-state,
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 40px 0;
+}
+.error-state .v-btn {
+  margin-top: 16px;
+}
+.destination-img img {
+  display: block;
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 22px;
+  box-shadow: 0 14px 32px var(--v-theme-card-shadow);
+  transition: transform 0.3s ease;
+  background: linear-gradient(135deg, #f0f9ff 0%, #dcfce7 100%);
+}
+.destination-img img:error {
+  background: linear-gradient(135deg, #f0f9ff 0%, #dcfce7 100%);
+}
 .section-title {
   text-align: center;
   margin-bottom: 30px;
@@ -270,20 +256,11 @@ function applyFiveVisible(swiper){
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 .destination-img { position: relative; border-radius: 22px; overflow: hidden; }
-.destination-img img{
-  display: block;
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 22px;
-  box-shadow: 0 14px 32px var(--v-theme-card-shadow);
-  transition: transform 0.3s ease;
+@media (min-width: 768px) {
+  .destination-img img { height: 580px; }
 }
 .destination-box:hover .destination-img img {
   transform: scale(1.05);
-}
-@media (min-width: 768px) {
-  .destination-img img { height: 580px; }
 }
 .destination-content {
   position: absolute; left: 0; right: 0; bottom: 0;

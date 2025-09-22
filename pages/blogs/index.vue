@@ -10,18 +10,34 @@
               <div class="header-divider mx-auto mt-6"></div>
             </v-col>
           </v-row>
-          <v-row class="blog-grid">
+          <v-row v-if="loading" justify="center" class="my-12">
+            <v-col cols="12" class="text-center">
+              <v-progress-circular size="64" indeterminate color="primary" class="mb-4" />
+              <h3 class="text-h5">Loading blog posts...</h3>
+            </v-col>
+          </v-row>
+          <v-row v-else-if="error" justify="center" class="my-12">
+            <v-col cols="12" md="6" class="text-center">
+              <v-icon size="64" color="error" class="mb-4">mdi-alert-circle</v-icon>
+              <h3 class="text-h5 mb-2">Error Loading Posts</h3>
+              <p class="text-body-1 mb-4">{{ error }}</p>
+              <v-btn color="primary" @click="loadPosts" prepend-icon="mdi-refresh">
+                Try Again
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row v-else class="blog-grid">
             <v-col v-for="(post, index) in paginatedPosts" :key="post.id" cols="12" md="6" lg="4" class="blog-col">
               <v-card class="blog-card" elevation="0" hover @click="navigateToPost(post)" :style="{ animationDelay: `${index * 0.1}s` }">
                 <div class="image-container">
-                  <v-img :src="post.image" :alt="post.title" height="280" cover class="blog-image">
+                  <v-img :src="post.image_url" :alt="post.blog_name" height="280" cover class="blog-image">
                     <template #placeholder>
                       <v-row class="fill-height ma-0" align="center" justify="center">
                         <v-progress-circular indeterminate color="primary" />
                       </v-row>
                     </template>
-                    <v-chip class="category-chip" :color="post.categoryColor" variant="elevated" size="small" label>
-                      {{ post.category }}
+                    <v-chip class="category-chip" :color="getCategoryColor(post.blog_category)" variant="elevated" size="small" label>
+                      {{ post.blog_category }}
                     </v-chip>
                     <div class="image-overlay">
                       <v-icon size="32" color="white">mdi-arrow-right</v-icon>
@@ -32,21 +48,21 @@
                   <div class="meta-info mb-4">
                     <div class="meta-item">
                       <v-icon size="16" class="me-1">mdi-calendar-outline</v-icon>
-                      <span>{{ formatDate(post.publishDate) }}</span>
+                      <span>{{ formatDate(post.created_date) }}</span>
                     </div>
                     <div class="meta-item">
                       <v-icon size="16" class="me-1">mdi-clock-outline</v-icon>
-                      <span>{{ post.readingTime }}</span>
+                      <span>{{ post.reading_time }} min read</span>
                     </div>
                   </div>
-                  <h3 class="blog-title mb-3">{{ post.title }}</h3>
-                  <p class="blog-description mb-4">{{ post.description }}</p>
+                  <h3 class="blog-title mb-3">{{ post.blog_name }}</h3>
+                  <p class="blog-description mb-4">{{ post.short_description }}</p>
                   <div class="tags-section mb-5">
-                    <v-chip v-for="tag in post.tags.slice(0, 3)" :key="tag" size="small" variant="outlined" class="me-2 mb-1 tag-chip" color="primary">
+                    <v-chip v-for="tag in post.related_topics.slice(0, 3)" :key="tag" size="small" variant="outlined" class="me-2 mb-1 tag-chip" color="primary">
                       {{ tag }}
                     </v-chip>
-                    <v-chip v-if="post.tags.length > 3" size="small" variant="text" class="more-tags">
-                      +{{ post.tags.length - 3 }} more
+                    <v-chip v-if="post.related_topics.length > 3" size="small" variant="text" class="more-tags">
+                      +{{ post.related_topics.length - 3 }} more
                     </v-chip>
                   </div>
                   <div class="read-more-section">
@@ -69,7 +85,7 @@
               </div>
             </v-col>
           </v-row>
-          <v-row v-if="!paginatedPosts.length" justify="center" class="mt-12">
+          <v-row v-if="!loading && !error && !paginatedPosts.length" justify="center" class="mt-12">
             <v-col cols="12" md="6" class="text-center">
               <div class="empty-state">
                 <v-icon size="64" color="grey-lighten-1" class="mb-4">mdi-post-outline</v-icon>
@@ -86,6 +102,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import type { BlogPost } from '~/composables/useBlogData'
 
 useHead({
   title: 'PPA Blog - Plantation Industry Insights & Best Practices',
@@ -93,18 +110,24 @@ useHead({
     { name: 'description', content: 'Discover the latest insights, SMART agronomic practices, and industry updates from the Proprietary Planters Association of Sri Lanka.' }
   ]
 })
-const { getAllPosts } = useBlogData()
+const { 
+  getAllPosts, 
+  loading, 
+  error, 
+  getCategoryColor, 
+  formatDate 
+} = useBlogData()
 const currentPage = ref<number>(1)
 const postsPerPage = ref<number>(6)
+const allPosts = ref<BlogPost[]>([])
 const headerSection = ref({
   title: 'Our Blog',
   subtitle: 'Empowering Sri Lankan proprietary planters with SMART agronomic practices, industry insights, and sustainable plantation management strategies.'
 })
 const readMoreLabel = ref('Read More')
-const blogPosts = ref(getAllPosts())
 const sortedPosts = computed(() => {
-  const posts = [...blogPosts.value]
-  return posts.sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime())
+  const posts = [...allPosts.value]
+  return posts.sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime())
 })
 const totalPages = computed(() => {
   return Math.ceil(sortedPosts.value.length / postsPerPage.value)
@@ -114,21 +137,21 @@ const paginatedPosts = computed(() => {
   const end = start + postsPerPage.value
   return sortedPosts.value.slice(start, end)
 })
-const formatDate = (dateString: string): string => {
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
+const loadPosts = async () => {
+  try {
+    allPosts.value = await getAllPosts(0, 100)
+  } catch (err) {
+    console.error('Failed to load posts:', err)
   }
-  return new Date(dateString).toLocaleDateString('en-US', options)
 }
-const navigateToPost = (post: any): void => {
+const navigateToPost = (post: BlogPost): void => {
   navigateTo(`/blogs/${post.id}`)
 }
 const scrollToTop = (): void => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 onMounted(() => {
+  loadPosts()
 })
 </script>
 
