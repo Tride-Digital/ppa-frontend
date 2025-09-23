@@ -27,25 +27,21 @@
   </v-container>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import {ref} from 'vue'
+import type {DirectorContact} from '~/composables/useDirectors'
+
 definePageMeta({
   title: 'Contact Us - PPA'
 })
+
 const router = useRouter()
-const directorContacts = ref([
-  { name: 'D M Kobbekaduwe', image: '/images/team/Dammika.jpg', id: 1},
-  { name: 'Rehan Jayatilake', image: '/images/team/Rehan.jpg', id: 2},
-  { name: 'Ravindra Hewavitharana', image: '/images/team/Ravindra.jpg', id: 3},
-  { name: 'S M P Jayantha', image: '/images/team/Jayantha.jpg', id: 4},
-  { name: 'Dr W G Somaratne', image: '/images/team/Somarathne.jpg', id: 5},
-  { name: 'Mr Upananda Karunarathne', image: '/images/team/Upananda.jpg', id: 6},
-  { name: 'Attorney Wijitha Manamperi', image: '/images/team/Vijitha.jpg', id: 7},
-  { name: 'Nalin Amunugama', image: '/images/team/Nalin.jpg', id: 8},
-  { name: 'Januka Karunasena', image: '/images/team/Januka.jpg', id: 9},
-  { name: 'Prof Sarath P Nissanka', image: '/images/team/Nissanka 2.jpg', id: 10}
-])
-const navigateToDirector = (id) => {
+const {getDirectorContacts} = useDirectors()
+
+// Get director contacts
+const directorContacts = ref<DirectorContact[]>(getDirectorContacts())
+
+const navigateToDirector = (id: number): void => {
   router.push(`/director/${id}`)
 }
 </script>

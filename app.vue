@@ -8,6 +8,7 @@
     <AppFooter />
     <CartButton :cart-items="cartItems" @toggle-cart="handleToggleCart" @cart-click="handleCartClick"/>
     <CartModal v-model="showCartModal" :cart-items="cartItems" @remove-item="removeFromCart" @checkout="goToCheckout"/>
+    <Chatbot/>
   </v-app>
 </template>
 
@@ -18,6 +19,7 @@ import CartButton from '~/components/cart/CartButton.vue';
 import CartModal from '~/components/cart/CartModal.vue';
 import { useCart } from '~/composables/useCart';
 import { navigateTo } from 'nuxt/app';
+import Chatbot from "~/components/chatbot.vue";
 
 const { 
   cartItems, 
