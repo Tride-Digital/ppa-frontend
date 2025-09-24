@@ -19,7 +19,7 @@ import CartButton from '~/components/cart/CartButton.vue';
 import CartModal from '~/components/cart/CartModal.vue';
 import { useCart } from '~/composables/useCart';
 import { navigateTo } from 'nuxt/app';
-import Chatbot from "~/components/chatbot.vue";
+import Chatbot from "~/components/Chatbot.vue";
 
 const { 
   cartItems, 

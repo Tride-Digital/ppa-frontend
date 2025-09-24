@@ -211,8 +211,9 @@
                         @submit.prevent="submitServiceRequest"
                     >
                       <div class="form-intro">
-                        Please share your details (5W + H style):
+                        Please share your details:
                       </div>
+
                       <v-text-field
                           v-model="serviceRequest.fullName"
                           label="Full Name *"
@@ -222,6 +223,7 @@
                           class="form-field"
                           hint="Contact details must be by owner, not third party"
                       />
+
                       <v-text-field
                           v-model="serviceRequest.email"
                           label="Email *"
@@ -230,6 +232,7 @@
                           :rules="[rules.required, rules.email]"
                           class="form-field"
                       />
+
                       <v-text-field
                           v-model="serviceRequest.phone"
                           label="Phone *"
@@ -238,6 +241,7 @@
                           :rules="[rules.required, rules.phone]"
                           class="form-field"
                       />
+
                       <v-text-field
                           v-model="serviceRequest.nic"
                           label="NIC Number *"
@@ -245,24 +249,145 @@
                           density="compact"
                           :rules="[rules.required, rules.nic]"
                           class="form-field"
-                          hint="Critical: Auto-validation prevents false NIC numbers"
                           persistent-hint
                       />
+
+                      <!-- Services Loading State -->
+                      <v-alert
+                          v-if="servicesLoading"
+                          type="info"
+                          variant="tonal"
+                          class="form-field"
+                          density="compact"
+                      >
+                        <div class="d-flex align-center">
+                          <v-progress-circular size="16" indeterminate class="mr-2"/>
+                          <span class="text-caption">Loading services...</span>
+                        </div>
+                      </v-alert>
+
+                      <!-- Services Error State -->
+                      <v-alert
+                          v-else-if="servicesError"
+                          type="error"
+                          variant="tonal"
+                          class="form-field"
+                          density="compact"
+                      >
+                        <div class="d-flex align-center justify-space-between">
+                          <span class="text-caption">{{ servicesError }}</span>
+                          <v-btn
+                              color="error"
+                              variant="text"
+                              size="x-small"
+                              @click="loadServices"
+                              :loading="servicesLoading"
+                              prepend-icon="mdi-refresh"
+                          >
+                            Retry
+                          </v-btn>
+                        </div>
+                      </v-alert>
+
+                      <!-- Main Service Category Dropdown -->
                       <v-select
-                          v-model="serviceRequest.services"
-                          :items="availableServices"
-                          label="Service(s) Required *"
-                          multiple
-                          chips
+                          v-else
+                          v-model="serviceRequest.serviceCategory"
+                          :items="mainServiceCategories"
+                          item-title="name"
+                          item-value="id"
+                          label="Service Category *"
                           variant="outlined"
                           density="compact"
-                          :rules="[rules.requiredArray]"
+                          :rules="[rules.requiredSelect]"
                           class="form-field"
-                          hint="As per the Service menu"
-                      />
+                          hint="Select the main service category"
+                          clearable
+                          :disabled="servicesLoading"
+                      >
+                        <template v-slot:item="{ props, item }">
+                          <v-list-item v-bind="props" :title="null">
+                            <template v-slot:prepend>
+                              <v-icon :icon="item.raw.icon" class="mr-3" size="small" color="success"/>
+                            </template>
+                            <v-list-item-title class="font-weight-medium">
+                              {{ item.raw.name }}
+                            </v-list-item-title>
+                            <v-list-item-subtitle class="text-caption">
+                              {{ item.raw.description }}
+                            </v-list-item-subtitle>
+                          </v-list-item>
+                        </template>
+
+                        <template v-slot:selection="{ item }">
+                          <div class="d-flex align-center">
+                            <v-icon :icon="item.raw.icon" class="mr-2" size="small" color="success"/>
+                            <span>{{ item.raw.name }}</span>
+                          </div>
+                        </template>
+
+                        <template v-slot:no-data>
+                          <v-list-item>
+                            <v-list-item-title class="text-center py-2 text-caption">
+                              {{ servicesLoading ? 'Loading...' : 'No categories available' }}
+                            </v-list-item-title>
+                          </v-list-item>
+                        </template>
+                      </v-select>
+
+                      <!-- Service Subcategory Dropdown -->
+                      <v-select
+                          v-model="serviceRequest.serviceSubcategory"
+                          :items="availableSubcategories"
+                          item-title="name"
+                          item-value="id"
+                          label="Specific Service Type *"
+                          variant="outlined"
+                          density="compact"
+                          :rules="[rules.requiredSelect]"
+                          class="form-field"
+                          :hint="!serviceRequest.serviceCategory ? 'Please select a category first' : 'Choose the specific service type'"
+                          persistent-hint
+                          clearable
+                          :disabled="!serviceRequest.serviceCategory || servicesLoading"
+                      >
+                        <template v-slot:item="{ props, item }">
+                          <v-list-item v-bind="props" :title="null">
+                            <template v-slot:prepend>
+                              <v-icon :icon="item.raw.icon" class="mr-3" size="small" color="success"/>
+                            </template>
+                            <v-list-item-title class="font-weight-medium">
+                              {{ item.raw.name }}
+                            </v-list-item-title>
+                            <v-list-item-subtitle class="text-caption">
+                              {{ item.raw.description }}
+                            </v-list-item-subtitle>
+                          </v-list-item>
+                        </template>
+
+                        <template v-slot:selection="{ item }">
+                          <div class="d-flex align-center">
+                            <v-icon :icon="item.raw.icon" class="mr-2" size="small" color="success"/>
+                            <span>{{ item.raw.name }}</span>
+                          </div>
+                        </template>
+
+                        <template v-slot:no-data>
+                          <v-list-item>
+                            <v-list-item-title class="text-center py-2 text-caption">
+                              {{
+                                !serviceRequest.serviceCategory
+                                    ? 'Select a category first'
+                                    : (servicesLoading ? 'Loading...' : 'No services available')
+                              }}
+                            </v-list-item-title>
+                          </v-list-item>
+                        </template>
+                      </v-select>
+
                       <v-textarea
                           v-model="serviceRequest.message"
-                          label="The Problem or Need (5W + H) *"
+                          label="The Problem or Need"
                           placeholder="What? Why? When? Where? Who? How?"
                           variant="outlined"
                           density="compact"
@@ -271,10 +396,11 @@
                           :rules="[rules.required]"
                           hint="Describe your specific problem or need in detail"
                       />
+
                       <v-btn
                           type="submit"
                           color="success"
-                          :disabled="!formValid"
+                          :disabled="!formValid || servicesLoading"
                           :loading="formLoading"
                           class="submit-btn"
                           rounded="xl"
@@ -282,6 +408,7 @@
                       >
                         Submit Request
                       </v-btn>
+
                       <div class="form-note">
                         <small>* Request will be auto-sent to director's email + copy to you</small>
                       </div>
@@ -482,8 +609,27 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed, nextTick, onMounted} from "vue";
+import {ref, computed, nextTick, onMounted, watch} from "vue";
 import type {Director as ComposableDirector} from '~/composables/useDirectors';
+
+// Add the services composable with error handling
+const {
+  mainServiceCategories,
+  loading: servicesLoading,
+  error: servicesError,
+  fetchServiceCategories,
+  getSubcategoriesForCategory,
+  getCategoryName,
+  getSubcategoryName,
+  getCategoryIcon
+} = useServices()
+
+// Debug: Log the composable state
+console.log('useServices initialized:', {
+  mainServiceCategories: mainServiceCategories.value,
+  servicesLoading: servicesLoading.value,
+  servicesError: servicesError.value
+})
 
 // Types
 interface Message {
@@ -530,12 +676,14 @@ const showHelpMessage = ref(false);
 const formValid = ref(false);
 const leadFormValid = ref(true);
 
+// Updated service request form with proper types
 const serviceRequest = ref({
   fullName: "",
   email: "",
   phone: "",
   nic: "",
-  services: [] as string[],
+  serviceCategory: null as number | null,  // Changed to store category ID
+  serviceSubcategory: null as number | null,  // Changed to store subcategory ID
   message: "",
 });
 
@@ -559,14 +707,10 @@ const directors = computed<Director[]>(() => {
   }));
 });
 
-// Generate available services from all directors
-const availableServices = computed(() => {
-  const allServices = new Set<string>();
-  directors.value.forEach(director => {
-    director.services.forEach(service => allServices.add(service));
-  });
-  return Array.from(allServices).sort();
-});
+// Computed property for available subcategories based on selected category
+const availableSubcategories = computed(() => {
+  return getSubcategoriesForCategory(serviceRequest.value.serviceCategory)
+})
 
 const interestCategories = [
   "Plantation Support",
@@ -585,7 +729,13 @@ const quickActionsList = [
   {label: "Zengate Trade Platform", value: "zengate"},
 ];
 
-// Enhanced NIC validation function
+// Watch for service category changes and reset subcategory
+watch(() => serviceRequest.value.serviceCategory, (newCategoryId) => {
+  // Clear subcategory when category changes
+  serviceRequest.value.serviceSubcategory = null
+})
+
+// NIC validation function
 const validateNIC = (nic: string): boolean => {
   if (!nic) return false;
 
@@ -624,10 +774,10 @@ const validateNIC = (nic: string): boolean => {
   return false;
 };
 
-// Validation rules
+// Validation rules - updated for new structure
 const rules = {
   required: (v: any) => !!v || "This field is required",
-  requiredArray: (v: any[]) => v.length > 0 || "Please select at least one service",
+  requiredSelect: (v: any) => (v !== null && v !== undefined) || "Please select an option",
   email: (v: string) => !v || /.+@.+\..+/.test(v) || "Invalid email format",
   phone: (v: string) => !v || /^(\+94|0)?[0-9]{9,10}$/.test(v) || "Invalid phone number format",
   nic: (v: string) => {
@@ -665,11 +815,24 @@ const shouldShowDateSeparator = (messages: Message[], index: number): boolean =>
   return curr !== prev;
 };
 
+// Load services when component mounts with better error handling
+const loadServices = async () => {
+  try {
+    console.log('Loading services...')
+    await fetchServiceCategories()
+    console.log('Services loaded:', mainServiceCategories.value.length, 'categories')
+  } catch (error) {
+    console.error('Failed to load services:', error)
+    // You can add a notification here if needed
+    showNotification('Failed to load services. Please check your connection.', 'error')
+  }
+}
+
 // Chat functions
 const openChat = () => {
   chatOpen.value = true;
   unreadCount.value = 0;
-  showHelpMessage.value = false; // Hide help message when chat opens
+  showHelpMessage.value = false;
   if (messages.value.length === 0) {
     initializeChat();
   }
@@ -688,7 +851,6 @@ const closeChat = () => {
   setTimeout(() => {
     if (!chatOpen.value) {
       showHelpMessage.value = true;
-      // Auto-hide after 3 seconds
       setTimeout(() => {
         showHelpMessage.value = false;
       }, 3000);
@@ -697,7 +859,7 @@ const closeChat = () => {
 };
 
 const initializeChat = () => {
-  // Check for returning user - personalized welcome
+  // Check for returning user
   const userName = localStorage.getItem("ppa_user_name");
   if (userName) {
     currentStatus.value = `Welcome back, ${userName}!`;
@@ -714,7 +876,7 @@ const initializeChat = () => {
         }
     );
   } else {
-    // First-time user greeting - exact match to document
+    // First-time user greeting
     addBotMessage(
         `Welcome to the <strong>Proprietary Planters Alliance (PPA) Virtual Office</strong> -- Sri Lanka's first digital hub for Proprietary Planters.<br><br>I'm your assistant. May I know what brings you here today?`,
         {
@@ -827,6 +989,7 @@ const showServiceForm = () => {
   addBotMessage("", {showForm: true});
 };
 
+// *** UPDATED SUBMIT SERVICE REQUEST FUNCTION WITH BACKEND INTEGRATION ***
 const submitServiceRequest = async () => {
   if (!formValid.value) return;
 
@@ -834,21 +997,51 @@ const submitServiceRequest = async () => {
   isTyping.value = true;
 
   try {
-    // Simulate API call with NIC validation
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // Get the runtime config for API URL
+    const config = useRuntimeConfig()
+    const baseURL = config.public.adminAppUrl
 
-    // Store user name for personalization
-    localStorage.setItem("ppa_user_name", serviceRequest.value.fullName);
+    // Prepare the request payload to match backend schema (snake_case fields)
+    const requestPayload = {
+      full_name: serviceRequest.value.fullName,
+      email: serviceRequest.value.email,
+      phone: serviceRequest.value.phone,
+      nic: serviceRequest.value.nic,
+      service_category_id: serviceRequest.value.serviceCategory,
+      service_subcategory_id: serviceRequest.value.serviceSubcategory,
+      message: serviceRequest.value.message
+    }
+
+    console.log('Submitting service request:', requestPayload)
+
+    // Submit to FastAPI backend
+    const response = await $fetch(`${baseURL}/chatbot-service/submit`, {
+      method: 'POST',
+      body: requestPayload,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    console.log('Service request response:', response)
+
+    // Get the human-readable service names for display
+    const categoryName = getCategoryName(serviceRequest.value.serviceCategory)
+    const subcategoryName = getSubcategoryName(serviceRequest.value.serviceSubcategory)
 
     formLoading.value = false;
     isTyping.value = false;
 
-    // Exact confirmation message as per document
+    // Store user name for personalization
+    localStorage.setItem("ppa_user_name", serviceRequest.value.fullName);
+
+    // Success message with request ID from backend
     addBotMessage(
         `✅ Thank you, <strong>${serviceRequest.value.fullName}</strong>.<br><br>` +
-        `Your request has been sent to <strong>${selectedDirector.value?.name || 'our team'}</strong>.<br>` +
-        `📧 A copy has also been emailed to you.<br>` +
-        `You'll hear back soon.`,
+        `Your request for <strong>${subcategoryName}</strong> (${categoryName}) has been submitted successfully.<br>` +
+        `📧 Request ID: <strong>#${response.request_id}</strong><br>` +
+        `📧 A confirmation email will be sent to you shortly.<br>` +
+        `You'll hear back from our team soon.`,
         {quickActions: true}
     );
 
@@ -858,18 +1051,37 @@ const submitServiceRequest = async () => {
       email: "",
       phone: "",
       nic: "",
-      services: [],
+      serviceCategory: null,
+      serviceSubcategory: null,
       message: "",
     };
 
-    showNotification("Service request submitted successfully! Auto-sent to director + copy to you.", "success");
-  } catch (error) {
+    showNotification(`Service request submitted successfully! Request ID: #${response.request_id}`, "success");
+
+  } catch (error: any) {
     formLoading.value = false;
     isTyping.value = false;
-    addBotMessage(
-        "Sorry, there was an error submitting your request. Please try again or contact our office directly."
-    );
-    showNotification("Failed to submit request - please try again", "error");
+
+    console.error('Service request submission error:', error)
+
+    // Handle different types of errors from backend
+    let errorMessage = "Sorry, there was an error submitting your request. Please try again.";
+
+    if (error.data?.detail) {
+      if (Array.isArray(error.data.detail)) {
+        // Pydantic validation errors
+        const validationErrors = error.data.detail.map((err: any) => `${err.loc?.join('.') || 'Field'}: ${err.msg}`).join('<br>');
+        errorMessage = `Validation errors:<br>${validationErrors}`;
+      } else {
+        // Single error message
+        errorMessage = error.data.detail;
+      }
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
+    addBotMessage(`❌ <strong>Submission Failed</strong><br><br>${errorMessage}<br><br>Please check your information and try again.`);
+    showNotification(`Failed to submit request: ${errorMessage}`, "error");
   }
 };
 
@@ -937,7 +1149,7 @@ const submitLead = async (subscribe: boolean) => {
 
   if (subscribe && (leadInfo.value.email || leadInfo.value.phone)) {
     try {
-      // Simulate API call
+      // Simulate API call - you can implement actual lead capture endpoint later
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       if (leadInfo.value.name) {
@@ -1091,7 +1303,7 @@ const sendUserMessage = () => {
   const msg = userMessage.value.toLowerCase();
   userMessage.value = "";
 
-  // Enhanced keyword responses with professional tone
+  // Keyword responses with professional tone
   setTimeout(() => {
     if (msg.match(/\b(hello|hi|hey|good morning|good afternoon|good evening|greetings)\b/)) {
       addBotMessage("Hello! Welcome to the PPA Virtual Office. How may I assist you today?", {
@@ -1176,12 +1388,15 @@ const showNotification = (text: string, color: string) => {
 };
 
 // Lifecycle
-onMounted(() => {
+onMounted(async () => {
   // Check for returning user
   const userName = localStorage.getItem("ppa_user_name");
   if (userName) {
     currentStatus.value = `Welcome back, ${userName}!`;
   }
+
+  // Load services data when component mounts
+  await loadServices()
 
   // Show help message after 2 seconds delay
   setTimeout(() => {
@@ -1767,8 +1982,8 @@ onMounted(() => {
 /* Help Message Bubble */
 .help-message-bubble {
   position: fixed;
-  bottom: 100px;
-  right: 140px;
+  bottom: 90px;
+  right: 30px;
   background: white;
   padding: 12px 16px;
   border-radius: 20px;
