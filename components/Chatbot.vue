@@ -250,6 +250,7 @@
                           :rules="[rules.required, rules.nic]"
                           class="form-field"
                           persistent-hint
+                          :hint="getNICFormatHint(serviceRequest.nic)"
                       />
 
                       <!-- Services Loading State -->
@@ -612,7 +613,6 @@
 import {ref, computed, nextTick, onMounted, watch} from "vue";
 import type {Director as ComposableDirector} from '~/composables/useDirectors';
 
-// Add the services composable with error handling
 const {
   mainServiceCategories,
   loading: servicesLoading,
@@ -624,7 +624,6 @@ const {
   getCategoryIcon
 } = useServices()
 
-// Debug: Log the composable state
 console.log('useServices initialized:', {
   mainServiceCategories: mainServiceCategories.value,
   servicesLoading: servicesLoading.value,
@@ -676,7 +675,7 @@ const showHelpMessage = ref(false);
 const formValid = ref(false);
 const leadFormValid = ref(true);
 
-// Updated service request form with proper types
+// Updated service request form 
 const serviceRequest = ref({
   fullName: "",
   email: "",
@@ -744,37 +743,108 @@ const validateNIC = (nic: string): boolean => {
 
   // Old NIC format: 9 digits + V/X
   const oldNICPattern = /^[0-9]{9}[VX]$/;
-
   // New NIC format: 12 digits
   const newNICPattern = /^[0-9]{12}$/;
 
   if (oldNICPattern.test(nic)) {
-    // Additional validation for old NIC
-    const year = parseInt(nic.substring(0, 2));
-    const dayOfYear = parseInt(nic.substring(2, 5));
-
-    // Basic range checks
-    if (dayOfYear < 1 || dayOfYear > 866) return false; // 866 for leap years with gender offset
-
-    return true;
+    return validateOldNIC(nic);
   }
 
   if (newNICPattern.test(nic)) {
-    // Additional validation for new NIC
-    const year = parseInt(nic.substring(0, 4));
-    const dayOfYear = parseInt(nic.substring(4, 7));
-
-    // Basic range checks
-    if (year < 1900 || year > new Date().getFullYear()) return false;
-    if (dayOfYear < 1 || dayOfYear > 866) return false;
-
-    return true;
+    return validateNewNIC(nic);
   }
 
   return false;
 };
 
-// Validation rules - updated for new structure
+// Validate old format NIC (9 digits + V/X)
+const validateOldNIC = (nic: string): boolean => {
+  const year = parseInt(nic.substring(0, 2));
+  const dayOfYear = parseInt(nic.substring(2, 5));
+
+  // Basic range checks for day of year
+  if (dayOfYear < 1 || dayOfYear > 866) return false; // 866 for leap years with gender offset
+
+  return true;
+};
+
+// Validate new format NIC (12 digits)
+const validateNewNIC = (nic: string): boolean => {
+  const year = parseInt(nic.substring(0, 4));
+  const dayOfYear = parseInt(nic.substring(4, 7));
+  const serialNumber = nic.substring(7, 12);
+
+  // Validate year
+  const currentYear = new Date().getFullYear();
+  if (year < 1900 || year > currentYear) return false;
+
+  // Validate day of year considering gender offset
+  const actualDayOfYear = dayOfYear > 500 ? dayOfYear - 500 : dayOfYear;
+  
+  // Check if day is valid for the year
+  if (actualDayOfYear < 1) return false;
+  
+  // Check maximum days in year
+  const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+  const maxDays = isLeapYear ? 366 : 365;
+  
+  if (actualDayOfYear > maxDays) return false;
+
+  // Validate serial number (should be 5 digits)
+  if (!/^[0-9]{5}$/.test(serialNumber)) return false;
+
+  // Day of year should not be 0
+  if (actualDayOfYear === 0) return false;
+  
+  // For February 29th, ensure it's a leap year
+  if (actualDayOfYear === 60 && !isLeapYear) return false; // Feb 29 is day 60
+
+  return true;
+};
+
+// Get NIC format hint based on what user has typed
+const getNICFormatHint = (nic: string): string => {
+  if (!nic) return "Enter old format or new format";
+  
+  const cleanNIC = nic.replace(/\s/g, '').toUpperCase();
+  
+  if (cleanNIC.length <= 10) {
+    return "Old format: YYMMMNNNC (e.g., 921234567V)";
+  } else if (cleanNIC.length <= 12) {
+    if (/^[0-9]+$/.test(cleanNIC)) {
+      const year = cleanNIC.substring(0, 4);
+      const dayOfYear = cleanNIC.substring(4, 7);
+      
+      if (cleanNIC.length >= 4) {
+        const yearNum = parseInt(year);
+        const currentYear = new Date().getFullYear();
+        
+        if (yearNum < 1900 || yearNum > currentYear) {
+          return `Invalid birth year: ${year}`;
+        }
+      }
+      
+      if (cleanNIC.length >= 7) {
+        const dayNum = parseInt(dayOfYear);
+        const actualDay = dayNum > 500 ? dayNum - 500 : dayNum;
+        const gender = dayNum > 500 ? "Female" : "Male";
+        
+        if (actualDay < 1 || actualDay > 366) {
+          return `Invalid day of year: ${dayOfYear}`;
+        }
+        
+        return `New format detected - Year: ${year}, Day: ${actualDay} (${gender})`;
+      }
+      
+      return "New format: YYYYMMMNNNNN (e.g., 200012345678)";
+    }
+    return "New format should contain only digits";
+  }
+  
+  return "Invalid format - too long";
+};
+
+// Validation rules - updated with enhanced NIC validation
 const rules = {
   required: (v: any) => !!v || "This field is required",
   requiredSelect: (v: any) => (v !== null && v !== undefined) || "Please select an option",
@@ -782,7 +852,34 @@ const rules = {
   phone: (v: string) => !v || /^(\+94|0)?[0-9]{9,10}$/.test(v) || "Invalid phone number format",
   nic: (v: string) => {
     if (!v) return "NIC is required";
-    return validateNIC(v) || "Invalid NIC number - please enter a valid Sri Lankan NIC";
+    
+    const validation = validateNIC(v);
+    if (!validation) {
+      const cleanNIC = v.replace(/\s/g, '').toUpperCase();
+      
+      // Provide specific error messages based on format
+      if (!/^[0-9]{9}[VX]$/.test(cleanNIC) && !/^[0-9]{12}$/.test(cleanNIC)) {
+        return "Enter valid format: Old (123456789V) or New (200012345678)";
+      }
+      
+      if (/^[0-9]{12}$/.test(cleanNIC)) {
+        const year = parseInt(cleanNIC.substring(0, 4));
+        const dayOfYear = parseInt(cleanNIC.substring(4, 7));
+        
+        if (year < 1900 || year > new Date().getFullYear()) {
+          return `Invalid birth year: ${year}`;
+        }
+        
+        const actualDay = dayOfYear > 500 ? dayOfYear - 500 : dayOfYear;
+        if (actualDay < 1 || actualDay > 366) {
+          return `Invalid day of year: ${dayOfYear}`;
+        }
+      }
+      
+      return "Invalid NIC number - please check and try again";
+    }
+    
+    return true;
   },
 };
 
