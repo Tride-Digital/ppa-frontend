@@ -682,8 +682,8 @@ const serviceRequest = ref({
   email: "",
   phone: "",
   nic: "",
-  serviceCategory: null as number | null,  // Changed to store category ID
-  serviceSubcategory: null as number | null,  // Changed to store subcategory ID
+  serviceCategory: null as number | null,  
+  serviceSubcategory: null as number | null,
   message: "",
 });
 
@@ -729,7 +729,7 @@ const quickActionsList = [
   {label: "Zengate Trade Platform", value: "zengate"},
 ];
 
-// Watch for service category changes and reset subcategory
+// Watch for service category changes and resets
 watch(() => serviceRequest.value.serviceCategory, (newCategoryId) => {
   // Clear subcategory when category changes
   serviceRequest.value.serviceSubcategory = null
@@ -977,7 +977,7 @@ const selectDirector = (director: Director) => {
         "Redirecting now..."
     );
 
-    // Navigate to director profile page after a short delay
+    // Navigate to director profile page
     setTimeout(() => {
       navigateTo(`/director/${director.id}`);
     }, 1500);
@@ -989,7 +989,6 @@ const showServiceForm = () => {
   addBotMessage("", {showForm: true});
 };
 
-// *** UPDATED SUBMIT SERVICE REQUEST FUNCTION WITH BACKEND INTEGRATION ***
 const submitServiceRequest = async () => {
   if (!formValid.value) return;
 
@@ -997,11 +996,9 @@ const submitServiceRequest = async () => {
   isTyping.value = true;
 
   try {
-    // Get the runtime config for API URL
     const config = useRuntimeConfig()
     const baseURL = config.public.adminAppUrl
 
-    // Prepare the request payload to match backend schema (snake_case fields)
     const requestPayload = {
       full_name: serviceRequest.value.fullName,
       email: serviceRequest.value.email,
@@ -1014,7 +1011,6 @@ const submitServiceRequest = async () => {
 
     console.log('Submitting service request:', requestPayload)
 
-    // Submit to FastAPI backend
     const response = await $fetch(`${baseURL}/chatbot-service/submit`, {
       method: 'POST',
       body: requestPayload,
@@ -1025,7 +1021,7 @@ const submitServiceRequest = async () => {
 
     console.log('Service request response:', response)
 
-    // Get the human-readable service names for display
+    // Get the readable service names for display
     const categoryName = getCategoryName(serviceRequest.value.serviceCategory)
     const subcategoryName = getSubcategoryName(serviceRequest.value.serviceSubcategory)
 
@@ -1035,7 +1031,7 @@ const submitServiceRequest = async () => {
     // Store user name for personalization
     localStorage.setItem("ppa_user_name", serviceRequest.value.fullName);
 
-    // Success message with request ID from backend
+    // Success message with request ID
     addBotMessage(
         `✅ Thank you, <strong>${serviceRequest.value.fullName}</strong>.<br><br>` +
         `Your request for <strong>${subcategoryName}</strong> (${categoryName}) has been submitted successfully.<br>` +
@@ -1149,7 +1145,6 @@ const submitLead = async (subscribe: boolean) => {
 
   if (subscribe && (leadInfo.value.email || leadInfo.value.phone)) {
     try {
-      // Simulate API call - you can implement actual lead capture endpoint later
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       if (leadInfo.value.name) {

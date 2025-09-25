@@ -50,7 +50,7 @@ export const useServices = () => {
         }
     }
 
-    // Computed property for main service categories (formatted for v-select)
+    // Computed property for main service categories
     const mainServiceCategories = computed<ServiceCategoryOption[]>(() => {
         return serviceCategories.value.map(category => ({
             id: category.id,
@@ -109,7 +109,7 @@ export const useServices = () => {
         return 'mdi-tools'
     }
 
-    // Search services (optional - if you want search functionality)
+    // Search services
     const searchServices = async (query: string, categoryId?: number) => {
         try {
             const params = new URLSearchParams()
