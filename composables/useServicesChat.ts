@@ -29,7 +29,7 @@ const error = ref('')
 
 export const useServices = () => {
     const config = useRuntimeConfig()
-    const baseURL = config.public.adminAppUrl
+    const baseURL = config.public.backendUrl
 
     // Fetch all service categories with subcategories
     const fetchServiceCategories = async () => {
