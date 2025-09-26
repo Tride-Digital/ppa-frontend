@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+const config = useRuntimeConfig()
 
 export interface BlogPost {
   id: number
@@ -42,7 +43,7 @@ export interface CommentRequest {
   comment: string
 }
 export const useBlogData = () => {
-  const baseUrl = 'http://127.0.0.1:8000'
+  const baseUrl = config.public.backendUrl
   const loading = ref(false)
   const error = ref<string | null>(null)
   const $fetch = async (url: string, options: any = {}) => {
