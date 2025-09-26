@@ -6,7 +6,19 @@
         <h2 class="main-title">Modern Technologies</h2>
       </div>
     </div>
-    <div class="slider-controls">
+    <div v-if="loading" class="loading-state">
+      <v-progress-circular size="64" indeterminate color="primary" />
+      <p class="mt-4">Loading modern technologies...</p>
+    </div>
+    <div v-else-if="error" class="error-state">
+      <v-icon size="48" color="error" class="mb-2">mdi-alert-circle</v-icon>
+      <p class="text-error">{{ error }}</p>
+      <v-btn color="primary" @click="loadModernTechPosts" class="mt-2">
+        <v-icon start>mdi-refresh</v-icon>
+        Retry
+      </v-btn>
+    </div>
+    <div v-else-if="cards.length" class="slider-controls">
       <div class="cards-wrapper" ref="wrapper">
         <button class="nav-button nav-button-prev" @click="prev" :disabled="isTransitioning">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -15,11 +27,11 @@
         </button>
         <div class="cards-container" ref="track" :class="{ transitioning: isTransitioning }" :style="{ transform: `translateX(-${currentIndex * slideSize}px)` }" @transitionend="onTransitionEnd" @mouseenter="pauseAutoPlay" @mouseleave="resumeAutoPlay">
           <div v-for="(card, i) in preClones" :key="`pre-${i}`" class="card" @click="handleCardClick(cards[cards.length - preClones.length + i])">
-            <img :src="card.image" :alt="card.alt" class="card-image" />
+            <img :src="card.image_url" :alt="card.blog_name" class="card-image" />
             <div class="card-overlay">
               <div class="card-content">
-                <h3 class="card-title">{{ card.title }}</h3>
-                <p class="card-description">{{ card.description }}</p>
+                <h3 class="card-title">{{ card.blog_name }}</h3>
+                <p class="card-description">{{ card.short_description }}</p>
                 <div class="click-indicator">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -30,11 +42,11 @@
             </div>
           </div>
           <div v-for="(card, index) in cards" :key="`real-${index}`" class="card" @click="handleCardClick(card)">
-            <img :src="card.image" :alt="card.alt" class="card-image" />
+            <img :src="card.image_url" :alt="card.blog_name" class="card-image" />
             <div class="card-overlay">
               <div class="card-content">
-                <h3 class="card-title">{{ card.title }}</h3>
-                <p class="card-description">{{ card.description }}</p>
+                <h3 class="card-title">{{ card.blog_name }}</h3>
+                <p class="card-description">{{ card.short_description }}</p>
                 <div class="click-indicator">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -45,11 +57,11 @@
             </div>
           </div>
           <div v-for="(card, i) in postClones" :key="`post-${i}`" class="card" @click="handleCardClick(cards[i])">
-            <img :src="card.image" :alt="card.alt" class="card-image" />
+            <img :src="card.image_url" :alt="card.blog_name" class="card-image" />
             <div class="card-overlay">
               <div class="card-content">
-                <h3 class="card-title">{{ card.title }}</h3>
-                <p class="card-description">{{ card.description }}</p>
+                <h3 class="card-title">{{ card.blog_name }}</h3>
+                <p class="card-description">{{ card.short_description }}</p>
                 <div class="click-indicator">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -67,13 +79,19 @@
         </button>
       </div>
     </div>
-    <div class="navigation-dots">
+    <div v-if="cards.length" class="navigation-dots">
       <button v-for="(card, i) in cards" :key="`dot-${i}`" class="dot" :class="{ active: normalizedIndex === i }" @click="goToRealIndex(i)"></button>
+    </div>
+    <div v-else class="empty-state">
+      <v-icon size="64" color="grey-lighten-1" class="mb-4">mdi-cog-outline</v-icon>
+      <h3 class="text-h5 mb-2 text-grey-darken-1">No modern technology posts available</h3>
+      <p class="text-grey-darken-1">Check back later for new content!</p>
     </div>
   </div>
 </template>
 
 <script>
+import { useBlogData } from '~/composables/useBlogData'
 export default {
   name: 'ModernCardSlider',
   data() {
@@ -86,43 +104,9 @@ export default {
       gapPx: 32,
       perView: 1,
       isPaused: false,
-      cards: [
-        { 
-          image: '/images/modern-technologies/m1.webp?w=500&h=400&fit=crop', 
-          alt: 'SMART soil management sensors and IoT technology in plantation', 
-          title: 'SMART Soil Technology',
-          description: 'Advanced IoT sensors, real-time monitoring, and data analytics transform soil management for optimal crop performance.',
-          blogId: 201 
-        },
-        { 
-          image: '/images/modern-technologies/m2.webp?w=500&h=400&fit=crop', 
-          alt: 'Solar-powered sustainable processing equipment and renewable energy systems', 
-          title: 'Green Processing Equipment',
-          description: 'Eco-friendly processing systems using renewable energy and bio-based alternatives for sustainable operations.',
-          blogId: 202 
-        },
-        { 
-          image: '/images/modern-technologies/m3.webp?w=500&h=400&fit=crop', 
-          alt: 'Automated Ceylon tea processing machinery with precision control systems', 
-          title: 'Automated Tea Systems',
-          description: 'Climate-controlled chambers and precision automation ensure consistent Ceylon tea quality standards.',
-          blogId: 203 
-        },
-        { 
-          image: '/images/modern-technologies/m4.webp?w=500&h=400&fit=crop', 
-          alt: 'Weather monitoring stations with climate resilience technology', 
-          title: 'Climate Tech Systems',
-          description: 'Advanced weather monitoring and automated response systems for climate challenge adaptation.',
-          blogId: 204 
-        },
-        { 
-          image: '/images/modern-technologies/m5.webp?w=500&h=400&fit=crop', 
-          alt: 'Digital marketing dashboard with e-commerce and analytics platforms', 
-          title: 'Digital Marketing Tech',
-          description: 'E-commerce platforms, customer analytics, and automated marketing systems for global market reach.',
-          blogId: 205 
-        },
-      ]
+      cards: [],
+      loading: false,
+      error: null
     }
   },
   computed: {
@@ -136,11 +120,14 @@ export default {
       return this.cards.slice(0, this.perView);
     }
   },
-  mounted() {
+  async mounted() {
+    await this.loadModernTechPosts()
     this.$nextTick(() => {
-      this.measure();
-      this.currentIndex = this.perView;
-      this.startAutoPlay();
+      if (this.cards.length > 0) {
+        this.measure();
+        this.currentIndex = this.perView;
+        this.startAutoPlay();
+      }
     });
     window.addEventListener('resize', this.handleResize);
   },
@@ -149,20 +136,29 @@ export default {
     this.clearAutoPlay();
   },
   methods: {
+    async loadModernTechPosts() {
+      this.loading = true
+      this.error = null
+      try {
+        const { getPostsByType } = useBlogData()
+        const modernTechPosts = await getPostsByType(2) // blog_type === 2 for Modern Technology
+        if (modernTechPosts && modernTechPosts.length > 0) {
+          this.cards = modernTechPosts.slice(0, 10) // Limit to 10 posts for performance
+        } else {
+          this.cards = []
+        }
+      } catch (err) {
+        console.error('Failed to load modern technology posts:', err)
+        this.error = 'Failed to load modern technology posts'
+        this.cards = []
+      } finally {
+        this.loading = false
+      }
+    },
     async handleCardClick(card) {
-      if (card && card.blogId) {
+      if (card && card.id) {
         try {
-          const { selectPost, getPostById } = useModernTechStore()
-          const blogPost = getPostById(card.blogId)
-          if (blogPost) {
-            // Store the selected post
-            selectPost(blogPost)
-            // Navigate to the blog detail page with 'tech' prefix
-            await this.$router.push(`/blog/tech/${blogPost.id}`)
-          } else {
-            console.warn(`Modern Tech blog post with ID ${card.blogId} not found`)
-            await this.$router.push('/blogs')
-          }
+          await this.$router.push(`/blogs/${card.id}`)
         } catch (error) {
           console.error('Navigation error:', error)
           try {
@@ -174,19 +170,19 @@ export default {
       }
     },
     next() {
-      if (this.isTransitioning) return;
+      if (this.isTransitioning || this.cards.length === 0) return;
       this.isTransitioning = true;
       this.currentIndex += 1;
       this.restartAutoPlay();
     },
     prev() {
-      if (this.isTransitioning) return;
+      if (this.isTransitioning || this.cards.length === 0) return;
       this.isTransitioning = true;
       this.currentIndex -= 1;
       this.restartAutoPlay();
     },
     goToRealIndex(i) {
-      if (this.isTransitioning) return;
+      if (this.isTransitioning || this.cards.length === 0) return;
       this.isTransitioning = true;
       this.currentIndex = i + this.perView;
       this.restartAutoPlay();
@@ -194,6 +190,7 @@ export default {
     onTransitionEnd(e) {
       if (e && e.propertyName && e.propertyName !== 'transform') return;
       const total = this.cards.length;
+      if (total === 0) return;
       const leftBound = this.perView;
       const rightBound = this.perView + total - 1;
       if (this.currentIndex > rightBound) {
@@ -217,12 +214,13 @@ export default {
       }
     },
     startAutoPlay() {
+      if (this.cards.length === 0) return;
       this.clearAutoPlay();
       this.autoPlayInterval = setInterval(() => {
         if (!this.isPaused && !this.isTransitioning) {
           this.next();
         }
-      }, 2500);
+      }, 3000);
     },
     clearAutoPlay() {
       if (this.autoPlayInterval) {
@@ -230,19 +228,27 @@ export default {
         this.autoPlayInterval = null;
       }
     },
-    pauseAutoPlay() { this.isPaused = true; },
-    resumeAutoPlay() { this.isPaused = false; },
-    restartAutoPlay() { this.startAutoPlay(); },
+    pauseAutoPlay() { 
+      this.isPaused = true; 
+    },
+    resumeAutoPlay() { 
+      this.isPaused = false; 
+    },
+    restartAutoPlay() { 
+      this.startAutoPlay(); 
+    },
     handleResize() {
       clearTimeout(this.resizeTimeout);
       this.resizeTimeout = setTimeout(() => {
-        const prevReal = this.normalizedIndex;
-        this.measure();
-        this.currentIndex = prevReal + this.perView;
+        if (this.cards.length > 0) {
+          const prevReal = this.normalizedIndex;
+          this.measure();
+          this.currentIndex = prevReal + this.perView;
+        }
       }, 100);
     },
     measure() {
-      if (!this.$refs.wrapper || !this.$refs.track) return;
+      if (!this.$refs.wrapper || !this.$refs.track || this.cards.length === 0) return;
 
       this.wrapperWidth = this.$refs.wrapper.clientWidth || 0;
       const csTrack = window.getComputedStyle(this.$refs.track);
@@ -299,7 +305,6 @@ export default {
   font-weight: 800;
   color: rgb(var(--v-theme-title-main));
 }
-
 .card-slider-container {
   width: 100%;
   max-width: 1700px;
@@ -340,8 +345,11 @@ export default {
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: linear-gradient(135deg, #f0f9ff 0%, #dcfce7 100%);
 }
-.card:hover .card-image { transform: scale(1.08); }
+.card-image:error {
+  background: linear-gradient(135deg, #f0f9ff 0%, #dcfce7 100%);
+}
 
 .card-overlay {
   position: absolute;
@@ -467,5 +475,19 @@ export default {
   .card-overlay { padding: 12px; }
   .card-title { font-size: 1.1rem; }
   .card-description { font-size: 0.75rem; }
+}
+.loading-state,
+.error-state,
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 40px 0;
+}
+.error-state .v-btn {
+  margin-top: 16px;
 }
 </style>
