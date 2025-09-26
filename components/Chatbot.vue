@@ -1094,7 +1094,7 @@ const submitServiceRequest = async () => {
 
   try {
     const config = useRuntimeConfig()
-    const baseURL = config.public.adminAppUrl
+    const baseURL = config.public.backendUrl
 
     const requestPayload = {
       full_name: serviceRequest.value.fullName,
