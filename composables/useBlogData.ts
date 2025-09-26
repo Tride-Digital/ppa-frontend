@@ -1,5 +1,4 @@
 import { ref, computed } from 'vue'
-const config = useRuntimeConfig()
 
 export interface BlogPost {
   id: number
@@ -43,6 +42,7 @@ export interface CommentRequest {
   comment: string
 }
 export const useBlogData = () => {
+  const config = useRuntimeConfig()
   const baseUrl = config.public.backendUrl
   const loading = ref(false)
   const error = ref<string | null>(null)
