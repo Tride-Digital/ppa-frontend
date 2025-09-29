@@ -1,25 +1,43 @@
 <template>
-  <v-container class="fill-height py-12" max-width="1400">
+  <v-container class="py-12" fluid>
     <v-row justify="center">
-      <v-col cols="12" class="text-center mb-6">
+      <v-col cols="12" class="text-center mb-8">
         <h2 class="directors-title">Senior Leadership Team</h2>
         <p class="directors-subtitle">Get in touch with our directors directly</p>
       </v-col>
     </v-row>
-    <v-row justify="center">
-      <v-col v-for="director in directorContacts" :key="director.name" cols="12" sm="6" md="4" lg="2.4" xl="2.4" class="mb-4 d-flex">
-        <v-card class="director-card h-100 flex-grow-1" elevation="3" hover @click="navigateToDirector(director.id)" style="cursor: pointer;">
-          <v-card-text class="text-center pa-8">
-            <div class="director-image-container mb-5">
-              <v-img :src="director.image" :alt="director.name" class="director-image" cover>
+    
+    <v-row justify="center" class="directors-row">
+      <v-col 
+        v-for="director in directorContacts" 
+        :key="director.name" 
+        cols="12" 
+        sm="6" 
+        md="4" 
+        lg="2.4"
+        class="d-flex justify-center"
+      >
+        <v-card 
+          class="director-card" 
+          elevation="2" 
+          @click="navigateToDirector(director.id)" 
+        >
+          <v-card-text class="text-center pa-6">
+            <div class="director-image-container">
+              <v-img 
+                :src="director.image" 
+                :alt="director.name" 
+                class="director-image" 
+                cover
+              >
                 <template #error>
                   <div class="error-placeholder">
-                    <v-icon size="60" color="white">mdi-account-tie</v-icon>
+                    <v-icon size="60" color="grey">mdi-account-tie</v-icon>
                   </div>
                 </template>
               </v-img>
             </div>
-            <h3 class="director-name">Director : {{ director.name }}</h3>
+            <h3 class="director-name mt-4">Director : {{ director.name }}</h3>
           </v-card-text>
         </v-card>
       </v-col>
