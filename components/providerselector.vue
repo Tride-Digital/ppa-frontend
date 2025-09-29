@@ -70,7 +70,7 @@
                 @click="goToRegister"
                 append-icon="mdi-arrow-right"
               >
-                Register as Planter
+                Register as Retainer client
               </v-btn>
             </v-card-actions>
           </v-card>
