@@ -6,7 +6,9 @@
       <v-col cols="12" md="10" lg="8">
         <div class="text-center mb-6">
           <v-icon size="64" color="primary" class="mb-4">mdi-handshake</v-icon>
-          <h1 class="text-h4 font-weight-bold mb-2">Service Provider Registration</h1>
+          <h1 class="text-h4 font-weight-bold mb-2">
+            Service Provider Registration
+          </h1>
           <p class="text-body-1 text-grey-darken-2">
             Join PPA's network of trusted service providers
           </p>
@@ -47,7 +49,7 @@
                     <v-icon class="mr-2">mdi-office-building</v-icon>
                     Business Information
                   </v-card-title>
-                  
+
                   <v-card-text>
                     <v-row>
                       <v-col cols="12" md="6">
@@ -70,7 +72,7 @@
                           prepend-inner-icon="mdi-account"
                         />
                       </v-col>
-                      
+
                       <v-col cols="12" md="6">
                         <v-text-field
                           v-model="formData.nicNumber"
@@ -92,7 +94,7 @@
                           hint="Optional - if registered business"
                         />
                       </v-col>
-                      
+
                       <v-col cols="12">
                         <v-text-field
                           v-model="formData.address"
@@ -103,7 +105,7 @@
                           prepend-inner-icon="mdi-map-marker"
                         />
                       </v-col>
-                      
+
                       <v-col cols="12" md="6">
                         <v-select
                           v-model="formData.district"
@@ -126,7 +128,7 @@
                           hint="Format: 0771234567"
                         />
                       </v-col>
-                      
+
                       <v-col cols="12">
                         <v-text-field
                           v-model="formData.email"
@@ -151,7 +153,7 @@
                     <v-icon class="mr-2">mdi-briefcase</v-icon>
                     Service Details
                   </v-card-title>
-                  
+
                   <v-card-text>
                     <v-row>
                       <v-col cols="12">
@@ -160,16 +162,21 @@
                           :rules="[rules.required]"
                         >
                           <template v-slot:label>
-                            <div class="text-subtitle-1 font-weight-medium mb-2">
+                            <div
+                              class="text-subtitle-1 font-weight-medium mb-2"
+                            >
                               Select Service Category *
                             </div>
                           </template>
                           <v-radio value="supply_chain">
                             <template v-slot:label>
                               <div>
-                                <span class="font-weight-medium">Supply Chain Services</span>
+                                <span class="font-weight-medium"
+                                  >Supply Chain Services</span
+                                >
                                 <div class="text-caption text-grey">
-                                  Logistics, Export, E-commerce, Certification, Branding
+                                  Logistics, Export, E-commerce, Certification,
+                                  Branding
                                 </div>
                               </div>
                             </template>
@@ -177,7 +184,9 @@
                           <v-radio value="support_services">
                             <template v-slot:label>
                               <div>
-                                <span class="font-weight-medium">Support Services</span>
+                                <span class="font-weight-medium"
+                                  >Support Services</span
+                                >
                                 <div class="text-caption text-grey">
                                   Legal, Financial, HR, ICT, Insurance, Training
                                 </div>
@@ -238,12 +247,13 @@
                   <v-icon class="mr-2">mdi-file-upload</v-icon>
                   Upload Documents
                 </v-card-title>
-                
+
                 <v-card-text>
                   <v-row>
                     <v-col cols="12">
                       <v-alert type="info" variant="tonal" class="mb-4">
-                        Upload clear copies of your documents. Supported formats: PDF, JPG, PNG (Max 5MB each)
+                        Upload clear copies of your documents. Supported
+                        formats: PDF, JPG, PNG (Max 5MB each)
                       </v-alert>
                     </v-col>
 
@@ -266,13 +276,21 @@
                       <v-file-input
                         v-model="formData.documents.brCertificate"
                         label="BR Certificate"
-                        :rules="formData.brNumber ? [rules.required, rules.fileSize] : [rules.fileSize]"
+                        :rules="
+                          formData.brNumber
+                            ? [rules.required, rules.fileSize]
+                            : [rules.fileSize]
+                        "
                         variant="outlined"
                         density="comfortable"
                         prepend-icon="mdi-file-certificate"
                         accept=".pdf,.jpg,.jpeg,.png"
                         show-size
-                        :hint="formData.brNumber ? 'Required since you provided BR number' : 'Optional'"
+                        :hint="
+                          formData.brNumber
+                            ? 'Required since you provided BR number'
+                            : 'Optional'
+                        "
                       />
                     </v-col>
 
@@ -304,17 +322,21 @@
                   <v-icon class="mr-2">mdi-file-document-check</v-icon>
                   Service Provider Agreement
                 </v-card-title>
-                
+
                 <v-card-text>
                   <!-- Summary Version -->
                   <v-alert type="info" variant="outlined" class="mb-4">
-                    <v-alert-title class="text-h6">Key Terms Summary</v-alert-title>
+                    <v-alert-title class="text-h6"
+                      >Key Terms Summary</v-alert-title
+                    >
                     <v-list density="compact" class="mt-3">
                       <v-list-item v-for="term in agreementSummary" :key="term">
                         <template v-slot:prepend>
                           <v-icon size="small">mdi-check</v-icon>
                         </template>
-                        <v-list-item-title class="text-body-2">{{ term }}</v-list-item-title>
+                        <v-list-item-title class="text-body-2">{{
+                          term
+                        }}</v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-alert>
@@ -332,25 +354,63 @@
                         <div class="agreement-text">
                           <h4>SERVICE PROVIDER AGREEMENT</h4>
                           <p class="mt-3"><strong>1. Purpose</strong></p>
-                          <p>The Provider registers with PPA to offer services to planters and associates through the PPA virtual office platform.</p>
-                          
-                          <p class="mt-3"><strong>2. Independent Status</strong></p>
-                          <p>Provider operates as an independent contractor. No employer-employee or partnership relationship arises between PPA and the Provider.</p>
-                          
-                          <p class="mt-3"><strong>3. Registration & Verification</strong></p>
-                          <p>Provider must submit accurate information and supporting documents. PPA reserves the right to verify and approve/reject applications within 7 working days.</p>
-                          
-                          <p class="mt-3"><strong>4. Fees & Payments</strong></p>
-                          <p>Registration is free. PPA may charge a commission (3-5%) on services performed through the platform. Payments between Provider and client remain the sole responsibility of the Provider.</p>
-                          
-                          <p class="mt-3"><strong>5. Service Quality & Liability</strong></p>
-                          <p>Provider warrants that services will be delivered with reasonable skill, care, and professionalism. PPA shall not be liable for the quality, timeliness, or outcomes of services provided.</p>
-                          
+                          <p>
+                            The Provider registers with PPA to offer services to
+                            retainer clients through the PPA virtual office
+                            platform.
+                          </p>
+
+                          <p class="mt-3">
+                            <strong>2. Independent Status</strong>
+                          </p>
+                          <p>
+                            Provider operates as an independent contractor. No
+                            employer-employee or partnership relationship arises
+                            between PPA and the Provider.
+                          </p>
+
+                          <p class="mt-3">
+                            <strong>3. Registration & Verification</strong>
+                          </p>
+                          <p>
+                            Provider must submit accurate information and
+                            supporting documents. PPA reserves the right to
+                            verify and approve/reject applications within 7
+                            working days.
+                          </p>
+
+                          <p class="mt-3">
+                            <strong>4. Fees & Payments</strong>
+                          </p>
+                          <p>
+                            Registration is free. PPA may charge a commission
+                            (3-5%) on services performed through the platform.
+                            Payments between Provider and client remain the sole
+                            responsibility of the Provider.
+                          </p>
+
+                          <p class="mt-3">
+                            <strong>5. Service Quality & Liability</strong>
+                          </p>
+                          <p>
+                            Provider warrants that services will be delivered
+                            with reasonable skill, care, and professionalism.
+                            PPA shall not be liable for the quality, timeliness,
+                            or outcomes of services provided.
+                          </p>
+
                           <p class="mt-3"><strong>6. Termination</strong></p>
-                          <p>Either party may terminate this Agreement with 30 days' notice. PPA may suspend or terminate immediately in cases of fraud or breach.</p>
-                          
+                          <p>
+                            Either party may terminate this Agreement with 30
+                            days' notice. PPA may suspend or terminate
+                            immediately in cases of fraud or breach.
+                          </p>
+
                           <p class="mt-3"><strong>7. Governing Law</strong></p>
-                          <p>This Agreement shall be governed by the laws of the Democratic Socialist Republic of Sri Lanka.</p>
+                          <p>
+                            This Agreement shall be governed by the laws of the
+                            Democratic Socialist Republic of Sri Lanka.
+                          </p>
                         </div>
                       </v-expansion-panel-text>
                     </v-expansion-panel>
@@ -364,10 +424,13 @@
                   >
                     <template v-slot:label>
                       <span class="text-body-2">
-                        I have read and agree to the 
-                        <span class="font-weight-medium">Service Provider Agreement</span>
-                        and understand that this electronic acceptance is valid under the 
-                        Electronic Transactions Act No. 19 of 2006 of Sri Lanka *
+                        I have read and agree to the
+                        <span class="font-weight-medium"
+                          >Service Provider Agreement</span
+                        >
+                        and understand that this electronic acceptance is valid
+                        under the Electronic Transactions Act No. 19 of 2006 of
+                        Sri Lanka *
                       </span>
                     </template>
                   </v-checkbox>
@@ -382,7 +445,7 @@
                   <v-icon class="mr-2">mdi-check-all</v-icon>
                   Review Your Application
                 </v-card-title>
-                
+
                 <v-card-text>
                   <v-alert type="success" variant="tonal" class="mb-4">
                     Please review your information before submitting
@@ -390,24 +453,38 @@
 
                   <!-- Review Sections -->
                   <div class="review-section">
-                    <h4 class="text-subtitle-1 font-weight-bold mb-3">Business Information</h4>
+                    <h4 class="text-subtitle-1 font-weight-bold mb-3">
+                      Business Information
+                    </h4>
                     <v-row>
                       <v-col cols="12" md="6">
                         <div class="review-item">
-                          <span class="text-caption text-grey">Business Name:</span>
-                          <p class="font-weight-medium">{{ formData.businessName }}</p>
+                          <span class="text-caption text-grey"
+                            >Business Name:</span
+                          >
+                          <p class="font-weight-medium">
+                            {{ formData.businessName }}
+                          </p>
                         </div>
                       </v-col>
                       <v-col cols="12" md="6">
                         <div class="review-item">
-                          <span class="text-caption text-grey">Owner Name:</span>
-                          <p class="font-weight-medium">{{ formData.ownerName }}</p>
+                          <span class="text-caption text-grey"
+                            >Owner Name:</span
+                          >
+                          <p class="font-weight-medium">
+                            {{ formData.ownerName }}
+                          </p>
                         </div>
                       </v-col>
                       <v-col cols="12" md="6">
                         <div class="review-item">
-                          <span class="text-caption text-grey">NIC Number:</span>
-                          <p class="font-weight-medium">{{ formData.nicNumber }}</p>
+                          <span class="text-caption text-grey"
+                            >NIC Number:</span
+                          >
+                          <p class="font-weight-medium">
+                            {{ formData.nicNumber }}
+                          </p>
                         </div>
                       </v-col>
                       <v-col cols="12" md="6">
@@ -426,52 +503,75 @@
 
                     <v-divider class="my-4" />
 
-                    <h4 class="text-subtitle-1 font-weight-bold mb-3">Service Details</h4>
+                    <h4 class="text-subtitle-1 font-weight-bold mb-3">
+                      Service Details
+                    </h4>
                     <v-row>
                       <v-col cols="12" md="6">
                         <div class="review-item">
                           <span class="text-caption text-grey">Category:</span>
                           <p class="font-weight-medium">
-                            {{ formData.category === 'supply_chain' ? 'Supply Chain Services' : 'Support Services' }}
+                            {{
+                              formData.category === "supply_chain"
+                                ? "Supply Chain Services"
+                                : "Support Services"
+                            }}
                           </p>
                         </div>
                       </v-col>
                       <v-col cols="12" md="6">
                         <div class="review-item">
-                          <span class="text-caption text-grey">Service Type:</span>
-                          <p class="font-weight-medium">{{ formData.serviceType }}</p>
+                          <span class="text-caption text-grey"
+                            >Service Type:</span
+                          >
+                          <p class="font-weight-medium">
+                            {{ formData.serviceType }}
+                          </p>
                         </div>
                       </v-col>
                       <v-col cols="12">
                         <div class="review-item">
-                          <span class="text-caption text-grey">Description:</span>
-                          <p class="font-weight-medium">{{ formData.description }}</p>
+                          <span class="text-caption text-grey"
+                            >Description:</span
+                          >
+                          <p class="font-weight-medium">
+                            {{ formData.description }}
+                          </p>
                         </div>
                       </v-col>
                     </v-row>
 
                     <v-divider class="my-4" />
 
-                    <h4 class="text-subtitle-1 font-weight-bold mb-3">Documents Uploaded</h4>
+                    <h4 class="text-subtitle-1 font-weight-bold mb-3">
+                      Documents Uploaded
+                    </h4>
                     <v-chip-group>
-                      <v-chip color="success" variant="outlined" prepend-icon="mdi-check">
+                      <v-chip
+                        color="success"
+                        variant="outlined"
+                        prepend-icon="mdi-check"
+                      >
                         NIC Copy
                       </v-chip>
-                      <v-chip 
-                        v-if="formData.documents.brCertificate" 
-                        color="success" 
-                        variant="outlined" 
+                      <v-chip
+                        v-if="formData.documents.brCertificate"
+                        color="success"
+                        variant="outlined"
                         prepend-icon="mdi-check"
                       >
                         BR Certificate
                       </v-chip>
-                      <v-chip 
-                        v-if="formData.documents.certifications?.length" 
-                        color="success" 
-                        variant="outlined" 
+                      <v-chip
+                        v-if="formData.documents.certifications?.length"
+                        color="success"
+                        variant="outlined"
                         prepend-icon="mdi-check"
                       >
-                        {{ formData.documents.certifications.length }} Certificate(s)
+                        {{
+                          formData.documents.certifications.length
+                        }}
+                        Certificate(s)
                       </v-chip>
                     </v-chip-group>
                   </div>
@@ -522,14 +622,18 @@
     <v-dialog v-model="successDialog" max-width="500" persistent>
       <v-card>
         <v-card-text class="text-center py-8">
-          <v-icon size="80" color="success" class="mb-4">mdi-check-circle</v-icon>
-          <h3 class="text-h5 font-weight-bold mb-3">Application Submitted Successfully!</h3>
+          <v-icon size="80" color="success" class="mb-4"
+            >mdi-check-circle</v-icon
+          >
+          <h3 class="text-h5 font-weight-bold mb-3">
+            Application Submitted Successfully!
+          </h3>
           <p class="text-body-1 mb-4">
-            Thank you for registering as a Service Provider with PPA. 
-            Your application will be reviewed within 7 working days.
+            Thank you for registering as a Service Provider with PPA. Your
+            application will be reviewed within 7 working days.
           </p>
           <p class="text-body-2 text-grey-darken-1">
-            You will receive a confirmation email at<br>
+            You will receive a confirmation email at<br />
             <strong>{{ formData.email }}</strong>
           </p>
           <p class="text-caption mt-4">
@@ -549,193 +653,217 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 
-const router = useRouter()
+const router = useRouter();
 
 // Form data
-const currentStep = ref(1)
-const valid1 = ref(false)
-const valid2 = ref(false)
-const submitting = ref(false)
-const successDialog = ref(false)
-const applicationRef = ref('')
+const currentStep = ref(1);
+const valid1 = ref(false);
+const valid2 = ref(false);
+const submitting = ref(false);
+const successDialog = ref(false);
+const applicationRef = ref("");
 
 const formData = ref({
   // Business Info
-  businessName: '',
-  ownerName: '',
-  nicNumber: '',
-  brNumber: '',
-  address: '',
-  district: '',
-  phone: '',
-  email: '',
-  
+  businessName: "",
+  ownerName: "",
+  nicNumber: "",
+  brNumber: "",
+  address: "",
+  district: "",
+  phone: "",
+  email: "",
+
   // Service Details
-  category: '',
-  serviceType: '',
-  description: '',
-  experience: '',
-  
+  category: "",
+  serviceType: "",
+  description: "",
+  experience: "",
+
   // Documents
   documents: {
     nicCopy: null as File | null,
     brCertificate: null as File | null,
-    certifications: [] as File[]
+    certifications: [] as File[],
   },
-  
+
   // Agreement
-  agreementAccepted: false
-})
+  agreementAccepted: false,
+});
 
 // Steps configuration
 const steps = [
-  { title: 'Business Info' },
-  { title: 'Service Details' },
-  { title: 'Documents' },
-  { title: 'Agreement' },
-  { title: 'Review' }
-]
+  { title: "Business Info" },
+  { title: "Service Details" },
+  { title: "Documents" },
+  { title: "Agreement" },
+  { title: "Review" },
+];
 
 // Districts of Sri Lanka
 const districts = [
-  'Colombo', 'Gampaha', 'Kalutara', 'Kandy', 'Matale', 'Nuwara Eliya',
-  'Galle', 'Matara', 'Hambantota', 'Jaffna', 'Kilinochchi', 'Mannar',
-  'Mullaitivu', 'Vavuniya', 'Puttalam', 'Kurunegala', 'Anuradhapura',
-  'Polonnaruwa', 'Badulla', 'Monaragala', 'Ratnapura', 'Kegalle',
-  'Batticaloa', 'Ampara', 'Trincomalee'
-]
+  "Colombo",
+  "Gampaha",
+  "Kalutara",
+  "Kandy",
+  "Matale",
+  "Nuwara Eliya",
+  "Galle",
+  "Matara",
+  "Hambantota",
+  "Jaffna",
+  "Kilinochchi",
+  "Mannar",
+  "Mullaitivu",
+  "Vavuniya",
+  "Puttalam",
+  "Kurunegala",
+  "Anuradhapura",
+  "Polonnaruwa",
+  "Badulla",
+  "Monaragala",
+  "Ratnapura",
+  "Kegalle",
+  "Batticaloa",
+  "Ampara",
+  "Trincomalee",
+];
 
 // Service types based on category
 const supplyChainServices = [
-  'Logistics & Cold Chain Operations',
-  'Export Consultancy',
-  'Certification Services (ISO, HACCP, Organic)',
-  'E-commerce Platform Services',
-  'International Trading',
-  'Branding & Packaging'
-]
+  "Logistics & Cold Chain Operations",
+  "Export Consultancy",
+  "Certification Services (ISO, HACCP, Organic)",
+  "E-commerce Platform Services",
+  "International Trading",
+  "Branding & Packaging",
+];
 
 const supportServices = [
-  'Legal Advisory',
-  'Financial & Investment Consulting',
-  'Human Resource Management',
-  'ICT & AI Solutions',
-  'Insurance Services',
-  'Training & Development',
-  'Audit & Compliance',
-  'Community Welfare'
-]
+  "Legal Advisory",
+  "Financial & Investment Consulting",
+  "Human Resource Management",
+  "ICT & AI Solutions",
+  "Insurance Services",
+  "Training & Development",
+  "Audit & Compliance",
+  "Community Welfare",
+];
 
 const getServiceTypes = computed(() => {
-  if (formData.value.category === 'supply_chain') {
-    return supplyChainServices
-  } else if (formData.value.category === 'support_services') {
-    return supportServices
+  if (formData.value.category === "supply_chain") {
+    return supplyChainServices;
+  } else if (formData.value.category === "support_services") {
+    return supportServices;
   }
-  return []
-})
+  return [];
+});
 
 // Agreement summary points
 const agreementSummary = [
-  'You operate as an independent service provider, not an employee of PPA',
-  'PPA will verify your application within 7 working days',
-  'Registration is free, small commission may apply on successful transactions',
-  'You are responsible for service quality and client relationships',
-  'PPA acts as a digital connector, not a guarantor of services',
-  'Either party can terminate with 30 days notice',
-  'Agreement is governed by Sri Lankan law'
-]
+  "You operate as an independent service provider, not an employee of PPA",
+  "PPA will verify your application within 7 working days",
+  "Registration is free, small commission may apply on successful transactions",
+  "You are responsible for service quality and client relationships",
+  "PPA acts as a digital connector, not a guarantor of services",
+  "Either party can terminate with 30 days notice",
+  "Agreement is governed by Sri Lankan law",
+];
 
 // Validation rules
 const rules = {
-  required: (v: any) => !!v || 'This field is required',
+  required: (v: any) => !!v || "This field is required",
   email: (v: string) => {
-    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return pattern.test(v) || 'Invalid email address'
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return pattern.test(v) || "Invalid email address";
   },
   nic: (v: string) => {
-    const pattern = /^([0-9]{9}[vVxX]|[0-9]{12})$/
-    return pattern.test(v) || 'Invalid NIC format (123456789V or 123456789012)'
+    const pattern = /^([0-9]{9}[vVxX]|[0-9]{12})$/;
+    return pattern.test(v) || "Invalid NIC format (123456789V or 123456789012)";
   },
   phone: (v: string) => {
-    const pattern = /^(?:\+94|0)?[0-9]{9}$/
-    return pattern.test(v) || 'Invalid phone number (0771234567)'
+    const pattern = /^(?:\+94|0)?[0-9]{9}$/;
+    return pattern.test(v) || "Invalid phone number (0771234567)";
   },
   description: (v: string) => {
-    if (!v) return 'Description is required'
-    const words = v.trim().split(/\s+/).length
-    if (words < 100) return `Too short (${words}/100 words minimum)`
-    if (words > 150) return `Too long (${words}/150 words maximum)`
-    return true
+    if (!v) return "Description is required";
+    const words = v.trim().split(/\s+/).length;
+    if (words < 100) return `Too short (${words}/100 words minimum)`;
+    if (words > 150) return `Too long (${words}/150 words maximum)`;
+    return true;
   },
   fileSize: (v: File | null) => {
-    if (!v) return true
-    return v.size < 5242880 || 'File size must be less than 5MB'
+    if (!v) return true;
+    return v.size < 5242880 || "File size must be less than 5MB";
   },
   multiFileSize: (v: File[]) => {
-    if (!v || v.length === 0) return true
-    const invalid = v.some(file => file.size >= 5242880)
-    return !invalid || 'Each file must be less than 5MB'
+    if (!v || v.length === 0) return true;
+    const invalid = v.some((file) => file.size >= 5242880);
+    return !invalid || "Each file must be less than 5MB";
   },
-  agreement: (v: boolean) => v || 'You must accept the agreement to proceed'
-}
+  agreement: (v: boolean) => v || "You must accept the agreement to proceed",
+};
 
 // Check if can proceed to next step
 const canProceed = computed(() => {
   switch (currentStep.value) {
     case 1:
-      return valid1.value
+      return valid1.value;
     case 2:
-      return valid2.value && formData.value.category && formData.value.serviceType
+      return (
+        valid2.value && formData.value.category && formData.value.serviceType
+      );
     case 3:
-      return !!formData.value.documents.nicCopy
+      return !!formData.value.documents.nicCopy;
     case 4:
-      return formData.value.agreementAccepted
+      return formData.value.agreementAccepted;
     default:
-      return true
+      return true;
   }
-})
+});
 
 // Navigation functions
 const nextStep = () => {
   if (currentStep.value < 5 && canProceed.value) {
-    currentStep.value++
+    currentStep.value++;
   }
-}
+};
 
 const previousStep = () => {
   if (currentStep.value > 1) {
-    currentStep.value--
+    currentStep.value--;
   }
-}
+};
 
 // Generate application reference
 const generateRef = () => {
-  const date = new Date()
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
-  return `SP${year}${month}${random}`
-}
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const random = Math.floor(Math.random() * 10000)
+    .toString()
+    .padStart(4, "0");
+  return `SP${year}${month}${random}`;
+};
 
 // Submit application
 const submitApplication = async () => {
-  submitting.value = true
-  
+  submitting.value = true;
+
   // Simulate API call
   setTimeout(() => {
-    applicationRef.value = generateRef()
-    submitting.value = false
-    successDialog.value = true
-  }, 2000)
-}
+    applicationRef.value = generateRef();
+    submitting.value = false;
+    successDialog.value = true;
+  }, 2000);
+};
 
 const goToHome = () => {
-  router.push('/')
-}
+  router.push("/");
+};
 </script>
 
 <style scoped>

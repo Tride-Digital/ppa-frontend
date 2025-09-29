@@ -463,7 +463,7 @@
                             class="lead-btn"
                             rounded="xl"
                         >
-                          👍 Yes, subscribe me
+                          👍 Yes
                         </v-btn>
                         <v-btn
                             @click="submitLead(false)"
