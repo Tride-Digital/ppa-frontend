@@ -28,20 +28,16 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
-import type {DirectorContact} from '~/composables/useDirectors'
-
-definePageMeta({
-  title: 'Contact Us - PPA'
-})
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useDirectors } from '~/composables/useDirectors'
 
 const router = useRouter()
-const {getDirectorContacts} = useDirectors()
+const { directorContacts, fetchDirectorContacts } = useDirectors()
 
-// Get director contacts
-const directorContacts = ref<DirectorContact[]>(getDirectorContacts())
+onMounted(fetchDirectorContacts)
 
-const navigateToDirector = (id: number): void => {
+const navigateToDirector = (id: string | number): void => {
   router.push(`/director/${id}`)
 }
 </script>
