@@ -1508,7 +1508,7 @@ onMounted(async () => {
 /* Chat Container */
 .chat-container {
   position: fixed;
-  bottom: 0;
+  bottom: 16px;
   right: 24px;
   z-index: 1000;
   display: flex;
@@ -2148,6 +2148,8 @@ onMounted(async () => {
   .chat-container {
     right: 16px;
     left: 16px;
+    top: calc(90px + 16px);
+    bottom: 16px;
   }
 
   .chat-window {
@@ -2156,7 +2158,7 @@ onMounted(async () => {
   }
 
   .chat-window:not(.minimized) {
-    height: calc(100vh - 32px);
+    height: calc(100vh - 122px);
   }
 
   .directors-grid {
