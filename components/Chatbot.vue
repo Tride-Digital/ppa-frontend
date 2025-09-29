@@ -2064,8 +2064,11 @@ onMounted(async () => {
 /* FAB */
 .chat-fab {
   border-radius: 50% !important;
-  margin-bottom: 16px;
+  /* margin-bottom: 16px; */
   transition: all 0.3s ease;
+  position: fixed !important;
+  bottom: 16px !important;
+  right: 20px !important;
 }
 
 .chat-fab:hover {
