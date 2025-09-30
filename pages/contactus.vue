@@ -6,40 +6,45 @@
         <p class="directors-subtitle">Get in touch with our directors directly</p>
       </v-col>
     </v-row>
-    
+
     <v-row justify="center" class="directors-row">
-      <v-col 
-        v-for="director in directorContacts" 
-        :key="director.name" 
-        cols="12" 
-        sm="6" 
-        md="4" 
+      <v-col
+        v-for="director in directorContacts"
+        :key="director.name"
+        cols="12"
+        sm="6"
+        md="4"
         lg="2.4"
         class="d-flex justify-center"
       >
-        <v-card 
-          class="director-card" 
-          elevation="2" 
-          @click="navigateToDirector(director.id)" 
+        <div
+          class="director-shell"
+          role="button"
+          tabindex="0"
+          @click="navigateToDirector(director.id)"
+          @keydown.enter="navigateToDirector(director.id)"
         >
-          <v-card-text class="text-center pa-6">
-            <div class="director-image-container">
-              <v-img 
-                :src="director.image" 
-                :alt="director.name" 
-                class="director-image" 
-                cover
-              >
-                <template #error>
-                  <div class="error-placeholder">
-                    <v-icon size="60" color="grey">mdi-account-tie</v-icon>
-                  </div>
-                </template>
-              </v-img>
-            </div>
-            <h3 class="director-name mt-4">Director : {{ director.name }}</h3>
-          </v-card-text>
-        </v-card>
+          <v-card class="director-card" elevation="0">
+            <v-card-text class="text-center pa-6">
+              <div class="director-image-container">
+                <v-img
+                  :src="director.image"
+                  :alt="director.name"
+                  class="director-image"
+                  cover
+                >
+                  <template #error>
+                    <div class="error-placeholder">
+                      <v-icon size="60" color="grey">mdi-account-tie</v-icon>
+                    </div>
+                  </template>
+                </v-img>
+              </div>
+              <h3 class="director-name mt-4">Director : {{ director.name }}</h3>
+            </v-card-text>
+          </v-card>
+        </div>
+        <!-- /shell -->
       </v-col>
     </v-row>
   </v-container>
@@ -72,17 +77,35 @@ const navigateToDirector = (id: string | number): void => {
   color: rgb(var(--v-theme-section-subtitle));
   margin-bottom: 2rem;
 }
-.director-card {
-  transition: all 0.3s ease;
-  border-radius: 16px;
+
+.director-shell {
   background: rgb(var(--v-theme-surface));
   border: 1px solid rgba(var(--v-theme-on-surface), 0.12);
+  border-radius: 20px;
+  padding: 20px;
+  padding-left: 20px; 
+  padding-top: 10px;          
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  cursor: pointer;
+  display: inline-block;   
+}
+.director-shell:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+  border-color: rgba(var(--v-theme-primary), 0.25);
+}
+.director-shell:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--v-theme-primary), 0.25), 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.director-card {
+  border-radius: 16px;
+  background: rgb(var(--v-theme-surface));
   width: 220px;
 }
-.director-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgb(var(--v-theme-product-card-shadow)) !important;
-}
+
 .director-image-container {
   width: 180px;
   height: 220px;
@@ -115,6 +138,8 @@ const navigateToDirector = (id: string | number): void => {
   line-height: 1.3;
   margin: 0;
 }
+
+/* Custom 5-up column on large screens */
 @media (min-width: 1264px) {
   .v-col-lg-2\.4 {
     flex: 0 0 20%;
@@ -150,6 +175,11 @@ const navigateToDirector = (id: string | number): void => {
   .v-col-lg-2\.4 {
     flex: 0 0 50%;
     max-width: 50%;
+  }
+
+  .director-shell {
+    padding: 10px;
+    border-radius: 16px;
   }
 }
 @media (max-width: 480px) {
