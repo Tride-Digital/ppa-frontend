@@ -1,13 +1,11 @@
 import { ref } from 'vue'
 
 export interface Service {
-  id: number
   name: string
   image: string
   description: string
   category: string
   icon?: string
-  shortDescription?: string
 }
 
 export interface Director {
@@ -41,72 +39,12 @@ interface ServiceSubcategory {
   name: string
   description: string
   icon: string
-  img_url: string  
-}
-
-interface FullServiceData {
-  id: number
-  subcategory: string
-  service_category: string
   img_url: string
-  icon_font: string
-  short_description: string
-  description: any
 }
 
 const directorContacts = ref<DirectorContact[]>([])
 const directorDetailsCache = ref<Record<string, Director>>({})
 const serviceCategoriesCache = ref<ServiceCategory[]>([])
-const fullServicesCache = ref<FullServiceData[]>([])
-
-/**
- * Fetch all services from service_list API to get the full service data
- */
-const fetchAllServices = async () => {
-  if (fullServicesCache.value.length > 0) {
-    return fullServicesCache.value
-  }
-  
-  try {
-    const config = useRuntimeConfig()
-    const baseURL = config.public.backendUrl || 'http://localhost:8000'
-    const response = await $fetch<any>(`${baseURL}/service_list/all`, {
-      params: {
-        skip: 0,
-        limit: 100
-      }
-    })
-    
-    // Flatten all services from all categories
-    const allServices: FullServiceData[] = []
-    response.forEach((category: any) => {
-      category.services.forEach((service: any) => {
-        allServices.push({
-          id: service.id,
-          subcategory: service.subcategory,
-          service_category: category.service_category,
-          img_url: service.img_url,
-          icon_font: service.icon_font || category.icon_font,
-          short_description: service.short_description,
-          description: service.description
-        })
-      })
-    })
-    
-    fullServicesCache.value = allServices
-    return fullServicesCache.value
-  } catch (error) {
-    console.error('Failed to fetch all services:', error)
-    return []
-  }
-}
-
-/**
- * Get full service data by service ID
- */
-const getServiceById = (serviceId: number): FullServiceData | null => {
-  return fullServicesCache.value.find(service => service.id === serviceId) || null
-}
 
 /**
  * Fetch service categories to map IDs to names
@@ -118,12 +56,13 @@ const fetchServiceCategories = async () => {
   
   try {
     const config = useRuntimeConfig()
-    const baseURL = config.public.apiBase || 'http://localhost:8000'
+    const baseURL = config.public.backendUrl || 'http://localhost:8000'
     const response = await $fetch<ServiceCategory[]>(`${baseURL}/service_list/categories/all`)
+   
     serviceCategoriesCache.value = response || []
     return serviceCategoriesCache.value
   } catch (error) {
-    console.error('Failed to fetch service categories:', error)
+
     return []
   }
 }
@@ -153,7 +92,7 @@ const getCategoryById = (categoryId: number): ServiceCategory | null => {
  */
 const fetchDirectorContacts = async () => {
   const config = useRuntimeConfig()
-  const baseURL = config.public.apiBase || 'http://localhost:8000'
+  const baseURL = config.public.backendUrl || 'http://localhost:8000'
   const res = await fetch(`${baseURL}/directorservice/directors?skip=0&limit=100`)
   const data = await res.json()
   directorContacts.value = data.map((d: any) => ({
@@ -173,12 +112,9 @@ const fetchDirectorById = async (id: string): Promise<Director | null> => {
   
   try {
     const config = useRuntimeConfig()
-    const baseURL = config.public.apiBase || 'http://localhost:8000'
+    const baseURL = config.public.backendUrl || 'http://localhost:8000'
     
-    // Fetch all services first to get the actual service data with images
-    await fetchAllServices()
-    
-    // Fetch service categories
+    // Fetch service categories first
     await fetchServiceCategories()
     
     // Ensure contacts are loaded to get profile info
@@ -195,56 +131,36 @@ const fetchDirectorById = async (id: string): Promise<Director | null> => {
     const contactsData = await contactDataRes.json()
     const contact = contactsData.find((d: any) => d.id === id)
     
-    // Transform services using the actual service IDs from service_list
+    // Map {category: int, subcategory: int} to Service objects
     const transformedServices: Service[] = (data.services || []).map((service: any) => {
-      // Use service.subcategory as the service ID
-      const serviceId = service.subcategory
-      const fullService = getServiceById(serviceId)
+      const subcategory = getSubcategoryById(service.subcategory)
+      const category = getCategoryById(service.category)
       
-      if (fullService) {
-        // Use the full service data from service_list API with image
-        return {
-          id: fullService.id,
-          name: fullService.subcategory,
-          description: fullService.short_description,
-          image: fullService.img_url, 
-          category: fullService.service_category,
-          icon: fullService.icon_font,
-          shortDescription: fullService.short_description
-        }
-      } else {
-        // Fallback if service not found
-        const subcategory = getSubcategoryById(serviceId)
-        const category = getCategoryById(service.category)
-        
-        return {
-          id: serviceId,
-          name: subcategory?.name || `Service ${serviceId}`,
-          description: subcategory?.description ,
-          image: subcategory?.img_url, 
-          category: category?.name || `Category ${service.category}`,
-          icon: subcategory?.icon || 'mdi-briefcase',
-          shortDescription: subcategory?.description
-        }
+      return {
+        name: subcategory?.name || `Service ${service.subcategory}`,
+        description: subcategory?.description || '',
+        image: subcategory?.img_url || '', // ✅ NOW USING img_url!
+        category: category?.name || `Category ${service.category}`,
+        icon: subcategory?.icon || 'mdi-briefcase',
+        id: service.subcategory || '',
       }
     })
     
     const director: Director = {
       id: data.user_id || id,
-      name: contact?.profile?.fullName,
+      name: contact?.profile?.fullName || '',
       position: 'Director',
-      image: contact?.profile?.profilePic,
+      image: contact?.profile?.profilePic || '',
       description: data.about_me || '',
-      qualifications: data.qualifications,
+      qualifications: data.qualifications || [],
       services: transformedServices,
-      email: contact?.profile?.email,
-      phone: contact?.profile?.mobile,
+      email: contact?.profile?.email || '',
+      phone: contact?.profile?.mobile || '',
     }
     
     directorDetailsCache.value[id] = director
     return director
   } catch (error) {
-    console.error('Failed to fetch director details:', error)
     return null
   }
 }
