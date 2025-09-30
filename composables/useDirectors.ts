@@ -5,6 +5,7 @@ export interface Service {
   image: string
   description: string
   category: string
+  icon?: string
 }
 
 export interface Director {
@@ -38,6 +39,7 @@ interface ServiceSubcategory {
   name: string
   description: string
   icon: string
+  img_url: string
 }
 
 const directorContacts = ref<DirectorContact[]>([])
@@ -56,6 +58,9 @@ const fetchServiceCategories = async () => {
     const config = useRuntimeConfig()
     const baseURL = config.public.apiBase || 'http://localhost:8000'
     const response = await $fetch<ServiceCategory[]>(`${baseURL}/service_list/categories/all`)
+    
+    console.log('Service Categories Response:', response)
+    
     serviceCategoriesCache.value = response || []
     return serviceCategoriesCache.value
   } catch (error) {
@@ -128,7 +133,7 @@ const fetchDirectorById = async (id: string): Promise<Director | null> => {
     const contactsData = await contactDataRes.json()
     const contact = contactsData.find((d: any) => d.id === id)
     
-    // Transform services: Map {category: int, subcategory: int} to Service objects
+    // Map {category: int, subcategory: int} to Service objects
     const transformedServices: Service[] = (data.services || []).map((service: any) => {
       const subcategory = getSubcategoryById(service.subcategory)
       const category = getCategoryById(service.category)
@@ -136,7 +141,7 @@ const fetchDirectorById = async (id: string): Promise<Director | null> => {
       return {
         name: subcategory?.name || `Service ${service.subcategory}`,
         description: subcategory?.description || '',
-        image: '', // You can add default image or fetch from somewhere
+        image: subcategory?.img_url || '', // ✅ NOW USING img_url!
         category: category?.name || `Category ${service.category}`,
         icon: subcategory?.icon || 'mdi-briefcase'
       }

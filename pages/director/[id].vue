@@ -124,8 +124,11 @@ const fetchDirector = async () => {
 
 onMounted(fetchDirector)
 
+// Navigate to /services/[id]
 const learnMoreService = (service: any): void => {
-  router.push(`/service/${service.category}`)
+  if (service.id) {
+    router.push(`/services/${service.id}`)
+  }
 }
 
 const addToCart = (category: string, service: any): void => {
