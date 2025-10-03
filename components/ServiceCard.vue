@@ -19,7 +19,7 @@
       {{ service.shortDescription }}
     </v-card-text>
     <v-card-actions class="card-actions">
-      <v-btn variant="outlined" color="primary" size="small" @click.stop="handleLearnMore">
+      <v-btn variant="outlined" color="primary" size="small" @click="handleLearnMore">
         Learn More
         <v-icon right>mdi-arrow-right</v-icon>
       </v-btn>
