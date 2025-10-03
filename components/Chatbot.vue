@@ -307,7 +307,7 @@
                           :disabled="servicesLoading"
                       >
                         <template v-slot:item="{ props, item }">
-                          <v-list-item v-bind="props" :title="null">
+                          <v-list-item v-bind="props" :title=item.raw.name>
                             <template v-slot:prepend>
                               <v-icon :icon="item.raw.icon" class="mr-3" size="small" color="success"/>
                             </template>
@@ -353,7 +353,7 @@
                           :disabled="!serviceRequest.serviceCategory || servicesLoading"
                       >
                         <template v-slot:item="{ props, item }">
-                          <v-list-item v-bind="props" :title="null">
+                          <v-list-item v-bind="props" :title="item.raw.name">
                             <template v-slot:prepend>
                               <v-icon :icon="item.raw.icon" class="mr-3" size="small" color="success"/>
                             </template>
@@ -1116,7 +1116,8 @@ const submitServiceRequest = async () => {
       }
     })
 
-    console.log('Service request response:', response)
+    // Assert the response type so TypeScript knows about request_id
+    const typedResponse = response as { request_id: string }
 
     // Get the readable service names for display
     const categoryName = getCategoryName(serviceRequest.value.serviceCategory)
@@ -1132,7 +1133,7 @@ const submitServiceRequest = async () => {
     addBotMessage(
         `✅ Thank you, <strong>${serviceRequest.value.fullName}</strong>.<br><br>` +
         `Your request for <strong>${subcategoryName}</strong> (${categoryName}) has been submitted successfully.<br>` +
-        `📧 Request ID: <strong>#${response.request_id}</strong><br>` +
+        `📧 Request ID: <strong>#${typedResponse.request_id}</strong><br>` +
         `📧 A confirmation email will be sent to you shortly.<br>` +
         `You'll hear back from our team soon.`,
         {quickActions: true}
@@ -1149,7 +1150,7 @@ const submitServiceRequest = async () => {
       message: "",
     };
 
-    showNotification(`Service request submitted successfully! Request ID: #${response.request_id}`, "success");
+    showNotification(`Service request submitted successfully! Request ID: #${typedResponse.request_id}`, "success");
 
   } catch (error: any) {
     formLoading.value = false;
@@ -1507,7 +1508,7 @@ onMounted(async () => {
 /* Chat Container */
 .chat-container {
   position: fixed;
-  bottom: 0;
+  bottom: 16px;
   right: 24px;
   z-index: 1000;
   display: flex;
@@ -2063,8 +2064,11 @@ onMounted(async () => {
 /* FAB */
 .chat-fab {
   border-radius: 50% !important;
-  margin-bottom: 16px;
+  /* margin-bottom: 16px; */
   transition: all 0.3s ease;
+  position: fixed !important;
+  bottom: 16px !important;
+  right: 20px !important;
 }
 
 .chat-fab:hover {
@@ -2144,6 +2148,8 @@ onMounted(async () => {
   .chat-container {
     right: 16px;
     left: 16px;
+    top: calc(90px + 16px);
+    bottom: 16px;
   }
 
   .chat-window {
@@ -2152,7 +2158,7 @@ onMounted(async () => {
   }
 
   .chat-window:not(.minimized) {
-    height: calc(100vh - 32px);
+    height: calc(100vh - 122px);
   }
 
   .directors-grid {
