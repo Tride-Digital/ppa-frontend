@@ -26,7 +26,7 @@
         </v-col>
       </v-row>
       <div class="see-more-wrap mt-6">
-        <v-btn color="primary" variant="outlined" size="large" class="see-more-btn" @click="goToServices">
+        <v-btn color="primary-darken-1" variant="outlined" size="large" class="see-more-btn" @click="goToServices">
           See More
           <v-icon end>mdi-arrow-right</v-icon>
         </v-btn>

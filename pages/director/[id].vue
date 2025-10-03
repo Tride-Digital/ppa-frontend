@@ -97,49 +97,46 @@
 </template>
 
 <script setup lang="ts">
-import {computed, type ComputedRef} from 'vue'
-import type {Director, Service} from '~/composables/useDirectors'
+import { ref, onMounted } from 'vue'
 import ServiceCard from '~/components/ServiceCard.vue'
-import {useCart} from '~/composables/useCart'
+import { useCart } from '~/composables/useCart'
+import { useRoute, useRouter } from 'vue-router'
+import { useDirectors } from '~/composables/useDirectors'
 
 definePageMeta({
   title: 'Director Profile - PPA'
 })
 
-// Get route and router
 const route = useRoute()
 const router = useRouter()
+const { addToCart: addToGlobalCart } = useCart()
+const { fetchDirectorById } = useDirectors()
 
-// Get composables
-const {getDirectorById, getDirectorServices, getServiceId} = useDirectors()
-const {addToCart: addToGlobalCart} = useCart()
+const director = ref<any>(null)
+const directorServices = ref<any[]>([])
 
-// Get director data
-const director: ComputedRef<Director | null> = computed(() => {
-  const directorId = route.params.id as string
-  return getDirectorById(directorId)
-})
-
-// Get director services
-const directorServices: ComputedRef<Service[]> = computed(() => {
-  if (!director.value) return []
-  return getDirectorServices(director.value.id)
-})
-
-// Navigation function for service details
-const learnMoreService = (service: Service): void => {
-  const serviceId = getServiceId(service.name)
-  navigateTo(`/service/${serviceId}`)
+const fetchDirector = async () => {
+  const userId = route.params.id as string
+  const data = await fetchDirectorById(userId)
+  director.value = data
+  directorServices.value = data?.services || []
 }
 
-// Add service to cart with director
-const addToCart = (category: string, service: Service): void => {
-  if (!director.value) return
+onMounted(fetchDirector)
 
+// Navigate to /services/[id]
+const learnMoreService = (service: any): void => {
+  if (service.id) {
+    router.push(`/services/${service.id}`)
+  }
+}
+
+const addToCart = (category: string, service: any): void => {
+  if (!director.value) return
   addToGlobalCart(category, {
-    name: service.name,
-    description: `${service.description} - by ${director.value.name}`,
-    image: service.image,
+    name: service.name || '',
+    description: `${service.description || ''} - by ${director.value.name}`,
+    image: service.image || '',
     icon: service.icon || undefined,
     director: director.value.name
   })

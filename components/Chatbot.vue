@@ -148,7 +148,25 @@
                       <div class="directors-intro">
                         Great! Please choose the director you'd like to connect with:
                       </div>
-                      <div class="directors-grid">
+                      
+                      <!-- Loading State -->
+                      <div v-if="directorsLoading" class="directors-loading">
+                        <v-progress-circular indeterminate color="success" size="32"></v-progress-circular>
+                        <div class="text-caption mt-2">Loading directors...</div>
+                      </div>
+                      
+                      <!-- Error State -->
+                      <v-alert v-else-if="directorsError" type="error" variant="tonal" density="compact">
+                        {{ directorsError }}
+                        <template v-slot:append>
+                          <v-btn variant="text" size="x-small" @click="loadDirectors">
+                            Retry
+                          </v-btn>
+                        </template>
+                      </v-alert>
+                      
+                      <!-- Directors Grid -->
+                      <div v-else-if="directors.length > 0" class="directors-grid">
                         <div
                             v-for="director in directors"
                             :key="director.id"
@@ -156,7 +174,13 @@
                             @click="selectDirector(director)"
                         >
                           <v-avatar size="60" class="director-avatar">
-                            <v-img :src="director.avatar"/>
+                            <v-img :src="director.image" :alt="director.name" cover>
+                              <template #error>
+                                <div class="avatar-placeholder">
+                                  <v-icon size="30" color="white">mdi-account-tie</v-icon>
+                                </div>
+                              </template>
+                            </v-img>
                           </v-avatar>
                           <div class="director-info">
                             <div class="director-name">{{ director.name }}</div>
@@ -164,6 +188,11 @@
                           </div>
                         </div>
                       </div>
+                      
+                      <!-- Empty State -->
+                      <v-alert v-else type="info" variant="tonal" density="compact">
+                        No directors available at the moment.
+                      </v-alert>
                     </div>
 
                     <!-- Director Office Info -->
@@ -307,7 +336,7 @@
                           :disabled="servicesLoading"
                       >
                         <template v-slot:item="{ props, item }">
-                          <v-list-item v-bind="props" :title="null">
+                          <v-list-item v-bind="props" :title=item.raw.name>
                             <template v-slot:prepend>
                               <v-icon :icon="item.raw.icon" class="mr-3" size="small" color="success"/>
                             </template>
@@ -353,7 +382,7 @@
                           :disabled="!serviceRequest.serviceCategory || servicesLoading"
                       >
                         <template v-slot:item="{ props, item }">
-                          <v-list-item v-bind="props" :title="null">
+                          <v-list-item v-bind="props" :title="item.raw.name">
                             <template v-slot:prepend>
                               <v-icon :icon="item.raw.icon" class="mr-3" size="small" color="success"/>
                             </template>
@@ -611,7 +640,6 @@
 
 <script setup lang="ts">
 import {ref, computed, nextTick, onMounted, watch} from "vue";
-import type {Director as ComposableDirector} from '~/composables/useDirectors';
 
 const {
   mainServiceCategories,
@@ -624,11 +652,11 @@ const {
   getCategoryIcon
 } = useServices()
 
-console.log('useServices initialized:', {
-  mainServiceCategories: mainServiceCategories.value,
-  servicesLoading: servicesLoading.value,
-  servicesError: servicesError.value
-})
+// Use directors composable
+const {
+  directorContacts,
+  fetchDirectorContacts
+} = useDirectors()
 
 // Types
 interface Message {
@@ -648,14 +676,8 @@ interface Message {
 interface Director {
   id: string;
   name: string;
-  avatar: string;
-  email: string;
-  qualifications: string[];
-  services: string[];
+  image: string;
 }
-
-// Composables
-const {getAllDirectors} = useDirectors();
 
 // State
 const chatOpen = ref(false);
@@ -670,6 +692,8 @@ const currentStage = ref("greeting");
 const formLoading = ref(false);
 const leadLoading = ref(false);
 const showHelpMessage = ref(false);
+const directorsLoading = ref(false);
+const directorsError = ref<string | null>(null);
 
 // Forms
 const formValid = ref(false);
@@ -693,16 +717,12 @@ const leadInfo = ref({
   interest: "",
 });
 
-// Transform directors from composable to chatbot format
+// Transform directors from composable - using directorContacts
 const directors = computed<Director[]>(() => {
-  const composableDirectors = getAllDirectors();
-  return composableDirectors.map((director: ComposableDirector) => ({
-    id: director.id.toString(),
-    name: director.name,
-    avatar: director.image,
-    email: director.email,
-    qualifications: director.qualifications,
-    services: director.services.map(service => service.name)
+  return directorContacts.value.map((contact) => ({
+    id: contact.id,
+    name: contact.name,
+    image: contact.image || ''
   }));
 });
 
@@ -912,6 +932,21 @@ const shouldShowDateSeparator = (messages: Message[], index: number): boolean =>
   return curr !== prev;
 };
 
+// Load directors function
+const loadDirectors = async () => {
+  try {
+    directorsLoading.value = true
+    directorsError.value = null
+    await fetchDirectorContacts()
+    console.log('Directors loaded:', directors.value.length)
+  } catch (error: any) {
+    console.error('Failed to load directors:', error)
+    directorsError.value = error?.message || 'Failed to load directors'
+  } finally {
+    directorsLoading.value = false
+  }
+}
+
 // Load services when component mounts with better error handling
 const loadServices = async () => {
   try {
@@ -920,7 +955,6 @@ const loadServices = async () => {
     console.log('Services loaded:', mainServiceCategories.value.length, 'categories')
   } catch (error) {
     console.error('Failed to load services:', error)
-    // You can add a notification here if needed
     showNotification('Failed to load services. Please check your connection.', 'error')
   }
 }
@@ -1052,8 +1086,14 @@ const selectOption = (option: { label: string; value: string; icon?: string }) =
   }, 500);
 };
 
-const showDirectors = () => {
+const showDirectors = async () => {
   currentStage.value = "directors";
+  
+  // Load directors if not already loaded
+  if (directors.value.length === 0 && !directorsLoading.value) {
+    await loadDirectors()
+  }
+  
   addBotMessage("", {
     showDirectors: true,
   });
@@ -1116,7 +1156,8 @@ const submitServiceRequest = async () => {
       }
     })
 
-    console.log('Service request response:', response)
+    // Assert the response type so TypeScript knows about request_id
+    const typedResponse = response as { request_id: string }
 
     // Get the readable service names for display
     const categoryName = getCategoryName(serviceRequest.value.serviceCategory)
@@ -1132,7 +1173,7 @@ const submitServiceRequest = async () => {
     addBotMessage(
         `✅ Thank you, <strong>${serviceRequest.value.fullName}</strong>.<br><br>` +
         `Your request for <strong>${subcategoryName}</strong> (${categoryName}) has been submitted successfully.<br>` +
-        `📧 Request ID: <strong>#${response.request_id}</strong><br>` +
+        `📧 Request ID: <strong>#${typedResponse.request_id}</strong><br>` +
         `📧 A confirmation email will be sent to you shortly.<br>` +
         `You'll hear back from our team soon.`,
         {quickActions: true}
@@ -1149,7 +1190,7 @@ const submitServiceRequest = async () => {
       message: "",
     };
 
-    showNotification(`Service request submitted successfully! Request ID: #${response.request_id}`, "success");
+    showNotification(`Service request submitted successfully! Request ID: #${typedResponse.request_id}`, "success");
 
   } catch (error: any) {
     formLoading.value = false;
@@ -1489,6 +1530,9 @@ onMounted(async () => {
 
   // Load services data when component mounts
   await loadServices()
+  
+  // Preload directors for better UX
+  await loadDirectors()
 
   // Show help message after 2 seconds delay
   setTimeout(() => {
@@ -1504,10 +1548,29 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
+.directors-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.3));
+}
+
 /* Chat Container */
 .chat-container {
   position: fixed;
-  bottom: 0;
+  bottom: 16px;
   right: 24px;
   z-index: 1000;
   display: flex;
@@ -2063,8 +2126,11 @@ onMounted(async () => {
 /* FAB */
 .chat-fab {
   border-radius: 50% !important;
-  margin-bottom: 16px;
+  /* margin-bottom: 16px; */
   transition: all 0.3s ease;
+  position: fixed !important;
+  bottom: 16px !important;
+  right: 20px !important;
 }
 
 .chat-fab:hover {
@@ -2144,6 +2210,8 @@ onMounted(async () => {
   .chat-container {
     right: 16px;
     left: 16px;
+    top: calc(90px + 16px);
+    bottom: 16px;
   }
 
   .chat-window {
@@ -2152,7 +2220,7 @@ onMounted(async () => {
   }
 
   .chat-window:not(.minimized) {
-    height: calc(100vh - 32px);
+    height: calc(100vh - 122px);
   }
 
   .directors-grid {
