@@ -1136,19 +1136,27 @@ const submitServiceRequest = async () => {
     const config = useRuntimeConfig()
     const baseURL = config.public.backendUrl
 
+    // Get service names for the services array
+    const categoryName = getCategoryName(serviceRequest.value.serviceCategory)
+    const subcategoryName = getSubcategoryName(serviceRequest.value.serviceSubcategory)
+
+    // chatbot to match servicerequests
     const requestPayload = {
-      full_name: serviceRequest.value.fullName,
+      name: serviceRequest.value.fullName,
       email: serviceRequest.value.email,
       phone: serviceRequest.value.phone,
       nic: serviceRequest.value.nic,
-      service_category_id: serviceRequest.value.serviceCategory,
-      service_subcategory_id: serviceRequest.value.serviceSubcategory,
-      message: serviceRequest.value.message
+      comment: serviceRequest.value.message,
+      services: [
+        {
+          id: serviceRequest.value.serviceSubcategory,
+          name: subcategoryName,
+          category: categoryName
+        }
+      ]
     }
 
-    console.log('Submitting service request:', requestPayload)
-
-    const response = await $fetch(`${baseURL}/chatbot-service/submit`, {
+    const response = await $fetch(`${baseURL}/service-requests/`, {
       method: 'POST',
       body: requestPayload,
       headers: {
@@ -1156,41 +1164,39 @@ const submitServiceRequest = async () => {
       }
     })
 
-    // Assert the response type so TypeScript knows about request_id
-    const typedResponse = response as { request_id: string }
-
-    // Get the readable service names for display
-    const categoryName = getCategoryName(serviceRequest.value.serviceCategory)
-    const subcategoryName = getSubcategoryName(serviceRequest.value.serviceSubcategory)
-
     formLoading.value = false;
     isTyping.value = false;
 
     // Store user name for personalization
     localStorage.setItem("ppa_user_name", serviceRequest.value.fullName);
 
-    // Success message with request ID
-    addBotMessage(
-        `✅ Thank you, <strong>${serviceRequest.value.fullName}</strong>.<br><br>` +
-        `Your request for <strong>${subcategoryName}</strong> (${categoryName}) has been submitted successfully.<br>` +
-        `📧 Request ID: <strong>#${typedResponse.request_id}</strong><br>` +
-        `📧 A confirmation email will be sent to you shortly.<br>` +
-        `You'll hear back from our team soon.`,
-        {quickActions: true}
-    );
+    // Check if response has the expected structure
+    if (response.success) {
+      // Success message with reference ID
+      addBotMessage(
+          `✅ Thank you, <strong>${serviceRequest.value.fullName}</strong>.<br><br>` +
+          `Your request for <strong>${subcategoryName}</strong> (${categoryName}) has been submitted successfully.<br>` +
+          `📧 Reference ID: <strong>#${response.reference_id}</strong><br>` +
+          `📧 A confirmation email ${response.email_sent ? 'has been sent' : 'will be sent'} to you shortly.<br>` +
+          `You'll hear back from our team soon.`,
+          {quickActions: true}
+      );
 
-    // Reset form
-    serviceRequest.value = {
-      fullName: "",
-      email: "",
-      phone: "",
-      nic: "",
-      serviceCategory: null,
-      serviceSubcategory: null,
-      message: "",
-    };
+      // Reset form
+      serviceRequest.value = {
+        fullName: "",
+        email: "",
+        phone: "",
+        nic: "",
+        serviceCategory: null,
+        serviceSubcategory: null,
+        message: "",
+      };
 
-    showNotification(`Service request submitted successfully! Request ID: #${typedResponse.request_id}`, "success");
+      showNotification(`Service request submitted successfully! Reference ID: #${response.reference_id}`, "success");
+    } else {
+      throw new Error(response.message || 'Failed to submit request')
+    }
 
   } catch (error: any) {
     formLoading.value = false;
@@ -1198,7 +1204,7 @@ const submitServiceRequest = async () => {
 
     console.error('Service request submission error:', error)
 
-    // Handle different types of errors from backend
+    // Handle different types of errors
     let errorMessage = "Sorry, there was an error submitting your request. Please try again.";
 
     if (error.data?.detail) {
