@@ -1,6 +1,37 @@
 <template>
   <v-container class="py-12" max-width="1200">
-    <v-row v-if="director">
+    <!-- Loading State -->
+    <v-row v-if="isLoading">
+      <v-col cols="12" class="mb-4">
+        <v-skeleton-loader type="button" width="200"></v-skeleton-loader>
+      </v-col>
+      <v-col cols="12" class="mb-6">
+        <v-card class="director-profile-card" elevation="4">
+          <v-row no-gutters>
+            <v-col cols="12" sm="4" md="3">
+              <v-skeleton-loader type="image" height="400"></v-skeleton-loader>
+            </v-col>
+            <v-col cols="12" sm="8" md="9">
+              <v-card-text class="pa-6">
+                <v-skeleton-loader type="heading" class="mb-4"></v-skeleton-loader>
+                <v-skeleton-loader type="text" width="200"></v-skeleton-loader>
+              </v-card-text>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+      <v-col cols="12">
+        <v-card class="director-details-card" elevation="2">
+          <v-card-text class="pa-8">
+            <v-skeleton-loader type="article, article"></v-skeleton-loader>
+            <v-skeleton-loader type="list-item-three-line" class="mt-6"></v-skeleton-loader>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- Loaded Director Content -->
+    <v-row v-else-if="director">
       <v-col cols="12" class="mb-4">
         <v-btn variant="outlined" color="primary" @click="$router.back()" prepend-icon="mdi-arrow-left">
           Back to Leadership Team
@@ -81,6 +112,8 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- Director Not Found -->
     <v-row v-else>
       <v-col cols="12" class="text-center">
         <v-card class="pa-8" elevation="2">
@@ -114,12 +147,22 @@ const { fetchDirectorById } = useDirectors()
 
 const director = ref<any>(null)
 const directorServices = ref<any[]>([])
+const isLoading = ref<boolean>(true) // Start as true to prevent flash
 
 const fetchDirector = async () => {
   const userId = route.params.id as string
-  const data = await fetchDirectorById(userId)
-  director.value = data
-  directorServices.value = data?.services || []
+  try {
+    isLoading.value = true
+    const data = await fetchDirectorById(userId)
+    director.value = data
+    directorServices.value = data?.services || []
+  } catch (error) {
+    console.error('Error fetching director:', error)
+    director.value = null
+    directorServices.value = []
+  } finally {
+    isLoading.value = false
+  }
 }
 
 onMounted(fetchDirector)
