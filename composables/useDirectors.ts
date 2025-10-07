@@ -45,6 +45,7 @@ interface ServiceSubcategory {
 const directorContacts = ref<DirectorContact[]>([])
 const directorDetailsCache = ref<Record<string, Director>>({})
 const serviceCategoriesCache = ref<ServiceCategory[]>([])
+const isLoading = ref<boolean>(false)
 
 /**
  * Fetch service categories to map IDs to names
@@ -62,7 +63,6 @@ const fetchServiceCategories = async () => {
     serviceCategoriesCache.value = response || []
     return serviceCategoriesCache.value
   } catch (error) {
-
     return []
   }
 }
@@ -106,9 +106,12 @@ const fetchDirectorContacts = async () => {
  * Fetch full director details by user id
  */
 const fetchDirectorById = async (id: string): Promise<Director | null> => {
+  // Return cached data if availableLE
   if (directorDetailsCache.value[id]) {
     return directorDetailsCache.value[id]
   }
+  
+  isLoading.value = true
   
   try {
     const config = useRuntimeConfig()
@@ -139,7 +142,7 @@ const fetchDirectorById = async (id: string): Promise<Director | null> => {
       return {
         name: subcategory?.name || `Service ${service.subcategory}`,
         description: subcategory?.description || '',
-        image: subcategory?.img_url || '', // ✅ NOW USING img_url!
+        image: subcategory?.img_url || '',
         category: category?.name || `Category ${service.category}`,
         icon: subcategory?.icon || 'mdi-briefcase',
         id: service.subcategory || '',
@@ -161,13 +164,17 @@ const fetchDirectorById = async (id: string): Promise<Director | null> => {
     directorDetailsCache.value[id] = director
     return director
   } catch (error) {
+    console.error('Error fetching director:', error)
     return null
+  } finally {
+    isLoading.value = false
   }
 }
 
 export const useDirectors = () => {
   return {
     directorContacts,
+    isLoading,
     fetchDirectorContacts,
     fetchDirectorById,
   }
