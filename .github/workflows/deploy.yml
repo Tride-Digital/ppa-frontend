@@ -1,0 +1,66 @@
+name: Deploy Nuxt Hybrid App to AWS Lightsail
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.19.3
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Nuxt app (SSR + SSG hybrid)
+        run: npm run build
+
+      - name: Upload built Nuxt app to Lightsail
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          source: ".output/**"
+          target: "/home/ubuntu/ppa-frontend"
+          port: 22
+          rm: true
+          overwrite: true
+          debug: true
+
+      - name: Upload package.json and lock file
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          source: "package.json,package-lock.json"
+          target: "/home/ubuntu/ppa-frontend"
+          port: 22
+          overwrite: true
+
+      - name: Start Nuxt server with PM2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 20.19.3
+
+            cd /home/ubuntu/ppa-frontend
+            npm install --omit=dev
+            pm2 restart ppa-rontend
+            sudo systemctl restart nginx
