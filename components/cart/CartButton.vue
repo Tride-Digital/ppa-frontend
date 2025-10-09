@@ -12,8 +12,8 @@
 <script setup>
 import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
-const { mobile } = useDisplay()
-const isMobile = computed(() => mobile.value)
+const { xs, sm } = useDisplay()
+const isMobile = computed(() => xs.value || sm.value)
 const props = defineProps({
   cartItems: {
     type: Array,
