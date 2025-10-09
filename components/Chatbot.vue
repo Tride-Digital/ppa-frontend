@@ -271,6 +271,22 @@
                           class="form-field"
                       />
 
+                      <!-- District Dropdown -->
+                      <v-select
+                          v-model="serviceRequest.district"
+                          :items="districts"
+                          item-title="district_en"
+                          item-value="district_en"
+                          label="District *"
+                          variant="outlined"
+                          density="compact"
+                          :rules="[rules.required]"
+                          placeholder="Select district"
+                          class="form-field"
+                          :loading="loadingDistricts"
+                          prepend-inner-icon="mdi-map-marker"
+                      />
+
                       <v-text-field
                           v-model="serviceRequest.nic"
                           label="NIC Number *"
@@ -430,7 +446,7 @@
                       <v-btn
                           type="submit"
                           color="success"
-                          :disabled="!formValid || servicesLoading"
+                          :disabled="!formValid || servicesLoading || loadingDistricts"
                           :loading="formLoading"
                           class="submit-btn"
                           rounded="xl"
@@ -641,6 +657,8 @@
 <script setup lang="ts">
 import {ref, computed, nextTick, onMounted, watch} from "vue";
 
+const config = useRuntimeConfig()
+
 const {
   mainServiceCategories,
   loading: servicesLoading,
@@ -694,16 +712,19 @@ const leadLoading = ref(false);
 const showHelpMessage = ref(false);
 const directorsLoading = ref(false);
 const directorsError = ref<string | null>(null);
+const loadingDistricts = ref(false);
+const districts = ref([]);
 
 // Forms
 const formValid = ref(false);
 const leadFormValid = ref(true);
 
-// Updated service request form 
+// Updated service request form
 const serviceRequest = ref({
   fullName: "",
   email: "",
   phone: "",
+  district: "",
   nic: "",
   serviceCategory: null as number | null,  
   serviceSubcategory: null as number | null,
@@ -959,6 +980,21 @@ const loadServices = async () => {
   }
 }
 
+// Fetch districts
+const fetchDistricts = async () => {
+  loadingDistricts.value = true
+  try {
+    const response = await $fetch(`${config.public.backendUrl}/gn_division_list/all_district`)
+    districts.value = response
+  } catch (error) {
+    console.error('Error fetching districts:', error)
+    districts.value = []
+    showNotification('Failed to load districts', 'error')
+  } finally {
+    loadingDistricts.value = false
+  }
+}
+
 // Chat functions
 const openChat = () => {
   chatOpen.value = true;
@@ -1133,7 +1169,6 @@ const submitServiceRequest = async () => {
   isTyping.value = true;
 
   try {
-    const config = useRuntimeConfig()
     const baseURL = config.public.backendUrl
 
     // Get service names for the services array
@@ -1145,6 +1180,7 @@ const submitServiceRequest = async () => {
       name: serviceRequest.value.fullName,
       email: serviceRequest.value.email,
       phone: serviceRequest.value.phone,
+      district: serviceRequest.value.district,
       nic: serviceRequest.value.nic,
       comment: serviceRequest.value.message,
       services: [
@@ -1187,6 +1223,7 @@ const submitServiceRequest = async () => {
         fullName: "",
         email: "",
         phone: "",
+        district: "",
         nic: "",
         serviceCategory: null,
         serviceSubcategory: null,
@@ -1539,6 +1576,9 @@ onMounted(async () => {
   
   // Preload directors for better UX
   await loadDirectors()
+
+  // Fetch districts
+  await fetchDistricts()
 
   // Show help message after 2 seconds delay
   setTimeout(() => {
