@@ -44,6 +44,21 @@
                       <v-text-field v-model="form.phone" label="Phone Number" :rules="phoneRules" required variant="outlined" prepend-inner-icon="mdi-phone" class="form-field"></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
+                      <v-select 
+                        v-model="form.district" 
+                        :items="districts" 
+                        item-title="district_en" 
+                        item-value="district_en" 
+                        label="District" 
+                        :rules="districtRules" 
+                        required 
+                        variant="outlined" 
+                        prepend-inner-icon="mdi-map-marker" 
+                        class="form-field" 
+                        :loading="loadingDistricts"
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12">
                       <v-text-field 
                         v-model="form.nic" 
                         label="NIC Number" 
@@ -144,6 +159,7 @@ const form = ref({
   name: '',
   email: '',
   phone: '',
+  district: '',
   nic: '',
   comment: ''
 })
@@ -151,11 +167,14 @@ const form = ref({
 // State variables
 const formValid = ref(false)
 const loading = ref(false)
+const loadingDistricts = ref(false)
 const showSuccessDialog = ref(false)
 const showErrorDialog = ref(false)
 const referenceId = ref('')
 const emailSent = ref(false)
 const errorMessage = ref('')
+const districts = ref([])
+
 const nameRules = [
   v => !!v || 'Name is required',
   v => (v && v.length >= 2) || 'Name must be at least 2 characters'
@@ -167,6 +186,9 @@ const emailRules = [
 const phoneRules = [
   v => !!v || 'Phone number is required',
   v => (v && v.length >= 10) || 'Phone number must be at least 10 digits'
+]
+const districtRules = [
+  v => !!v || 'District is required'
 ]
 
 const nicRules = [
@@ -196,11 +218,26 @@ const formatNIC = (event) => {
   form.value.nic = form.value.nic.toUpperCase()
 }
 
+// Fetch districts
+const fetchDistricts = async () => {
+  loadingDistricts.value = true
+  try {
+    const response = await $fetch(`${config.public.backendUrl}/gn_division_list/all_district`)
+    districts.value = response
+  } catch (error) {
+    console.error('Error fetching districts:', error)
+    districts.value = []
+  } finally {
+    loadingDistricts.value = false
+  }
+}
+
 onMounted(async () => {
   if (cartItems.value.length === 0) {
     router.push('/services')
     return
   }
+  await fetchDistricts()
 })
 
 const submitOrder = async () => {
@@ -213,6 +250,7 @@ const submitOrder = async () => {
       name: form.value.name,
       email: form.value.email,
       phone: form.value.phone,
+      district: form.value.district,
       nic: form.value.nic.toUpperCase().trim(),
       comment: form.value.comment || '',
       services: cartItems.value.map(item => ({
