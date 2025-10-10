@@ -18,6 +18,9 @@
                 <v-list-item v-for="item in menuItems" :key="item.title" :to="item.path" link>
                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                 </v-list-item>
+                <v-list-item to="/announcements" link>
+                    <v-list-item-title>Announcements</v-list-item-title>
+                </v-list-item>
                 <v-list-item @click="goToRegister" link>
                     <v-list-item-title>Join PPA</v-list-item-title>
                 </v-list-item>
@@ -46,18 +49,23 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items class="nav-items">
-      <v-btn flat v-for="item in menuItems.slice(0, 6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
+      <v-btn flat v-for="item in menuItems.slice(0, 5)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
       <v-btn flat @click="goToRegister" class="nav-link">Join PPA</v-btn>
       <v-btn flat @click="goToAdmin" class="nav-link">Log In</v-btn>
+      <div class="d-flex align-center mx-2">
+        <v-btn icon @click="goToAnnouncements" class="announcements-icon-btn" title="Announcements">
+          <v-icon>mdi-bullhorn</v-icon>
+        </v-btn>
+      </div>
       <div class="d-flex align-center mx-2">
         <CartNavButton :cart-items="cartItems" @toggle-cart="handleToggleCart" @cart-click="handleCartClick"/>
       </div>
       <div class="d-flex align-center mx-2">
-        <v-btn icon @click="toggleTheme" class="theme-toggle-btn">
+        <v-btn icon @click="toggleTheme" class="theme-toggle-btn" title="Toggle Theme">
           <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
         </v-btn>
       </div>
-      <v-btn flat v-for="item in menuItems.slice(6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
+      <v-btn flat v-for="item in menuItems.slice(5)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
       <!-- <div class="d-flex align-center mx-3">
         <LanguageSelector/>
       </div> -->
@@ -98,8 +106,7 @@ const menuItems = ref([
     { title: 'Home', path: '/', icon: 'mdi-home' },
     { title: 'About us', path: '/aboutus', icon: 'mdi-home' },
     { title: 'Services', path: '/services', icon: 'mdi-leaf' },
-    { title: 'Announcements', path: '/announcements', icon: 'mdi-bell' },
-    { title: 'Our Leadership Team', path: '/contactus', icon: 'mdi-phone' },
+    { title: 'Our Team', path: '/contactus', icon: 'mdi-phone' },
     { title: 'Blogs', path: '/blogs', icon: 'mdi-text-box-multiple-outline' },
 
 ]);
@@ -111,6 +118,9 @@ const goToAdmin = () => {
 };
 const goToRegister = () => {
   router.push('/providerselector');
+};
+const goToAnnouncements = () => {
+  router.push('/announcements');
 };
 </script>
 
@@ -152,6 +162,15 @@ const goToRegister = () => {
     align-items: center;
     justify-content: center;
 }
+.announcements-icon-btn {
+    color: rgb(var(--v-theme-navtext)) !important;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .mobile-theme-toggle-btn {
     color: var(--v-theme-on-primary) !important;
     transition: transform 0.3s ease;
@@ -163,6 +182,12 @@ const goToRegister = () => {
 .mobile-theme-toggle-btn:hover {
     transform: rotate(30deg);
     background-color: var(--v-theme-toggle-btn-hover);
+}
+.announcements-icon-btn:hover {
+    background-color: rgba(var(--v-theme-primary-rgb), 0.1);
+}
+.announcements-icon-btn .v-icon {
+    color: inherit !important;
 }
 
 .logo-container {
