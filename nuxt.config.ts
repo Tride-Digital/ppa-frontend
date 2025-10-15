@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   css: [
     "vuetify/lib/styles/main.sass", // Or 'vuetify/styles'
     "@mdi/font/css/materialdesignicons.min.css", // For MDI icons
+    "assets/css/fonts.css",
   ],
 
   build: {
@@ -31,6 +32,10 @@ export default defineNuxtConfig({
           type: "image/png",
           href: "images/logo_white.png",
           media: "(prefers-color-scheme: dark)",
+        },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
         },
       ],
     },

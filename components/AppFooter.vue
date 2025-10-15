@@ -102,6 +102,12 @@ const contactInfo = ref([
     text: 'www.planters.lk',
     type: 'website',
     href: 'https://planters.lk/'
+  },
+  {
+    icon: 'mdi-phone',
+    text: '+94 77 237 6343',
+    type: 'phone',
+    href: 'tel:+94772376343'
   }
 ])
 </script>
