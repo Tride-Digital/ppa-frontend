@@ -35,10 +35,10 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useContactUs } from '~/composables/useContactUs'
 
 const form = ref(null)
 const valid = ref(false)
-const loading = ref(false)
 const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
@@ -68,13 +68,13 @@ const messageRules = [
   v => !!v || 'Message is required',
   v => (v && v.length >= 10) || 'Message must be at least 10 characters',
 ]
+const { loading, sendContactUs } = useContactUs()
 
 const submitForm = async () => {
   const { valid: isValid } = await form.value.validate()
   if (isValid) {
-    loading.value = true
-    setTimeout(() => {
-      console.log('Form submitted:', formData.value)
+    try {
+      await sendContactUs(formData.value)
       snackbarText.value = 'Message sent successfully! We\'ll get back to you soon.'
       snackbarColor.value = 'success'
       snackbar.value = true
@@ -85,8 +85,11 @@ const submitForm = async () => {
         email: '',
         message: ''
       }
-      loading.value = false
-    }, 1500)
+    } catch (err) {
+      snackbarText.value = 'Failed to send message. Please try again.'
+      snackbarColor.value = 'error'
+      snackbar.value = true
+    }
   }
 }
 </script>
