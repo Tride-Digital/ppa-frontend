@@ -5,12 +5,12 @@
     <v-main>
         <NuxtPage />
     </v-main>
-    <AppFooter />
     <client-only>
-    <CartButton :cart-items="cartItems" @toggle-cart="handleToggleCart" @cart-click="handleCartClick"/>
+    <!-- <CartButton :cart-items="cartItems" @toggle-cart="handleToggleCart" @cart-click="handleCartClick"/> -->
     <CartModal v-model="showCartModal" :cart-items="cartItems" @remove-item="removeFromCart" @checkout="goToCheckout"/>
     <Chatbot/>
     </client-only>
+    <AppFooter />
   </v-app>
 </template>
 

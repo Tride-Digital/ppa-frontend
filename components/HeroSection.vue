@@ -32,7 +32,7 @@
                 </div>
               </Transition>
               <div class="hero-buttons-fixed">
-                <v-btn color="primary" size="large" class="me-4 mb-3" to="/aboutus">Learn More</v-btn>
+                <v-btn color="primary" size="large" class="me-4 mb-3" to="/services">Our Services</v-btn>
                 <v-btn color="white" size="large" class="mb-3" to="/providerselector">Join PPA</v-btn>
               </div>
             </div>

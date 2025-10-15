@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height">
     <!-- Chat Interface -->
-    <div class="chat-container">
+    <div class="chat-container" :class="{ 'chat-inactive': !chatOpen }">
       <!-- Chat Window -->
       <v-card
           v-if="chatOpen"
@@ -1622,6 +1622,13 @@ onMounted(async () => {
   display: flex;
   align-items: flex-end;
   gap: 16px;
+}
+.chat-inactive {
+  pointer-events: none;
+}
+.chat-inactive .chat-fab,
+.chat-inactive .help-message-bubble {
+  pointer-events: auto;
 }
 
 /* Chat Window */

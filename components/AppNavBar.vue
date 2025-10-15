@@ -1,42 +1,36 @@
 <template>
     <div v-if="isMobile">
+        <v-app-bar app flat height="70" :color="$vuetify.theme.current.colors.surface" class="mobile-navbar">
+            <v-btn icon @click="sidebar = !sidebar" class="mobile-menu-btn">
+                <v-icon>mdi-menu</v-icon>
+            </v-btn>
+            <v-btn disabled></v-btn>
+            <v-spacer></v-spacer>
+            <div @click="goToHome" class="mobile-logo-wrapper">
+                <v-img :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo.png'" contain height="70" width="160" class="mobile-navbar-logo"></v-img>
+            </div>
+            <v-spacer></v-spacer>
+            <CartNavButton :cart-items="cartItems" @toggle-cart="handleToggleCart" @cart-click="handleCartClick"/>
+            <v-btn icon @click="toggleTheme" class="mobile-theme-toggle-btn" title="Toggle Theme">
+                <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
+            </v-btn>
+        </v-app-bar>
         <v-navigation-drawer v-model="sidebar" app :color="$vuetify.theme.current.colors.primary">
             <v-list nav dense>
-                <div @click="goToHome" tag="span" style="cursor: pointer">
-                    <v-row align="center">
-                        <v-col cols="12" class="pa-2 mt-3">
-                            <v-img :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo-dark.png'" contain max-height="60" class="mobile-logo"></v-img>
-                        </v-col>
-                    </v-row>
-                </div>
-                <v-divider class="my-6" :thickness="2"></v-divider>
-                <v-list-item class="px-0 py-0 mb-2">
-                    <v-btn icon @click="toggleTheme" class="mobile-theme-toggle-btn">
-                        <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
-                    </v-btn>
-                </v-list-item>
                 <v-list-item v-for="item in menuItems" :key="item.title" :to="item.path" link>
                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                 </v-list-item>
                 <v-list-item to="/announcements" link>
                     <v-list-item-title>Announcements</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="goToRegister" link>
-                    <v-list-item-title>Join PPA</v-list-item-title>
-                </v-list-item>
                 <v-list-item @click="goToAdmin" link>
-                    <v-list-item-title>Log In</v-list-item-title>
+                    <v-list-item-title>Login</v-list-item-title>
                 </v-list-item>
                 <!-- <div class="d-flex">
                     <LanguageSelector/>
                 </div> -->
             </v-list>
         </v-navigation-drawer>
-        <v-fab-transition>
-            <v-btn v-if="isMobile" icon color="transparent" class="fab" @click="sidebar = !sidebar">
-                <v-icon>mdi-menu</v-icon>
-            </v-btn>
-        </v-fab-transition>
     </div>
     <v-app-bar v-else app flat height="90" :color="$vuetify.theme.current.colors.surface" class="navbar-with-border">
   <v-toolbar flat :color="$vuetify.theme.current.colors.surface" height="110">
@@ -49,9 +43,8 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items class="nav-items">
-      <v-btn flat v-for="item in menuItems.slice(0, 5)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
-      <v-btn flat @click="goToRegister" class="nav-link">Join PPA</v-btn>
-      <v-btn flat @click="goToAdmin" class="nav-link">Log In</v-btn>
+      <v-btn flat v-for="item in menuItems.slice(0, 6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
+      <v-btn flat @click="goToAdmin" class="nav-link">Login</v-btn>
       <div class="d-flex align-center mx-2">
         <v-btn icon @click="goToAnnouncements" class="announcements-icon-btn" title="Announcements">
           <v-icon>mdi-bullhorn</v-icon>
@@ -65,7 +58,7 @@
           <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
         </v-btn>
       </div>
-      <v-btn flat v-for="item in menuItems.slice(5)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
+      <v-btn flat v-for="item in menuItems.slice(6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
       <!-- <div class="d-flex align-center mx-3">
         <LanguageSelector/>
       </div> -->
@@ -106,7 +99,8 @@ const menuItems = ref([
     { title: 'Home', path: '/', icon: 'mdi-home' },
     { title: 'About us', path: '/aboutus', icon: 'mdi-home' },
     { title: 'Services', path: '/services', icon: 'mdi-leaf' },
-    { title: 'Our Team', path: '/contactus', icon: 'mdi-phone' },
+    { title: 'Our Team', path: '/ourteam', icon: 'mdi-phone' },
+    { title: 'Contact Us', path: '/contactus', icon: 'mdi-phone' },
     { title: 'Blogs', path: '/blogs', icon: 'mdi-text-box-multiple-outline' },
 
 ]);
@@ -125,11 +119,21 @@ const goToAnnouncements = () => {
 </script>
 
 <style scoped>
-.fab {
-    position: fixed;
-    top: 5px;
-    left: 5px;
-    z-index: 100;
+.mobile-navbar {
+    border-bottom: 2px solid rgb(var(--v-theme-hero-arrow-bg)) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+.mobile-menu-btn {
+    color: rgb(var(--v-theme-navtext)) !important;
+}
+.mobile-logo-wrapper {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mobile-navbar-logo {
+    object-fit: contain;
 }
 .navbar-with-border {
     border-bottom: 2px solid rgb(var(--v-theme-hero-arrow-bg)) !important;

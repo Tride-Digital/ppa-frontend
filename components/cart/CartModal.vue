@@ -198,4 +198,40 @@ const proceedToCheckout = () => {
 .cart-content::-webkit-scrollbar-thumb:hover {
   background: rgba(var(--v-theme-primary-rgb), 0.5);
 }
+@media (max-width: 600px) {
+  .cart-modal {
+    max-width: 98vw !important;
+    min-width: 0 !important;
+    border-radius: 10px !important;
+  }
+  .cart-header,
+  .cart-actions {
+    padding: 14px 10px;
+  }
+  .cart-content {
+    padding: 14px 6px;
+    max-height: 60vh;
+  }
+  .cart-title {
+    font-size: 1.05rem;
+  }
+  .service-name {
+    font-size: 0.9rem;
+  }
+  .service-category {
+    font-size: 0.8rem;
+  }
+  .cart-summary {
+    padding: 10px;
+  }
+  .checkout-btn,
+  .continue-btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .cart-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
 </style>
