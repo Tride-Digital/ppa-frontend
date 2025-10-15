@@ -79,7 +79,7 @@ const localItems: ServiceItem[] = [
   },
 ]
 const itemsToRender = computed(() => (props.items?.length ? props.items : localItems))
-const subtitle = computed(() => props.subtitle || 'Best Recommended Services')
+const subtitle = computed(() => props.subtitle || 'Featured Services')
 const mainTitle = computed(() => props.mainTitle || 'Popular Services we offer for all')
 const lead = computed(() => props.lead || 'Explore our most trusted agricultural products and services designed to support farmers, businesses, and communities. From high-quality crops to sustainable solutions, we bring you the best to grow, trade, and thrive.')
 function goToServices() {
