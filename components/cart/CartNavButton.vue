@@ -1,5 +1,5 @@
 <template>
-  <v-btn icon @click="toggleCart" class="cart-nav-button" :class="{ 'has-items': cartCount > 0 }" title="Add to Cart">
+  <v-btn icon @click="toggleCart" class="cart-nav-button" :class="{ 'has-items': cartCount > 0 }" title="View Cart">
     <v-badge v-if="cartCount > 0" :content="cartCount" color="error" overlap offset-x="-8" offset-y="-8" location="top end">
       <v-icon>mdi-cart</v-icon>
     </v-badge>
