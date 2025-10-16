@@ -59,8 +59,8 @@
           <!-- Header -->
           <div class="chat-header">
             <div class="header-content">
-              <v-avatar size="36" color="success" class="mr-3">
-                <v-icon color="white" size="18">mdi-robot</v-icon>
+              <v-avatar :size="$vuetify.display.xs ? 32 : 36" color="success" class="mr-2 mr-sm-3">
+                <v-icon color="white" :size="$vuetify.display.xs ? 16 : 18">mdi-robot</v-icon>
               </v-avatar>
 
               <div class="header-info">
@@ -75,21 +75,21 @@
             <div class="header-actions">
               <v-btn
                   icon
-                  size="small"
+                  :size="$vuetify.display.xs ? 'x-small' : 'small'"
                   variant="text"
                   @click="chatMinimized = true"
                   class="header-btn"
               >
-                <v-icon size="18" color="white">mdi-minus</v-icon>
+                <v-icon :size="$vuetify.display.xs ? 16 : 18" color="white">mdi-minus</v-icon>
               </v-btn>
               <v-btn
                   icon
-                  size="small"
+                  :size="$vuetify.display.xs ? 'x-small' : 'small'"
                   variant="text"
                   @click="closeChat"
                   class="header-btn"
               >
-                <v-icon size="18" color="white">mdi-close</v-icon>
+                <v-icon :size="$vuetify.display.xs ? 16 : 18" color="white">mdi-close</v-icon>
               </v-btn>
             </div>
           </div>
@@ -117,8 +117,8 @@
                 <!-- Bot Message -->
                 <div v-if="!message.isSent" class="bot-message-container">
                   <div class="bot-message-header">
-                    <v-avatar size="24" color="success">
-                      <v-icon color="white" size="12">mdi-robot</v-icon>
+                    <v-avatar :size="$vuetify.display.xs ? 20 : 24" color="success">
+                      <v-icon color="white" :size="$vuetify.display.xs ? 10 : 12">mdi-robot</v-icon>
                     </v-avatar>
                     <span class="bot-label">PPA Assistant</span>
                   </div>
@@ -135,6 +135,7 @@
                           @click="selectOption(option)"
                           variant="outlined"
                           color="success"
+                          :size="$vuetify.display.xs ? 'small' : 'default'"
                           class="option-btn"
                           rounded="xl"
                       >
@@ -151,7 +152,7 @@
                       
                       <!-- Loading State -->
                       <div v-if="directorsLoading" class="directors-loading">
-                        <v-progress-circular indeterminate color="success" size="32"></v-progress-circular>
+                        <v-progress-circular indeterminate color="success" :size="$vuetify.display.xs ? 24 : 32"></v-progress-circular>
                         <div class="text-caption mt-2">Loading directors...</div>
                       </div>
                       
@@ -173,11 +174,11 @@
                             class="director-card"
                             @click="selectDirector(director)"
                         >
-                          <v-avatar size="60" class="director-avatar">
+                          <v-avatar :size="$vuetify.display.xs ? 48 : 60" class="director-avatar">
                             <v-img :src="director.image" :alt="director.name" cover>
                               <template #error>
                                 <div class="avatar-placeholder">
-                                  <v-icon size="30" color="white">mdi-account-tie</v-icon>
+                                  <v-icon :size="$vuetify.display.xs ? 24 : 30" color="white">mdi-account-tie</v-icon>
                                 </div>
                               </template>
                             </v-img>
@@ -214,8 +215,10 @@
                             @click="selectOption({label: 'Yes, submit request', value: 'submit_request'})"
                             variant="outlined"
                             color="success"
+                            :size="$vuetify.display.xs ? 'small' : 'default'"
                             class="option-btn"
                             rounded="xl"
+                            block
                         >
                           ✅ Yes, submit request
                         </v-btn>
@@ -223,8 +226,10 @@
                             @click="selectOption({label: 'Not now', value: 'not_now'})"
                             variant="outlined"
                             color="success"
+                            :size="$vuetify.display.xs ? 'small' : 'default'"
                             class="option-btn"
                             rounded="xl"
+                            block
                         >
                           ❌ Not now
                         </v-btn>
@@ -247,7 +252,7 @@
                           v-model="serviceRequest.fullName"
                           label="Full Name *"
                           variant="outlined"
-                          density="compact"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
                           :rules="[rules.required]"
                           class="form-field"
                           hint="Contact details must be by owner, not third party"
@@ -257,7 +262,7 @@
                           v-model="serviceRequest.email"
                           label="Email *"
                           variant="outlined"
-                          density="compact"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
                           :rules="[rules.required, rules.email]"
                           class="form-field"
                       />
@@ -266,7 +271,7 @@
                           v-model="serviceRequest.phone"
                           label="Phone *"
                           variant="outlined"
-                          density="compact"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
                           :rules="[rules.required, rules.phone]"
                           class="form-field"
                       />
@@ -279,7 +284,7 @@
                           item-value="district_en"
                           label="District *"
                           variant="outlined"
-                          density="compact"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
                           :rules="[rules.required]"
                           placeholder="Select district"
                           class="form-field"
@@ -291,7 +296,7 @@
                           v-model="serviceRequest.nic"
                           label="NIC Number *"
                           variant="outlined"
-                          density="compact"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
                           :rules="[rules.required, rules.nic]"
                           class="form-field"
                           persistent-hint
@@ -344,7 +349,7 @@
                           item-value="id"
                           label="Service Category *"
                           variant="outlined"
-                          density="compact"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
                           :rules="[rules.requiredSelect]"
                           class="form-field"
                           hint="Select the main service category"
@@ -389,7 +394,7 @@
                           item-value="id"
                           label="Specific Service Type *"
                           variant="outlined"
-                          density="compact"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
                           :rules="[rules.requiredSelect]"
                           class="form-field"
                           :hint="!serviceRequest.serviceCategory ? 'Please select a category first' : 'Choose the specific service type'"
@@ -436,8 +441,8 @@
                           label="The Problem or Need"
                           placeholder="What? Why? When? Where? Who? How?"
                           variant="outlined"
-                          density="compact"
-                          rows="4"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
+                          :rows="$vuetify.display.xs ? 3 : 4"
                           class="form-field"
                           :rules="[rules.required]"
                           hint="Describe your specific problem or need in detail"
@@ -448,6 +453,7 @@
                           color="success"
                           :disabled="!formValid || servicesLoading || loadingDistricts"
                           :loading="formLoading"
+                          :size="$vuetify.display.xs ? 'default' : 'large'"
                           class="submit-btn"
                           rounded="xl"
                           block
@@ -474,14 +480,14 @@
                           v-model="leadInfo.name"
                           label="Your Name"
                           variant="outlined"
-                          density="compact"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
                           class="form-field"
                       />
                       <v-text-field
                           v-model="leadInfo.email"
                           label="Email"
                           variant="outlined"
-                          density="compact"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
                           :rules="leadInfo.email ? [rules.email] : []"
                           class="form-field"
                       />
@@ -489,7 +495,7 @@
                           v-model="leadInfo.phone"
                           label="Phone"
                           variant="outlined"
-                          density="compact"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
                           class="form-field"
                       />
                       <v-select
@@ -497,7 +503,7 @@
                           :items="interestCategories"
                           label="Category Interest"
                           variant="outlined"
-                          density="compact"
+                          :density="$vuetify.display.xs ? 'comfortable' : 'compact'"
                           class="form-field"
                       />
                       <div class="lead-actions">
@@ -505,6 +511,7 @@
                             @click="submitLead(true)"
                             color="success"
                             :loading="leadLoading"
+                            :size="$vuetify.display.xs ? 'default' : 'large'"
                             class="lead-btn"
                             rounded="xl"
                         >
@@ -514,6 +521,7 @@
                             @click="submitLead(false)"
                             variant="outlined"
                             color="success"
+                            :size="$vuetify.display.xs ? 'default' : 'large'"
                             class="lead-btn"
                             rounded="xl"
                         >
@@ -534,7 +542,7 @@
                             color="success"
                             class="quick-link-btn"
                             rounded="xl"
-                            size="small"
+                            :size="$vuetify.display.xs ? 'x-small' : 'small'"
                         >
                           {{ action.label }}
                         </v-btn>
@@ -568,8 +576,8 @@
               <!-- Typing indicator -->
               <div v-if="isTyping" class="bot-message-container">
                 <div class="bot-message-header">
-                  <v-avatar size="24" color="success">
-                    <v-icon color="white" size="12">mdi-robot</v-icon>
+                  <v-avatar :size="$vuetify.display.xs ? 20 : 24" color="success">
+                    <v-icon color="white" :size="$vuetify.display.xs ? 10 : 12">mdi-robot</v-icon>
                   </v-avatar>
                   <span class="bot-label">PPA Assistant</span>
                 </div>
@@ -594,12 +602,12 @@
               />
               <v-btn
                   icon
-                  size="small"
+                  :size="$vuetify.display.xs ? 'x-small' : 'small'"
                   @click="sendUserMessage"
                   :disabled="!userMessage.trim()"
                   class="send-btn"
               >
-                <v-icon size="18" color="success">mdi-send</v-icon>
+                <v-icon :size="$vuetify.display.xs ? 16 : 18" color="success">mdi-send</v-icon>
               </v-btn>
             </div>
           </div>
@@ -619,12 +627,12 @@
         <v-btn
             class="chat-fab"
             color="success"
-            size="x-large"
+            :size="$vuetify.display.xs ? 'large' : 'x-large'"
             icon
             elevation="8"
             @click="openChat"
         >
-          <v-icon size="28" color="white">mdi-robot</v-icon>
+          <v-icon :size="$vuetify.display.xs ? 24 : 28" color="white">mdi-robot</v-icon>
         </v-btn>
       </v-badge>
 
@@ -1613,7 +1621,7 @@ onMounted(async () => {
   background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.3));
 }
 
-/* Chat Container */
+/* ==================== RESPONSIVE CHAT CONTAINER ==================== */
 .chat-container {
   position: fixed;
   bottom: 16px;
@@ -1623,15 +1631,25 @@ onMounted(async () => {
   align-items: flex-end;
   gap: 16px;
 }
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .chat-container {
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
 .chat-inactive {
   pointer-events: none;
 }
+
 .chat-inactive .chat-fab,
 .chat-inactive .help-message-bubble {
   pointer-events: auto;
 }
 
-/* Chat Window */
+/* ==================== RESPONSIVE CHAT WINDOW ==================== */
 .chat-window {
   width: 400px;
   max-width: calc(100vw - 48px);
@@ -1647,14 +1665,58 @@ onMounted(async () => {
 
 .chat-window:not(.minimized) {
   height: 650px;
+  max-height: calc(100vh - 100px);
 }
 
 .chat-window.minimized {
   height: 72px;
   width: 320px;
+  max-width: calc(100vw - 48px);
 }
 
-/* Header */
+/* Tablet breakpoint */
+@media (max-width: 960px) {
+  .chat-window {
+    width: 380px;
+    max-width: calc(100vw - 32px);
+  }
+  
+  .chat-window:not(.minimized) {
+    height: 600px;
+    max-height: calc(100vh - 80px);
+  }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 600px) {
+  .chat-window {
+    width: 100%;
+    max-width: calc(100vw - 24px);
+  }
+  
+  .chat-window:not(.minimized) {
+    height: calc(100vh - 140px);
+    max-height: 600px;
+  }
+  
+  .chat-window.minimized {
+    width: calc(100vw - 80px);
+    height: 64px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 400px) {
+  .chat-window {
+    max-width: calc(100vw - 16px);
+  }
+  
+  .chat-window:not(.minimized) {
+    height: calc(100vh - 120px);
+  }
+}
+
+/* ==================== RESPONSIVE HEADER ==================== */
 .chat-header {
   background: rgb(var(--v-theme-success));
   padding: 16px 20px;
@@ -1664,21 +1726,39 @@ onMounted(async () => {
   color: white;
 }
 
+@media (max-width: 600px) {
+  .chat-header {
+    padding: 12px 16px;
+  }
+}
+
 .header-content {
   display: flex;
   align-items: center;
   flex: 1;
+  min-width: 0;
 }
 
 .header-info {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  flex: 1;
 }
 
 .bot-name {
   font-weight: 600;
   font-size: 16px;
   color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .bot-name {
+    font-size: 14px;
+  }
 }
 
 .bot-status {
@@ -1688,6 +1768,16 @@ onMounted(async () => {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.9);
   margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .bot-status {
+    font-size: 11px;
+    gap: 4px;
+  }
 }
 
 .status-indicator {
@@ -1695,7 +1785,15 @@ onMounted(async () => {
   height: 8px;
   background: #8BC34A;
   border-radius: 50%;
+  flex-shrink: 0;
   animation: pulse 2s infinite;
+}
+
+@media (max-width: 600px) {
+  .status-indicator {
+    width: 6px;
+    height: 6px;
+  }
 }
 
 @keyframes pulse {
@@ -1710,6 +1808,13 @@ onMounted(async () => {
 .header-actions {
   display: flex;
   gap: 4px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .header-actions {
+    gap: 2px;
+  }
 }
 
 .header-btn {
@@ -1721,12 +1826,24 @@ onMounted(async () => {
   background: rgba(255, 255, 255, 0.2) !important;
 }
 
-/* Messages */
+/* ==================== RESPONSIVE MESSAGES ==================== */
 .chat-messages {
   flex: 1;
   padding: 20px;
   overflow: hidden;
   background: #f8f9fa;
+}
+
+@media (max-width: 600px) {
+  .chat-messages {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .chat-messages {
+    padding: 8px;
+  }
 }
 
 .messages-scroll {
@@ -1737,6 +1854,12 @@ onMounted(async () => {
   gap: 20px;
   scrollbar-width: none;
   scroll-behavior: smooth;
+}
+
+@media (max-width: 600px) {
+  .messages-scroll {
+    gap: 16px;
+  }
 }
 
 .messages-scroll::-webkit-scrollbar {
@@ -1760,12 +1883,26 @@ onMounted(async () => {
   align-self: center;
 }
 
-/* Bot Messages */
+@media (max-width: 600px) {
+  .date-separator {
+    font-size: 11px;
+    padding: 6px 12px;
+    margin: 12px 0;
+  }
+}
+
+/* ==================== RESPONSIVE BOT MESSAGES ==================== */
 .bot-message-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   max-width: 90%;
+}
+
+@media (max-width: 600px) {
+  .bot-message-container {
+    max-width: 95%;
+  }
 }
 
 .bot-message-header {
@@ -1775,10 +1912,23 @@ onMounted(async () => {
   margin-bottom: 8px;
 }
 
+@media (max-width: 600px) {
+  .bot-message-header {
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+}
+
 .bot-label {
   font-size: 13px;
   font-weight: 600;
   color: #6b7280;
+}
+
+@media (max-width: 600px) {
+  .bot-label {
+    font-size: 12px;
+  }
 }
 
 .bot-message-content {
@@ -1790,13 +1940,27 @@ onMounted(async () => {
   width: 100%;
 }
 
+@media (max-width: 600px) {
+  .bot-message-content {
+    padding: 12px;
+    border-radius: 12px;
+  }
+}
+
 .message-text {
   font-size: 14px;
   line-height: 1.6;
   color: #374151;
 }
 
-/* Director Selection */
+@media (max-width: 600px) {
+  .message-text {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+/* ==================== RESPONSIVE DIRECTOR SELECTION ==================== */
 .directors-section {
   margin-top: 12px;
 }
@@ -1808,10 +1972,31 @@ onMounted(async () => {
   font-weight: 500;
 }
 
+@media (max-width: 600px) {
+  .directors-intro {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+}
+
 .directors-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .directors-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .directors-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
 }
 
 .director-card {
@@ -1827,6 +2012,13 @@ onMounted(async () => {
   background: #fafbfc;
 }
 
+@media (max-width: 600px) {
+  .director-card {
+    padding: 12px 8px;
+    border-radius: 10px;
+  }
+}
+
 .director-card:hover {
   border-color: rgb(var(--v-theme-success));
   background: rgba(76, 175, 80, 0.05);
@@ -1834,9 +2026,21 @@ onMounted(async () => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+@media (max-width: 600px) {
+  .director-card:hover {
+    transform: translateY(-1px);
+  }
+}
+
 .director-avatar {
   margin-bottom: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 600px) {
+  .director-avatar {
+    margin-bottom: 6px;
+  }
 }
 
 .director-info {
@@ -1848,6 +2052,13 @@ onMounted(async () => {
   font-weight: 600;
   color: #1f2937;
   margin-bottom: 4px;
+  word-break: break-word;
+}
+
+@media (max-width: 600px) {
+  .director-name {
+    font-size: 12px;
+  }
 }
 
 .director-role {
@@ -1856,7 +2067,13 @@ onMounted(async () => {
   font-weight: 500;
 }
 
-/* Director Office Info */
+@media (max-width: 600px) {
+  .director-role {
+    font-size: 10px;
+  }
+}
+
+/* ==================== RESPONSIVE DIRECTOR OFFICE INFO ==================== */
 .director-office-info {
   margin-top: 12px;
   padding: 16px;
@@ -1865,10 +2082,24 @@ onMounted(async () => {
   border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
+@media (max-width: 600px) {
+  .director-office-info {
+    padding: 12px;
+    border-radius: 10px;
+  }
+}
+
 .office-header {
   font-size: 15px;
   color: #1f2937;
   margin-bottom: 12px;
+}
+
+@media (max-width: 600px) {
+  .office-header {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
 }
 
 .office-actions {
@@ -1876,6 +2107,13 @@ onMounted(async () => {
   color: #374151;
   line-height: 1.5;
   margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .office-actions {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
 }
 
 .office-actions ul {
@@ -1889,16 +2127,23 @@ onMounted(async () => {
 
 .office-options {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
 }
 
-/* Message Options */
+/* ==================== RESPONSIVE MESSAGE OPTIONS ==================== */
 .message-options {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .message-options {
+    gap: 6px;
+    margin-top: 12px;
+  }
 }
 
 .option-btn {
@@ -1910,11 +2155,24 @@ onMounted(async () => {
   line-height: 1.3 !important;
 }
 
+@media (max-width: 600px) {
+  .option-btn {
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+  }
+}
+
 .option-icon {
   margin-right: 6px;
 }
 
-/* Forms */
+@media (max-width: 600px) {
+  .option-icon {
+    margin-right: 4px;
+  }
+}
+
+/* ==================== RESPONSIVE FORMS ==================== */
 .chat-form {
   margin-top: 16px;
   padding: 16px;
@@ -1923,11 +2181,26 @@ onMounted(async () => {
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+@media (max-width: 600px) {
+  .chat-form {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 10px;
+  }
+}
+
 .form-intro {
   font-size: 14px;
   color: #374151;
   margin-bottom: 16px;
   font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .form-intro {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
 }
 
 .lead-form {
@@ -1942,8 +2215,21 @@ onMounted(async () => {
   line-height: 1.5;
 }
 
+@media (max-width: 600px) {
+  .lead-intro {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+}
+
 .form-field {
   margin-bottom: 12px !important;
+}
+
+@media (max-width: 600px) {
+  .form-field {
+    margin-bottom: 10px !important;
+  }
 }
 
 .submit-btn {
@@ -1954,17 +2240,40 @@ onMounted(async () => {
   margin-top: 8px;
 }
 
+@media (max-width: 600px) {
+  .submit-btn {
+    padding: 10px !important;
+    font-size: 14px !important;
+  }
+}
+
 .form-note {
   margin-top: 8px;
   text-align: center;
   color: #6b7280;
   font-style: italic;
+  font-size: 12px;
+}
+
+@media (max-width: 600px) {
+  .form-note {
+    font-size: 11px;
+    margin-top: 6px;
+  }
 }
 
 .lead-actions {
   display: flex;
   gap: 8px;
   margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .lead-actions {
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+  }
 }
 
 .lead-btn {
@@ -1976,9 +2285,22 @@ onMounted(async () => {
   font-size: 13px !important;
 }
 
-/* Quick Links */
+@media (max-width: 600px) {
+  .lead-btn {
+    padding: 10px 8px !important;
+    font-size: 14px !important;
+  }
+}
+
+/* ==================== RESPONSIVE QUICK LINKS ==================== */
 .quick-links-section {
   margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .quick-links-section {
+    margin-top: 12px;
+  }
 }
 
 .quick-links-title {
@@ -1988,10 +2310,23 @@ onMounted(async () => {
   margin-bottom: 12px;
 }
 
+@media (max-width: 600px) {
+  .quick-links-title {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+}
+
 .quick-links-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+@media (max-width: 600px) {
+  .quick-links-grid {
+    gap: 4px;
+  }
 }
 
 .quick-link-btn {
@@ -2002,6 +2337,13 @@ onMounted(async () => {
   height: auto !important;
 }
 
+@media (max-width: 600px) {
+  .quick-link-btn {
+    font-size: 11px !important;
+    padding: 5px 8px !important;
+  }
+}
+
 .message-time {
   font-size: 11px;
   color: #9ca3af;
@@ -2009,13 +2351,27 @@ onMounted(async () => {
   margin-left: 32px;
 }
 
-/* User Messages */
+@media (max-width: 600px) {
+  .message-time {
+    font-size: 10px;
+    margin-top: 6px;
+    margin-left: 26px;
+  }
+}
+
+/* ==================== RESPONSIVE USER MESSAGES ==================== */
 .user-message-container {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   max-width: 85%;
   align-self: flex-end;
+}
+
+@media (max-width: 600px) {
+  .user-message-container {
+    max-width: 90%;
+  }
 }
 
 .user-message-bubble {
@@ -2029,6 +2385,14 @@ onMounted(async () => {
   word-wrap: break-word;
 }
 
+@media (max-width: 600px) {
+  .user-message-bubble {
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 13px;
+  }
+}
+
 .user-message-time {
   display: flex;
   align-items: center;
@@ -2038,7 +2402,14 @@ onMounted(async () => {
   margin-top: 6px;
 }
 
-/* Typing Indicator */
+@media (max-width: 600px) {
+  .user-message-time {
+    font-size: 10px;
+    margin-top: 4px;
+  }
+}
+
+/* ==================== RESPONSIVE TYPING INDICATOR ==================== */
 .typing-bubble {
   background: white;
   padding: 12px 16px;
@@ -2046,6 +2417,13 @@ onMounted(async () => {
   border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+  .typing-bubble {
+    padding: 10px 14px;
+    border-radius: 14px;
+  }
 }
 
 .typing-dots {
@@ -2059,6 +2437,13 @@ onMounted(async () => {
   background: rgb(var(--v-theme-success));
   border-radius: 50%;
   animation: typing 1.4s infinite ease-in-out;
+}
+
+@media (max-width: 600px) {
+  .typing-dots span {
+    width: 6px;
+    height: 6px;
+  }
 }
 
 .typing-dots span:nth-child(2) {
@@ -2080,11 +2465,23 @@ onMounted(async () => {
   }
 }
 
-/* Input Area */
+/* ==================== RESPONSIVE INPUT AREA ==================== */
 .chat-input-area {
   padding: 16px 20px;
   background: white;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 600px) {
+  .chat-input-area {
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .chat-input-area {
+    padding: 10px 12px;
+  }
 }
 
 .input-container {
@@ -2097,6 +2494,13 @@ onMounted(async () => {
   padding: 4px 4px 4px 16px;
 }
 
+@media (max-width: 600px) {
+  .input-container {
+    padding: 4px 4px 4px 12px;
+    border-radius: 20px;
+  }
+}
+
 .message-input {
   flex: 1;
   border: none;
@@ -2104,6 +2508,14 @@ onMounted(async () => {
   background: transparent;
   font-size: 14px;
   padding: 8px 0;
+  min-width: 0;
+}
+
+@media (max-width: 600px) {
+  .message-input {
+    font-size: 13px;
+    padding: 6px 0;
+  }
 }
 
 .message-input::placeholder {
@@ -2115,13 +2527,20 @@ onMounted(async () => {
   box-shadow: none !important;
   min-width: auto !important;
   padding: 8px !important;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .send-btn {
+    padding: 6px !important;
+  }
 }
 
 .send-btn:hover {
   background: rgba(76, 175, 80, 0.1) !important;
 }
 
-/* Minimized Chat */
+/* ==================== RESPONSIVE MINIMIZED CHAT ==================== */
 .minimized-chat {
   height: 100%;
   display: flex;
@@ -2134,6 +2553,12 @@ onMounted(async () => {
   transition: all 0.2s ease;
 }
 
+@media (max-width: 600px) {
+  .minimized-chat {
+    padding: 12px 16px;
+  }
+}
+
 .minimized-chat:hover {
   opacity: 0.9;
 }
@@ -2143,16 +2568,33 @@ onMounted(async () => {
   align-items: center;
   flex: 1;
   gap: 12px;
+  min-width: 0;
+}
+
+@media (max-width: 600px) {
+  .minimized-content {
+    gap: 10px;
+  }
 }
 
 .minimized-info {
   flex: 1;
+  min-width: 0;
 }
 
 .minimized-name {
   font-weight: 600;
   font-size: 15px;
   margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .minimized-name {
+    font-size: 14px;
+  }
 }
 
 .minimized-preview {
@@ -2161,6 +2603,16 @@ onMounted(async () => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .minimized-preview {
+    font-size: 11px;
+  }
+}
+
+.minimized-avatar-container {
+  flex-shrink: 0;
 }
 
 .minimized-close {
@@ -2172,25 +2624,43 @@ onMounted(async () => {
   background: rgba(255, 255, 255, 0.1) !important;
 }
 
+@media (max-width: 600px) {
+  .minimized-close {
+    opacity: 1;
+  }
+}
+
 .minimized-chat:hover .minimized-close {
   opacity: 1;
 }
 
-/* FAB */
+/* ==================== RESPONSIVE FAB ==================== */
 .chat-fab {
   border-radius: 50% !important;
-  /* margin-bottom: 16px; */
   transition: all 0.3s ease;
   position: fixed !important;
   bottom: 16px !important;
   right: 20px !important;
 }
 
+@media (max-width: 600px) {
+  .chat-fab {
+    bottom: 12px !important;
+    right: 12px !important;
+  }
+}
+
 .chat-fab:hover {
   transform: translateY(-2px);
 }
 
-/* Help Message Bubble */
+@media (max-width: 600px) {
+  .chat-fab:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* ==================== RESPONSIVE HELP MESSAGE BUBBLE ==================== */
 .help-message-bubble {
   position: fixed;
   bottom: 90px;
@@ -2210,9 +2680,33 @@ onMounted(async () => {
   transition: all 0.2s ease;
 }
 
+@media (max-width: 600px) {
+  .help-message-bubble {
+    bottom: 70px;
+    right: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+    max-width: 180px;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .help-message-bubble {
+    max-width: 160px;
+    font-size: 12px;
+  }
+}
+
 .help-message-bubble:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 600px) {
+  .help-message-bubble:hover {
+    transform: translateY(-1px);
+  }
 }
 
 .help-message-text {
@@ -2231,6 +2725,16 @@ onMounted(async () => {
   transform: rotate(45deg);
 }
 
+@media (max-width: 600px) {
+  .help-message-arrow {
+    width: 10px;
+    height: 10px;
+    bottom: -5px;
+    right: 16px;
+  }
+}
+
+/* ==================== ANIMATIONS ==================== */
 @keyframes slideInBounce {
   0% {
     transform: translateX(100px) scale(0.8);
@@ -2245,7 +2749,6 @@ onMounted(async () => {
     opacity: 1;
   }
 }
-
 /* Animations */
 @keyframes slideUp {
   from {
@@ -2259,33 +2762,71 @@ onMounted(async () => {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
-  .chat-container {
-    right: 16px;
-    left: 16px;
-    top: calc(90px + 16px);
-    bottom: 16px;
-  }
-
-  .chat-window {
-    width: 100%;
-    max-width: none;
-  }
-
+@media (max-width: 900px) and (orientation: landscape) {
   .chat-window:not(.minimized) {
-    height: calc(100vh - 122px);
+    height: 90vh;
+    max-height: 500px;
   }
-
-  .directors-grid {
-    grid-template-columns: 1fr;
+  
+  .chat-messages {
+    padding: 12px;
   }
-
-  .lead-actions {
-    flex-direction: column;
+  
+  .messages-scroll {
+    gap: 12px;
   }
+}
 
-  .office-options {
-    flex-direction: column;
+/* ==================== TOUCH DEVICE OPTIMIZATIONS ==================== */
+@media (hover: none) and (pointer: coarse) {
+  .director-card,
+  .option-btn,
+  .quick-link-btn,
+  .lead-btn,
+  .submit-btn {
+    min-height: 44px;
+  }
+  
+  .header-btn,
+  .send-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ==================== HIGH DPI SCREENS ==================== */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .chat-window {
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15), 0 0 0 0.5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .bot-message-content,
+  .typing-bubble {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus states for keyboard navigation */
+.director-card:focus,
+.option-btn:focus,
+.quick-link-btn:focus {
+  outline: 2px solid rgb(var(--v-theme-success));
+  outline-offset: 2px;
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  .chat-container {
+    display: none;
   }
 }
 </style>
