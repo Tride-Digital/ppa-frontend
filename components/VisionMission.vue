@@ -2,6 +2,13 @@
   <section class="testimonials">
     <div class="container">
       <p class="eyebrow">Proprietary Planters Alliance</p>
+
+      <div class="learn-more-wrapper">
+        <p class="learn-more-text">
+          <a :href="learnMoreUrl" class="learn-more-link">Learn More >>></a>
+        </p>
+      </div>
+      
       <h2 class="title">Vision & Mission</h2>
       <div class="cards">
         <article v-for="(t, i) in twoOnly" :key="i" class="card">
@@ -13,6 +20,13 @@
           </div>
           <p class="text">{{ t.text }}</p>
         </article>
+      </div>
+
+      <div class="contact-link-wrapper">
+        <p class="contact-text">
+          Have questions or want to know more? 
+          <a :href="contactUsUrl" class="contact-link">Contact Us</a>
+        </p>
       </div>
     </div>
   </section>
@@ -28,6 +42,8 @@ type Testimonial = {
 }
 const props = defineProps<{
   items?: Testimonial[]
+  learnMoreUrl?: string
+  contactUsUrl?: string
 }>()
 const theme = useTheme()
 const fallback: Testimonial[] = [
@@ -41,15 +57,17 @@ const fallback: Testimonial[] = [
     name: 'Mission',
     role: 'Transform the proprietary plantation sector with innovation',
     text:
-      'PPA Pvt Ltd transforms the proprietary plantation sector through innovation, advanced technologies, and value chain optimization. We modernize operations, boost productivity, and create higher value for stakeholders while promoting biodiversity, climate resilience, and green livelihoods. By continuously improving all production factors, PPA enables planters to achieve cost leadership, sustainable competitive advantage, and measurable economic, environmental, and social impact across Sri Lanka’s proprietary plantations.'
+      'PPA Pvt Ltd transforms the proprietary plantation sector through innovation, advanced technologies, and value chain optimization. We modernize operations, boost productivity, and create higher value for stakeholders while promoting biodiversity, climate resilience, and green livelihoods. By continuously improving all production factors, PPA enables planters to achieve cost leadership, sustainable competitive advantage, and measurable economic, environmental, and social impact across Sri Lankas proprietary plantations.'
   }
 ]
 const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
+const learnMoreUrl = computed(() => props.learnMoreUrl ?? '/aboutus')
+const contactUsUrl = computed(() => props.contactUsUrl ?? '/contactus')
 </script>
 
 <style scoped>
 .testimonials {
-  padding: 48px 16px 80px;
+  padding: 32px 16px 48px;
   background: rgb(var(--v-theme-background));
 }
 .container {
@@ -63,11 +81,52 @@ const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
   font-size: 22px;
   margin: 0 0 6px;
 }
+
+/* Learn More Link */
+.learn-more-wrapper {
+  text-align: center;
+  margin: 12px 0 24px;
+}
+
+.learn-more-text {
+  color: rgb(var(--v-theme-vision-mission-text));
+  font-size: 16px;
+  margin: 0;
+}
+
+.learn-more-link {
+  color: rgb(var(--v-theme-primary));
+  text-decoration: none;
+  font-weight: 600;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.learn-more-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgb(var(--v-theme-primary));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.learn-more-link:hover {
+  opacity: 0.8;
+}
+
+.learn-more-link:hover::after {
+  transform: scaleX(1);
+}
+
 .title {
   text-align: center;
   font-size: clamp(24px, 3vw, 40px);
   color: rgb(var(--v-theme-vision-mission-title));
-  margin: 0 0 75px;
+  margin: 0 0 48px;
   font-weight: 800;
   letter-spacing: .2px;
 }
@@ -115,5 +174,45 @@ const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
   box-shadow: 0 1px 0 var(--v-theme-vision-mission-card-highlight) inset;
   -webkit-mask: linear-gradient(#0000 0 var(--header-overlap), #000 var(--header-overlap) 100%);
           mask: linear-gradient(#0000 0 var(--header-overlap), #000 var(--header-overlap) 100%);
+}
+
+/* Contact Us Link */
+.contact-link-wrapper {
+  text-align: center;
+  margin-top: 32px;
+}
+
+.contact-text {
+  color: rgb(var(--v-theme-vision-mission-text));
+  font-size: 16px;
+  margin: 0;
+}
+
+.contact-link {
+  color: rgb(var(--v-theme-primary));
+  text-decoration: none;
+  font-weight: 600;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.contact-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgb(var(--v-theme-primary));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.contact-link:hover {
+  opacity: 0.8;
+}
+
+.contact-link:hover::after {
+  transform: scaleX(1);
 }
 </style>

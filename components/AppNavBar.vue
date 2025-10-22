@@ -20,9 +20,21 @@
                 <v-list-item v-for="item in menuItems" :key="item.title" :to="item.path" link>
                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                 </v-list-item>
-                <v-list-item to="/announcements" link>
-                    <v-list-item-title>Announcements</v-list-item-title>
-                </v-list-item>
+
+                <v-list-group>
+                    <template v-slot:activator="{ props }">
+                        <v-list-item v-bind="props">
+                            <v-list-item-title>Latest</v-list-item-title>
+                        </v-list-item>
+                    </template>
+                    <v-list-item to="/announcements" link>
+                        <v-list-item-title>Announcements</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item to="/blogs" link>
+                        <v-list-item-title>Blogs</v-list-item-title>
+                    </v-list-item>
+                </v-list-group>
+                
                 <v-list-item @click="goToAdmin" link>
                     <v-list-item-title>Login</v-list-item-title>
                 </v-list-item>
@@ -44,12 +56,26 @@
     <v-spacer></v-spacer>
     <v-toolbar-items class="nav-items">
       <v-btn flat v-for="item in menuItems.slice(0, 6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
+      
+      <v-menu offset-y>
+        <template v-slot:activator="{ props }">
+          <v-btn flat v-bind="props" class="nav-link">
+            Latest
+            <v-icon right small>mdi-chevron-down</v-icon>
+          </v-btn>
+        </template>
+        <v-list :color="$vuetify.theme.current.colors.surface" class="latest-dropdown">
+          <v-list-item to="/blogs" link class="dropdown-item">
+            <v-list-item-title class="dropdown-item-title">Blogs</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item to="/announcements" link class="dropdown-item">
+            <v-list-item-title class="dropdown-item-title">Announcements</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      
       <v-btn flat @click="goToAdmin" class="nav-link">Login</v-btn>
-      <div class="d-flex align-center mx-2">
-        <v-btn icon @click="goToAnnouncements" class="announcements-icon-btn" title="Announcements">
-          <v-icon>mdi-bullhorn</v-icon>
-        </v-btn>
-      </div>
       <div class="d-flex align-center mx-2">
         <CartNavButton :cart-items="cartItems" @toggle-cart="handleToggleCart" @cart-click="handleCartClick"/>
       </div>
@@ -101,8 +127,6 @@ const menuItems = ref([
     { title: 'Services', path: '/services', icon: 'mdi-leaf' },
     { title: 'Our Team', path: '/ourteam', icon: 'mdi-phone' },
     { title: 'Contact Us', path: '/contactus', icon: 'mdi-phone' },
-    { title: 'Blogs', path: '/blogs', icon: 'mdi-text-box-multiple-outline' },
-
 ]);
 const goToHome = () => {
     router.push('/');
@@ -145,6 +169,29 @@ const goToAnnouncements = () => {
     font-weight: 500;
     text-transform: none;
 }
+
+/* Latest dropdown styling */
+.latest-dropdown {
+    min-width: 180px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+}
+
+.dropdown-item {
+    padding: 12px 20px;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(var(--v-theme-primary), 0.1) !important;
+}
+
+.dropdown-item-title {
+    color: rgb(var(--v-theme-navtext)) !important;
+    font-weight: 500;
+    font-size: 14px;
+}
+
 .search-bar {
     align-items: center;
     border-radius: 20px;

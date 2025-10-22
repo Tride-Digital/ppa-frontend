@@ -74,9 +74,11 @@ const footerDescription = ref('Empowering proprietary plantations for a sustaina
 const quickLinks = ref([
   { title: 'Home', path: '/' },
   { title: 'About Us', path: '/aboutus' },
-  { title: 'Announcements', path: '/announcements' },
   { title: 'Services', path: '/services' },
-  { title: 'Join PPA', path: '/providerselector' }
+  { title: 'Our Team', path: '/ourteam' },
+  { title: 'Contact Us', path: '/contactus' },
+  { title: 'Blogs', path: '/blogs' },
+  { title: 'Announcements', path: '/announcements' },
 ])
 const socialLinks = ref([
   { name: 'Facebook', icon: 'mdi-facebook', url: 'https://www.facebook.com/share/1BZSphvAiV/?mibextid=wwXIfr' },
