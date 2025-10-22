@@ -246,11 +246,13 @@ const submitOrder = async () => {
   errorMessage.value = ''
   
   try {
+    const selectedDistrictObj = districts.value.find(d => d.district_en === form.value.district) || null
     const requestData = {
       name: form.value.name,
       email: form.value.email,
       phone: form.value.phone,
-      district: form.value.district,
+      district: selectedDistrictObj ? selectedDistrictObj.district_en : form.value.district,
+      district_json: selectedDistrictObj ? { district_code: selectedDistrictObj.district_code } : null,
       nic: form.value.nic.toUpperCase().trim(),
       comment: form.value.comment || '',
       services: cartItems.value.map(item => ({

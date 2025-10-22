@@ -1182,6 +1182,7 @@ const submitServiceRequest = async () => {
     // Get service names for the services array
     const categoryName = getCategoryName(serviceRequest.value.serviceCategory)
     const subcategoryName = getSubcategoryName(serviceRequest.value.serviceSubcategory)
+    const selectedDistrictObj = districts.value.find(d => d.district_en === serviceRequest.value.district) || null
 
     // chatbot to match servicerequests
     const requestPayload = {
@@ -1189,6 +1190,7 @@ const submitServiceRequest = async () => {
       email: serviceRequest.value.email,
       phone: serviceRequest.value.phone,
       district: serviceRequest.value.district,
+      district_json: selectedDistrictObj ? { district_code: selectedDistrictObj.district_code } : null,
       nic: serviceRequest.value.nic,
       comment: serviceRequest.value.message,
       services: [
