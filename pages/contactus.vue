@@ -231,12 +231,6 @@
                 title="Office Location Map"
               ></iframe>
             </div>
-            <v-card-text class="pa-6 d-flex align-center justify-center">
-              <v-icon color="primary" size="24" class="mr-2">mdi-map-marker</v-icon>
-              <span class="text-body-1 font-weight-medium">
-                No. 28, U. E. Perera Mawatha, Rajagiriya. 10107
-              </span>
-            </v-card-text>
           </v-card>
         </v-col>
       </v-row>
