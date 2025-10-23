@@ -197,7 +197,6 @@ onMounted(() => {
 }
 .subtitle {
   padding: 0 14px;
-  font-family: "Dancing Script", cursive;
   font-size: 18px;
   color: rgb(var(--v-theme-title-subtitle));
 }
