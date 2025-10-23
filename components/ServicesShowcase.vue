@@ -135,7 +135,6 @@ function goToServiceCategory(serviceTitle: string) {
 }
 .subtitle {
   padding: 0 14px;
-  font-family: "Dancing Script", cursive;
   font-size: clamp(16px, 2.3vw, 20px);
   color: rgb(var(--v-theme-title-subtitle));
 }

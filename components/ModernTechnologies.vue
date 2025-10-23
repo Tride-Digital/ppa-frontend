@@ -295,7 +295,6 @@ export default {
 }
 .subtitle {
   padding: 0 14px;
-  font-family: "Dancing Script", cursive;
   font-size: 20px;
   color: rgb(var(--v-theme-title-subtitle));
 }
@@ -310,7 +309,6 @@ export default {
   max-width: 1700px;
   margin: 0 auto;
   padding: 2rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 .slider-controls { position: relative; width: 100%; }
 .cards-wrapper { overflow: hidden; width: 100%; position: relative; cursor: grab; }

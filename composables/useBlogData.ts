@@ -68,7 +68,8 @@ export const useBlogData = () => {
     loading.value = true
     error.value = null
     try {
-      const posts = await $fetch(`${baseUrl}/blog/all?skip=${skip}&limit=${limit}`)
+      const response = await $fetch(`${baseUrl}/blog/all?skip=${skip}&limit=${limit}`)
+      const posts = response.items || []
       return posts.filter((post: BlogPost) => post.status === true)
     } catch (err) {
       error.value = 'Failed to fetch blog posts'
