@@ -57,7 +57,7 @@ const fallback: Testimonial[] = [
     name: 'Mission',
     role: 'Transform the proprietary plantation sector with innovation',
     text:
-      'PPA Pvt Ltd transforms the proprietary plantation sector through innovation, advanced technologies, and value chain optimization. We modernize operations, boost productivity, and create higher value for stakeholders while promoting biodiversity, climate resilience, and green livelihoods. By continuously improving all production factors, PPA enables planters to achieve cost leadership, sustainable competitive advantage, and measurable economic, environmental, and social impact across Sri Lankas proprietary plantations.'
+      'PPA Pvt Ltd transforms the proprietary plantation sector through innovation, advanced technologies, and value chain optimization. We modernize operations, boost productivity, and create higher value for stakeholders while promoting biodiversity, climate resilience, and green livelihoods. By continuously improving all production factors, PPA enables planters to achieve cost leadership, sustainable competitive advantage, and measurable economic, environmental, and social impact across Sri Lanka’s proprietary plantations.'
   }
 ]
 const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
