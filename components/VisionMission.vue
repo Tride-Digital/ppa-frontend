@@ -10,18 +10,21 @@
       </div>
       
       <h2 class="title">Vision & Mission</h2>
-      <div class="cards">
-        <article v-for="(t, i) in twoOnly" :key="i" class="card">
-          <div class="namebar">
-            <div>
-              <h3 class="name">{{ t.name }}</h3>
-              <p class="role">{{ t.role }}</p>
-            </div>
+        <div v-if="isPending" class="text-center">Loading...</div>
+        <div v-else-if="isError" class="text-center">Failed to load content.</div>
+        <template v-else>
+          <div class="cards">
+            <article v-for="(t, i) in twoOnly" :key="i" class="card">
+              <div class="namebar">
+                <div>
+                  <h3 class="name">{{ t.name }}</h3>
+                  <p class="role">{{ t.role }}</p>
+                </div>
+              </div>
+              <div class="text" v-html="t.text"></div>
+            </article>
           </div>
-          <p class="text">{{ t.text }}</p>
-        </article>
-      </div>
-
+        </template>
       <div class="contact-link-wrapper">
         <p class="contact-text">
           Have questions or want to know more? 
@@ -33,7 +36,8 @@
 </template>
 
 <script setup lang="ts">
-import { useTheme } from 'vuetify'
+import { computed } from 'vue'
+import { useStaticContent } from '~/composables/useStaticContent'
 
 type Testimonial = {
   name: string
@@ -45,22 +49,38 @@ const props = defineProps<{
   learnMoreUrl?: string
   contactUsUrl?: string
 }>()
-const theme = useTheme()
-const fallback: Testimonial[] = [
-  {
-    name: 'Vision',
-    role: 'To be sustainable and internationally competitive',
-    text:
-      'PPA Pvt Ltd aims to position itself as a globally recognized and environmentally responsible leader in the proprietary plantation sector, ensuring long-term viability and excellence in overall business performance.'
-  },
-  {
-    name: 'Mission',
-    role: 'Transform the proprietary plantation sector with innovation',
-    text:
-      'PPA Pvt Ltd transforms the proprietary plantation sector through innovation, advanced technologies, and value chain optimization. We modernize operations, boost productivity, and create higher value for stakeholders while promoting biodiversity, climate resilience, and green livelihoods. By continuously improving all production factors, PPA enables planters to achieve cost leadership, sustainable competitive advantage, and measurable economic, environmental, and social impact across Sri Lanka’s proprietary plantations.'
+const fallback: Testimonial[] = []
+const visionStore = useStaticContent('Vision')
+const missionStore = useStaticContent('Mission')
+
+const isPending = computed(() => !!visionStore.pending.value || !!missionStore.pending.value)
+const isError = computed(() => !!visionStore.error.value || !!missionStore.error.value)
+
+const remoteItems = computed<Testimonial[]>(() => {
+  const items: Testimonial[] = []
+  const v = visionStore.data.value
+  const m = missionStore.data.value
+  if (v) {
+    items.push({
+      name: 'Vision',
+      role: v.short_description ?? 'Vision',
+      text: v.content ?? ''
+    })
   }
-]
-const twoOnly = computed(() => (props.items?.slice(0, 2) ?? fallback))
+  if (m) {
+    items.push({
+      name: 'Mission',
+      role: m.short_description ?? 'Mission',
+      text: m.content ?? ''
+    })
+  }
+  return items
+})
+const twoOnly = computed(() => {
+  if (props.items && props.items.length) return props.items.slice(0, 2)
+  if (remoteItems.value.length) return remoteItems.value.slice(0, 2)
+  return fallback
+})
 const learnMoreUrl = computed(() => props.learnMoreUrl ?? '/aboutus')
 const contactUsUrl = computed(() => props.contactUsUrl ?? '/contactus')
 </script>
