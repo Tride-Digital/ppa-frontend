@@ -59,6 +59,8 @@ import { ref, onMounted } from 'vue'
 import ServiceCard from './ServiceCard.vue'
 import { useCart } from '~/composables/useCart'
 import { useServices } from '~/composables/useServices'
+const route = useRoute()
+const router = useRouter()
 const { addToCart } = useCart()
 const {
   loading, 
@@ -76,18 +78,37 @@ onMounted(async () => {
   const data = await fetchAllServices()
   if (data && data.length > 0) {
     navigationItems.value = transformServiceCategories(data)
-    activeCategory.value = 0
+    const categoryParam = route.query.category
+    if(categoryParam !== undefined){
+      const categoryIndex = parseInt(categoryParam)
+      if(categoryParam >= 0 && categoryParam < navigationItems.value.length){
+        activeCategory.value = categoryIndex
+      }
+      else {
+        activeCategory.value = 0
+      }
+    }
+    else {
+      activeCategory.value = 0
+    }
   }
 })
 const selectCategory = (index) => {
-  activeCategory.value = activeCategory.value === index ? -1 : index
+  const newCategory = activeCategory.value === index ? -1 : index
+  activeCategory.value = newCategory
+  if (newCategory !== -1) {
+    router.replace({ query: { category: newCategory }})
+  }
+  else {
+    router.replace({ query: {} })
+  }
 }
 const handleServiceClick = (category, service) => {
 }
 const learnMoreService = (service) => {
   const serviceId = service.id || getServiceIdByName(service.name)
   if (serviceId) {
-    navigateTo(`/service/${serviceId}`)
+    navigateTo(`/service/${serviceId}?category=${activeCategory.value}`)
   }
 }
 const addToCartHandler = (category, service) => {
