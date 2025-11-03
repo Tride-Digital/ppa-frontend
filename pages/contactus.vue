@@ -149,7 +149,7 @@
               Fill out the form below and we'll get back to you as soon as possible.
             </v-card-subtitle>
             <v-card-text class="px-6 pb-6">
-              <v-form ref="form" v-model="valid" @submit.prevent="submitForm">
+              <v-form ref="contactForm" v-model="valid" @submit.prevent="submitForm">
                 <v-text-field 
                   v-model="formData.fullName" 
                   label="Full Name" 
@@ -225,7 +225,7 @@
                 width="100%"
                 height="500"
                 style="border:0;"
-                allowfullscreen=""
+                allowfullscreen="true"
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"
                 title="Office Location Map"
@@ -255,7 +255,7 @@
 import { ref } from 'vue'
 import { useContactUs } from '~/composables/useContactUs'
 
-const form = ref(null)
+const contactForm = ref<any>(null)
 const valid = ref(false)
 const snackbar = ref(false)
 const snackbarText = ref('')
@@ -289,14 +289,15 @@ const messageRules = [
 const { loading, sendContactUs } = useContactUs()
 
 const submitForm = async () => {
-  const { valid: isValid } = await form.value.validate()
+  if (!contactForm.value) return
+  const { valid: isValid } = await contactForm.value.validate()
   if (isValid) {
     try {
       await sendContactUs(formData.value)
       snackbarText.value = 'Message sent successfully! We\'ll get back to you soon.'
       snackbarColor.value = 'success'
       snackbar.value = true
-      form.value.reset()
+      contactForm.value.reset()
       formData.value = {
         fullName: '',
         phoneNumber: '',
