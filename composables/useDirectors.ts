@@ -94,12 +94,32 @@ const fetchDirectorContacts = async () => {
   const config = useRuntimeConfig()
   const baseURL = config.public.backendUrl || 'http://localhost:8000'
   const res = await fetch(`${baseURL}/directorservice/directors?skip=0&limit=100`)
-  const data = await res.json()
-  directorContacts.value = data.map((d: any) => ({
-    id: d.id,
-    name: d.profile?.fullName || `${d.fname} ${d.lname}`,
-    image: d.profile?.profilePic || '',
-  }))
+  const data = await res.json() || []
+
+  const mapped = (data || []).map((d: any) => {
+    const fullName = d.profile?.fullName || `${d.fname || ''} ${d.lname || ''}`.trim()
+    let firstName = ''
+    if (d.fname && d.fname.trim() !== '') {
+      firstName = d.fname.trim()
+    } else if (d.profile?.fullName) {
+      const parts = d.profile.fullName.trim().split(/\s+/)
+      firstName = parts.length > 0 ? parts[0] : ''
+    } else {
+      firstName = ''
+    }
+    return {
+      id: d.id,
+      name: fullName,
+      firstName: firstName.toLowerCase(),
+      image: d.profile?.profilePic || '',
+    }
+  })
+  mapped.sort((a: { id: string; name: string; firstName: string; image: string }, b: { id: string; name: string; firstName: string; image: string }) => {
+    const cmp = a.firstName.localeCompare(b.firstName, undefined, { sensitivity: 'base' })
+    if (cmp !== 0) return cmp
+    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+  })
+  directorContacts.value = mapped.map(({ id, name, image }: { id: string; name: string; image: string; firstName: string }) => ({ id, name, image }))
 }
 
 /**
