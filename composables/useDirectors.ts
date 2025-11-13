@@ -98,28 +98,38 @@ const fetchDirectorContacts = async () => {
 
   const mapped = (data || []).map((d: any) => {
     const fullName = d.profile?.fullName || `${d.fname || ''} ${d.lname || ''}`.trim()
-    let firstName = ''
-    if (d.fname && d.fname.trim() !== '') {
-      firstName = d.fname.trim()
+    let lastname = ''
+    if (d.lname && d.lname.trim() !== '') {
+      lastname = d.lname.trim()
     } else if (d.profile?.fullName) {
       const parts = d.profile.fullName.trim().split(/\s+/)
-      firstName = parts.length > 0 ? parts[0] : ''
+      lastname = parts.length > 0 ? parts[parts.length - 1] : ''
     } else {
-      firstName = ''
+      lastname = ''
+    }
+    const lastKey = lastname.split(/\s+/).filter(Boolean)
+    let sortName = ''
+    if (lastKey.length >= 2) {
+      sortName = lastKey[1].toLowerCase()
+    } else if (lastKey.length === 1) {
+      sortName = lastKey[0].toLowerCase()
+    } else {
+      const fnParts = fullName.split(/\s+/).filter(Boolean)
+      sortName = fnParts.length > 0 ? fnParts[fnParts.length - 1].toLowerCase() : ''
     }
     return {
       id: d.id,
       name: fullName,
-      firstName: firstName.toLowerCase(),
+      sortName,
       image: d.profile?.profilePic || '',
     }
   })
-  mapped.sort((a: { id: string; name: string; firstName: string; image: string }, b: { id: string; name: string; firstName: string; image: string }) => {
-    const cmp = a.firstName.localeCompare(b.firstName, undefined, { sensitivity: 'base' })
+  mapped.sort((a: { sortName: string; name: string }, b: { sortName: string; name: string }) => {
+    const cmp = a.sortName.localeCompare(b.sortName, undefined, { sensitivity: 'base' })
     if (cmp !== 0) return cmp
     return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
   })
-  directorContacts.value = mapped.map(({ id, name, image }: { id: string; name: string; image: string; firstName: string }) => ({ id, name, image }))
+  directorContacts.value = mapped.map(({ id, name, image }: { id: string; name: string; image: string }) => ({ id, name, image }))
 }
 
 /**
