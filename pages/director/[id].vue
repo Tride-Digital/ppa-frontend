@@ -1,20 +1,20 @@
 <template>
   <v-container class="py-12" max-width="1200">
-    <!-- Loading State -->
-    <v-row v-if="isLoading">
+    <!-- Loading -->
+    <v-row v-if="loading">
       <v-col cols="12" class="mb-4">
-        <v-skeleton-loader type="button" width="200"></v-skeleton-loader>
+        <v-skeleton-loader type="button" width="200" />
       </v-col>
       <v-col cols="12" class="mb-6">
         <v-card class="director-profile-card" elevation="4">
           <v-row no-gutters>
             <v-col cols="12" sm="4" md="3">
-              <v-skeleton-loader type="image" height="400"></v-skeleton-loader>
+              <v-skeleton-loader type="image" height="400" />
             </v-col>
             <v-col cols="12" sm="8" md="9">
               <v-card-text class="pa-6">
-                <v-skeleton-loader type="heading" class="mb-4"></v-skeleton-loader>
-                <v-skeleton-loader type="text" width="200"></v-skeleton-loader>
+                <v-skeleton-loader type="heading" class="mb-4" />
+                <v-skeleton-loader type="text" width="200" />
               </v-card-text>
             </v-col>
           </v-row>
@@ -23,20 +23,21 @@
       <v-col cols="12">
         <v-card class="director-details-card" elevation="2">
           <v-card-text class="pa-8">
-            <v-skeleton-loader type="article, article"></v-skeleton-loader>
-            <v-skeleton-loader type="list-item-three-line" class="mt-6"></v-skeleton-loader>
+            <v-skeleton-loader type="article, article" />
+            <v-skeleton-loader type="list-item-three-line" class="mt-6" />
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
 
-    <!-- Loaded Director Content -->
+    <!-- Loaded -->
     <v-row v-else-if="director">
       <v-col cols="12" class="mb-4">
         <v-btn variant="outlined" color="primary" @click="$router.back()" prepend-icon="mdi-arrow-left">
           Back to Leadership Team
         </v-btn>
       </v-col>
+
       <v-col cols="12" class="mb-6">
         <v-card class="director-profile-card" elevation="4">
           <v-row no-gutters>
@@ -54,38 +55,61 @@
             <v-col cols="12" sm="8" md="9">
               <v-card-text class="pa-6 d-flex flex-column justify-center h-100">
                 <h1 class="director-profile-name mb-2">{{ director.name }}</h1>
-                <p class="director-title mb-0">{{ director.position }}</p>
+                <p class="director-title mb-0">{{ director.position || 'Director' }}</p>
               </v-card-text>
             </v-col>
           </v-row>
         </v-card>
       </v-col>
+
       <v-col cols="12">
         <v-card class="director-details-card" elevation="2">
           <v-card-text class="pa-8">
-            <div class="mb-8">
-              <h2 class="section-title mb-4">About {{ director.name.replace('Director : ', '') }}</h2>
+            <!-- About -->
+            <div class="mb-8" v-if="director.description">
+              <h2 class="section-title mb-4">About {{ cleanName }}</h2>
               <p class="director-description">{{ director.description }}</p>
             </div>
-            <div class="mb-8">
+
+            <!-- Qualifications -->
+            <div class="mb-8" v-if="(director.qualifications || []).length">
               <h2 class="section-title mb-4">Qualifications</h2>
               <ul class="qualifications-list">
-                <li v-for="qualification in director.qualifications" :key="qualification">
+                <li v-for="q in director.qualifications" :key="q">
                   <v-icon size="small" color="navtext" class="mr-2">mdi-certificate</v-icon>
-                  {{ qualification }}
+                  {{ q }}
                 </li>
               </ul>
             </div>
+
+            <!-- Services -->
             <div class="mb-6">
               <h2 class="section-title mb-4">Services Provided</h2>
-              <v-row>
-                <v-col v-for="(service, index) in directorServices" :key="index" cols="12" sm="6" md="4" class="mb-4">
-                  <ServiceCard :service="service" :category-label="'Director Services'" @learn-more="learnMoreService"
-                               @add-to-cart="addToCart"/>
+
+              <v-alert v-if="!displayServices.length" type="info" variant="tonal" class="mb-4">
+                No services linked yet.
+              </v-alert>
+
+              <v-row v-else>
+                <v-col
+                  v-for="(srv, index) in displayServices"
+                  :key="srv.id || index"
+                  cols="12" sm="6" md="4"
+                  class="mb-4"
+                >
+                  <ServiceCard
+                    :service="srv"
+                    :category-label="'Director Service'"
+                    :is-director-service="true"
+                    @learn-more="() => learnMoreService(srv)"
+                    @add-to-cart="() => addToCart(srv)"
+                  />
                 </v-col>
               </v-row>
             </div>
-            <div class="contact-section">
+
+            <!-- Contact -->
+            <div class="contact-section" v-if="director.email || director.phone">
               <h2 class="section-title mb-4">Contact Information</h2>
               <v-row>
                 <v-col cols="12" sm="6" v-if="director.email">
@@ -113,7 +137,7 @@
       </v-col>
     </v-row>
 
-    <!-- Director Not Found -->
+    <!-- Not found -->
     <v-row v-else>
       <v-col cols="12" class="text-center">
         <v-card class="pa-8" elevation="2">
@@ -130,183 +154,110 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import ServiceCard from '~/components/ServiceCard.vue'
-import { useCart } from '~/composables/useCart'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import ServiceCard from '~/components/DirectorCard.vue'
+import { useCart } from '~/composables/useCart'
 import { useDirectors } from '~/composables/useDirectors'
+import { useDIrectorService, type DirectorServiceCard } from '~/composables/useDirectorService'
 
-definePageMeta({
-  title: 'Director Profile - PPA'
-})
+definePageMeta({ title: 'Director Profile - PPA' })
 
 const route = useRoute()
 const router = useRouter()
 const { addToCart: addToGlobalCart } = useCart()
 const { fetchDirectorById } = useDirectors()
+const { fetchLinkedServiceCardsByUser } = useDIrectorService()
 
-const director = ref<any>(null)
-const directorServices = ref<any[]>([])
-const isLoading = ref<boolean>(true) // Start as true to prevent flash
+type DirectorProfile = {
+  id: string
+  name: string
+  position?: string
+  image?: string
+  email?: string
+  phone?: string
+  description?: string
+  qualifications?: string[]
+}
 
-const fetchDirector = async () => {
-  const userId = route.params.id as string
+const director = ref<DirectorProfile | null>(null)
+const loading = ref<boolean>(true)
+const displayServices = ref<DirectorServiceCard[]>([])
+
+const cleanName = computed(() =>
+  director.value?.name?.replace(/^Director\s*:\s*/i, '') || director.value?.name || ''
+)
+
+const stripCategoryPrefix = (s?: string | null) =>
+  (s || '').replace(/^\s*category\s+/i, '').trim()
+
+const fetchData = async () => {
+  loading.value = true
   try {
-    isLoading.value = true
-    const data = await fetchDirectorById(userId)
-    director.value = data
-    directorServices.value = data?.services || []
-  } catch (error) {
-    console.error('Error fetching director:', error)
+    const userId = String(route.params.id)
+    director.value = await fetchDirectorById(userId)
+    const cards = await fetchLinkedServiceCardsByUser(userId)
+    displayServices.value = cards.map(c => ({
+      ...c,
+      category: stripCategoryPrefix(c.category)
+    }))
+  } catch (e) {
+    console.error('Error fetching director profile:', e)
     director.value = null
-    directorServices.value = []
+    displayServices.value = []
   } finally {
-    isLoading.value = false
+    loading.value = false
   }
 }
 
-onMounted(fetchDirector)
+onMounted(fetchData)
 
-// Navigate to /services/[id]
-const learnMoreService = (service: any): void => {
-  if (service.id) {
-    router.push(`/services/${service.id}`)
-  }
+const learnMoreService = (service: DirectorServiceCard) => {
+  if (!service?.id) return
+  router.push(`/director-services/${service.id}`)
 }
 
-const addToCart = (category: string, service: any): void => {
+const addToCart = (service: DirectorServiceCard) => {
   if (!director.value) return
-  addToGlobalCart(category, {
-    name: service.name || '',
-    description: `${service.description || ''} - by ${director.value.name}`,
+  addToGlobalCart(service.category || 'Director Services', {
+    name: service.name,
+    description: `${service.description || ''} - by ${cleanName.value}`,
     image: service.image || '',
     icon: service.icon || undefined,
-    director: director.value.name
+    director: cleanName.value
   })
 }
 </script>
 
 <style scoped>
-.director-profile-card {
-  border-radius: 16px;
-  overflow: hidden;
-  min-height: 400px;
-}
-.director-image-wrapper {
-  height: 400px;
-  overflow: hidden;
-}
-.director-profile-image {
-  width: 100%;
-  height: 100%;
-}
-.director-profile-image .v-img__img {
-  object-fit: cover;
-  object-position: center top;
-}
-.error-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(var(--v-theme-primary), 0.1);
-}
-.director-profile-name {
-  font-size: 2rem;
-  font-weight: 600;
-  color: rgb(var(--v-theme-section-title));
-  margin-bottom: 0.5rem;
-  line-height: 1.2;
-}
-.director-title {
-  font-size: 1.3rem;
-  color: rgb(var(--v-theme-navtext));
-  font-weight: 500;
-  line-height: 1.3;
-}
-.director-details-card {
-  border-radius: 16px;
-}
-.section-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: rgb(var(--v-theme-section-title));
-  border-bottom: 2px solid rgb(var(--v-theme-accent));
-  padding-bottom: 0.5rem;
-}
-.director-description {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: rgb(var(--v-theme-on-surface));
-  text-align: justify;
-}
-.qualifications-list {
-  list-style: none;
-  padding: 0;
-}
-.qualifications-list li {
-  padding: 0.8rem 0;
-  font-size: 1.1rem;
-  color: rgb(var(--v-theme-on-surface));
-  border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.1);
-  display: flex;
-  align-items: center;
-}
-.qualifications-list li:last-child {
-  border-bottom: none;
-}
-.contact-section {
-  background-color: rgba(var(--v-theme-primary), 0.05);
-  border-radius: 12px;
-  padding: 1.5rem;
-}
-.contact-item {
-  border-radius: 12px;
-  transition: all 0.3s ease;
-}
-.contact-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(var(--v-theme-primary), 0.2);
-}
-.contact-label {
-  font-weight: 600;
-  color: rgb(var(--v-theme-section-title));
-  margin: 0;
-  font-size: 0.9rem;
-}
-.contact-value {
-  font-size: 1rem;
-  color: rgb(var(--v-theme-on-surface));
-  margin: 0;
-  font-weight: 500;
-}
+.director-profile-card { border-radius: 16px; overflow: hidden; min-height: 400px; }
+.director-image-wrapper { height: 400px; overflow: hidden; }
+.director-profile-image { width: 100%; height: 100%; }
+.director-profile-image .v-img__img { object-fit: cover; object-position: center top; }
+.error-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: rgba(var(--v-theme-primary), 0.1); }
+.director-profile-name { font-size: 2rem; font-weight: 600; color: rgb(var(--v-theme-section-title)); margin-bottom: .5rem; line-height: 1.2; }
+.director-title { font-size: 1.3rem; color: rgb(var(--v-theme-navtext)); font-weight: 500; line-height: 1.3; }
+.director-details-card { border-radius: 16px; }
+.section-title { font-size: 1.5rem; font-weight: 600; color: rgb(var(--v-theme-section-title)); border-bottom: 2px solid rgb(var(--v-theme-accent)); padding-bottom: .5rem; }
+.director-description { font-size: 1.1rem; line-height: 1.7; color: rgb(var(--v-theme-on-surface)); text-align: justify; }
+.qualifications-list { list-style: none; padding: 0; }
+.qualifications-list li { padding: .8rem 0; font-size: 1.1rem; color: rgb(var(--v-theme-on-surface)); border-bottom: 1px solid rgba(var(--v-theme-on-surface), .1); display: flex; align-items: center; }
+.qualifications-list li:last-child { border-bottom: none; }
+.contact-section { background-color: rgba(var(--v-theme-primary), .05); border-radius: 12px; padding: 1.5rem; }
+.contact-item { border-radius: 12px; transition: all .3s ease; }
+.contact-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(var(--v-theme-primary), .2); }
+.contact-label { font-weight: 600; color: rgb(var(--v-theme-section-title)); margin: 0; font-size: .9rem; }
+.contact-value { font-size: 1rem; color: rgb(var(--v-theme-on-surface)); margin: 0; font-weight: 500; }
 @media (max-width: 768px) {
-  .director-profile-name {
-    font-size: 1.6rem;
-  }
-  .director-title {
-    font-size: 1.1rem;
-  }
-  .section-title {
-    font-size: 1.3rem;
-  }
-  .director-description {
-    font-size: 1rem;
-  }
-  .director-image-wrapper {
-    height: 350px;
-  }
-  .director-profile-card {
-    min-height: 350px;
-  }
+  .director-profile-name { font-size: 1.6rem; }
+  .director-title { font-size: 1.1rem; }
+  .section-title { font-size: 1.3rem; }
+  .director-description { font-size: 1rem; }
+  .director-image-wrapper { height: 350px; }
+  .director-profile-card { min-height: 350px; }
 }
 @media (max-width: 599px) {
-  .director-image-wrapper {
-    height: 450px;
-  }
-  .director-profile-card {
-    height: 570px;
-  }
+  .director-image-wrapper { height: 450px; }
+  .director-profile-card { height: 570px; }
 }
 </style>
