@@ -195,25 +195,25 @@ const nicRules = [
   v => !!v || 'NIC is required',
   v => {
     if (!v) return 'NIC is required'
-    
+
     const nic = v.toString().trim().toUpperCase()
-    
+
     // Old format: 9 digits + V or X
     const oldFormat = /^\d{9}[VX]$/
-    
+
     // New format: 12 digits
     const newFormat = /^\d{12}$/
-    
+
     if (oldFormat.test(nic) || newFormat.test(nic)) {
       return true
     }
-    
+
     return 'Invalid NIC format'
   }
 ]
 
 // Format NIC input
-const formatNIC = (event) => {
+const formatNIC = () => {
   // Auto-uppercase the input
   form.value.nic = form.value.nic.toUpperCase()
 }
@@ -244,39 +244,106 @@ const submitOrder = async () => {
   if (!formValid.value) return
   loading.value = true
   errorMessage.value = ''
-  
+
   try {
-    const selectedDistrictObj = districts.value.find(d => d.district_en === form.value.district) || null
-    const requestData = {
+    const backendUrl = config.public.backendUrl
+    const selectedDistrictObj =
+      districts.value.find(d => d.district_en === form.value.district) || null
+
+    // Common contact payload for both requests
+    const basePayload = {
       name: form.value.name,
       email: form.value.email,
       phone: form.value.phone,
       district: selectedDistrictObj ? selectedDistrictObj.district_en : form.value.district,
-      district_json: selectedDistrictObj ? { district_code: selectedDistrictObj.district_code } : null,
+      district_json: selectedDistrictObj
+        ? { district_code: selectedDistrictObj.district_code }
+        : null,
       nic: form.value.nic.toUpperCase().trim(),
       comment: form.value.comment || '',
-      services: cartItems.value.map(item => ({
-        id: item.id,
-        name: item.name,
-        category: item.category
-      }))
-    }
-    const response = await $fetch(`${config.public.backendUrl}/service-requests/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: requestData
-    })
-    if (response.success) {
-      referenceId.value = response.reference_id
-      emailSent.value = response.email_sent || false
-      clearCart()
-      showSuccessDialog.value = true
-    } else {
-      throw new Error(response.message || 'Failed to submit request')
     }
 
+    // Split cart into service vs director items
+    const serviceItems = cartItems.value.filter(
+      item => item.itemType !== 'director'
+    )
+    const directorItems = cartItems.value.filter(
+      item => item.itemType === 'director'
+    )
+
+    if (!serviceItems.length && !directorItems.length) {
+      throw new Error('No services selected.')
+    }
+
+    let serviceResponse = null
+    let directorResponse = null
+
+    // Existing service request flow.
+    if (serviceItems.length > 0) {
+      const requestDataServices = {
+        ...basePayload,
+        services: serviceItems.map(item => ({
+          id: item.id,
+          name: item.name,
+          category: item.category,
+        })),
+      }
+
+      serviceResponse = await $fetch(`${backendUrl}/service-requests/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: requestDataServices,
+      })
+
+      if (!serviceResponse.success) {
+        throw new Error(serviceResponse.message || 'Failed to submit service request')
+      }
+    }
+
+    if (directorItems.length > 0) {
+      const requestDataDirectors = {
+        ...basePayload,
+        services: directorItems.map(item => ({
+          // director_list service id
+          id: item.directorServiceId || item.id,
+          name: item.name,
+          category: item.category,
+          // who the director is (if known)
+          director_id: item.directorUserId || null,
+          director_name: item.director || null,
+        })),
+      }
+
+      directorResponse = await $fetch(`${backendUrl}/directorrequests/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: requestDataDirectors,
+      })
+
+      if (!directorResponse.success) {
+        throw new Error(
+          directorResponse.message || 'Failed to submit director service request'
+        )
+      }
+    }
+
+    // Build a combined reference id
+    const refs = []
+    if (serviceResponse?.reference_id) refs.push(serviceResponse.reference_id)
+    if (directorResponse?.reference_id) refs.push(directorResponse.reference_id)
+    referenceId.value = refs.join(' / ') || 'N/A'
+
+    // Any email sent?
+    emailSent.value = Boolean(
+      serviceResponse?.email_sent || directorResponse?.email_sent
+    )
+
+    clearCart()
+    showSuccessDialog.value = true
   } catch (error) {
     console.error('Error submitting order:', error)
     if (error.data && error.data.detail) {
@@ -288,7 +355,7 @@ const submitOrder = async () => {
     } else {
       errorMessage.value = 'An unexpected error occurred. Please try again.'
     }
-    
+
     showErrorDialog.value = true
   } finally {
     loading.value = false
@@ -304,8 +371,12 @@ const goToHome = () => {
 useHead({
   title: 'Checkout - PPA Services',
   meta: [
-    { name: 'description', content: 'Complete your service request with PPA - Professional plantation services in Sri Lanka' }
-  ]
+    {
+      name: 'description',
+      content:
+        'Complete your service request with PPA - Professional plantation services in Sri Lanka',
+    },
+  ],
 })
 </script>
 
