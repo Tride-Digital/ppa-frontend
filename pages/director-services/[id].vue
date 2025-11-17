@@ -274,7 +274,7 @@ const apiBase = config.public.backendUrl || config.public.apiBase || 'http://loc
 
 const fetchDirectorService = async () => {
   const serviceId = parseInt(route.params.id as string)
-  
+
   if (!serviceId || isNaN(serviceId)) {
     loading.value = false
     return
@@ -282,7 +282,7 @@ const fetchDirectorService = async () => {
 
   try {
     const data = await $fetch<any>(`${apiBase}/director_list/${serviceId}`)
-    
+
     if (data) {
       service.value = {
         id: data.id,
@@ -319,22 +319,24 @@ const addServiceToCart = () => {
       name: service.value.name,
       description: service.value.objective || service.value.short_description || '',
       image: service.value.image || '',
-      icon: service.value.icon || undefined
+      icon: service.value.icon || undefined,
+      directorServiceId: service.value.id,
+      itemType: 'director',
     })
   }
 }
 
 useSeoMeta({
-  title: computed(() => 
+  title: computed(() =>
     service.value ? `${service.value.name} - Director Services` : 'Service Not Found'
   ),
-  description: computed(() => 
+  description: computed(() =>
     service.value ? (service.value.objective || service.value.short_description || '') : 'Service not found'
   ),
-  ogTitle: computed(() => 
+  ogTitle: computed(() =>
     service.value ? `${service.value.name} - Professional Director Services` : 'Service Not Found'
   ),
-  ogDescription: computed(() => 
+  ogDescription: computed(() =>
     service.value ? (service.value.objective || service.value.short_description || '') : 'Service not found'
   ),
 })
