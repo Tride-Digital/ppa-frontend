@@ -217,14 +217,30 @@ const learnMoreService = (service: DirectorServiceCard) => {
   router.push(`/director-services/${service.id}`)
 }
 
+/**
+ * - itemType: 'director'
+ * - directorUserId: which director from (users.id)
+ * - directorServiceId: which director_list service id
+ */
 const addToCart = (service: DirectorServiceCard) => {
   if (!director.value) return
+
   addToGlobalCart(service.category || 'Director Services', {
+    id: service.id, // director_list.id
     name: service.name,
     description: `${service.description || ''} - by ${cleanName.value}`,
     image: service.image || '',
     icon: service.icon || undefined,
-    director: cleanName.value
+
+    // who thiii director is
+    director: cleanName.value,
+    directorUserId: director.value.id,
+
+    // which director_list service
+    directorServiceId: service.id,
+
+    // mark as director item
+    itemType: 'director',
   })
 }
 </script>
