@@ -15,16 +15,33 @@
         <v-row align="center">
           <v-col cols="12" md="6">
             <div class="hero-content">
+              <v-chip color="primary" variant="tonal" class="mb-3">
+                <v-icon start size="small">{{ service.icon || 'mdi-leaf' }}</v-icon>
+                {{ service.category }}
+              </v-chip>
               <h1 class="hero-title text-on-surface">{{ service.name }}</h1>
-              <p class="hero-description text-on-surface-variant">{{ service.shortDescription }}</p>
+              <p class="hero-description text-on-surface-variant">
+                {{ service.shortDescription || 'Professional plantation service' }}
+              </p>
             </div>
           </v-col>
           <v-col cols="12" md="6">
             <div class="hero-image">
-              <v-img :src="service.image" :alt="service.name" height="400" cover class="rounded-lg elevation-8">
+              <v-img
+                :src="service.image"
+                :alt="service.name"
+                height="400"
+                cover
+                class="rounded-lg elevation-8"
+              >
+                <template #placeholder>
+                  <div class="d-flex align-center justify-center fill-height">
+                    <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
+                  </div>
+                </template>
                 <template #error>
                   <div class="error-placeholder">
-                    <v-icon size="80" color="primary">{{ service.icon }}</v-icon>
+                    <v-icon size="80" color="white">{{ service.icon || 'mdi-leaf' }}</v-icon>
                   </div>
                 </template>
               </v-img>
@@ -38,18 +55,90 @@
         <v-row>
           <v-col cols="12" lg="8">
             <div class="service-details">
-              <h2 class="section-title mb-6 text-on-surface">Service Overview</h2>
-              <div class="overview-content">
-                <p class="text-body-1 mb-6 text-on-surface" v-html="service.description">
-                </p>
-                <h3 v-if="service.keyFeatures && service.keyFeatures.length > 0" class="subsection-title mb-4 text-on-surface">Key Features</h3>
-                <v-row v-if="service.keyFeatures && service.keyFeatures.length > 0" class="mb-6">
-                  <v-col cols="12" md="6" v-for="(feature, index) in service.keyFeatures" :key="index">
+              <!-- Objective -->
+              <div v-if="service.objective" class="mb-8">
+                <h2 class="section-title mb-6 text-on-surface">Service Objective</h2>
+                <p class="text-body-1 text-on-surface" v-html="service.objective"></p>
+              </div>
+
+              <!-- Scope -->
+              <div v-if="service.scope && service.scope.length > 0" class="mb-8">
+                <h3 class="subsection-title mb-4 text-on-surface">Scope</h3>
+                <v-list class="scope-list">
+                  <v-list-item
+                    v-for="(item, index) in service.scope"
+                    :key="index"
+                  >
+                    <template #prepend>
+                      <v-icon color="primary">mdi-check-circle</v-icon>
+                    </template>
+                    <v-list-item-title class="text-on-surface">
+                      {{ item }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </div>
+
+              <!-- Deliverables -->
+              <div v-if="service.deliverables && service.deliverables.length > 0" class="mb-8">
+                <h3 class="subsection-title mb-4 text-on-surface">Deliverables</h3>
+                <v-row>
+                  <v-col
+                    cols="12"
+                    md="6"
+                    v-for="(deliverable, index) in service.deliverables"
+                    :key="index"
+                  >
                     <div class="feature-item d-flex align-start">
-                      <v-icon color="contact-title" class="me-3 mt-1">mdi-check-circle</v-icon>
+                      <v-icon color="contact-title" class="me-3 mt-1">mdi-package-variant</v-icon>
                       <div>
-                        <h4 class="feature-title text-on-surface">{{ feature.title }}</h4>
-                        <p class="feature-description text-body-2 text-on-surface-variant">{{ feature.description }}</p>
+                        <p class="feature-description text-body-2 text-on-surface">
+                          {{ deliverable }}
+                        </p>
+                      </div>
+                    </div>
+                  </v-col>
+                </v-row>
+              </div>
+
+              <!-- Key KPIs -->
+              <div v-if="service.key_kpis && service.key_kpis.length > 0" class="mb-8">
+                <h3 class="subsection-title mb-4 text-on-surface">Key Performance Indicators</h3>
+                <v-row>
+                  <v-col
+                    cols="12"
+                    md="6"
+                    v-for="(kpi, index) in service.key_kpis"
+                    :key="index"
+                  >
+                    <div class="feature-item d-flex align-start">
+                      <v-icon color="contact-title" class="me-3 mt-1">mdi-chart-line</v-icon>
+                      <div>
+                        <p class="feature-description text-body-2 text-on-surface">
+                          {{ kpi }}
+                        </p>
+                      </div>
+                    </div>
+                  </v-col>
+                </v-row>
+              </div>
+
+              <!-- Expert Composition -->
+              <div v-if="service.expert_composition && service.expert_composition.length > 0" class="mb-8">
+                <h3 class="subsection-title mb-4 text-on-surface">Expert Composition</h3>
+                <v-row>
+                  <v-col
+                    cols="12"
+                    md="6"
+                    v-for="(expert, index) in service.expert_composition"
+                    :key="index"
+                  >
+                    <div class="feature-item d-flex align-start">
+                      <v-icon color="contact-title" class="me-3 mt-1">mdi-account-group</v-icon>
+                      <div>
+                        <p class="feature-description text-body-2 text-on-surface">
+                          {{ expert }}
+                        </p>
                       </div>
                     </div>
                   </v-col>
@@ -72,15 +161,21 @@
                     </v-list-item>
                     <v-list-item>
                       <v-list-item-title class="text-on-surface">Duration</v-list-item-title>
-                      <v-list-item-subtitle class="text-on-surface-variant">{{ service.duration }}</v-list-item-subtitle>
+                      <v-list-item-subtitle class="text-on-surface-variant">
+                        {{ service.duration }}
+                      </v-list-item-subtitle>
                     </v-list-item>
-                    <v-list-item>
+                    <v-list-item v-if="service.availability">
                       <v-list-item-title class="text-on-surface">Availability</v-list-item-title>
-                      <v-list-item-subtitle class="text-on-surface-variant">{{ service.availability }}</v-list-item-subtitle>
+                      <v-list-item-subtitle class="text-on-surface-variant">
+                        {{ service.availability }}
+                      </v-list-item-subtitle>
                     </v-list-item>
-                    <v-list-item>
+                    <v-list-item v-if="service.coverage">
                       <v-list-item-title class="text-on-surface">Coverage</v-list-item-title>
-                      <v-list-item-subtitle class="text-on-surface-variant">{{ service.coverage }}</v-list-item-subtitle>
+                      <v-list-item-subtitle class="text-on-surface-variant">
+                        {{ service.coverage }}
+                      </v-list-item-subtitle>
                     </v-list-item>
                   </v-list>
                 </v-card-text>
@@ -96,14 +191,29 @@
           <v-col cols="12" md="8" class="text-center">
             <h2 class="cta-title text-on-primary mb-4">Ready to Get Started?</h2>
             <p class="cta-description text-on-primary mb-6" style="opacity: 0.9;">
-              Take the first step towards optimizing your plantation operations with our professional {{ service.name.toLowerCase() }} service.
+              Take the first step towards optimizing your plantation operations with our professional
+              {{ service.name.toLowerCase() }} service.
             </p>
             <div class="cta-actions">
-              <v-btn color="text" size="large" variant="elevated" class="me-4 text-on-surface" @click="addServiceToCart">
+              <v-btn
+                color="text"
+                size="large"
+                variant="elevated"
+                class="me-4 text-on-surface"
+                @click="addServiceToCart"
+              >
                 <v-icon start>mdi-cart-plus</v-icon>
                 Add to Cart
               </v-btn>
-              <v-btn v-if="service.supportDocUrl" variant="outlined" size="large" color="text" class="text-on-primary" :href="service.supportDocUrl" target="_blank">
+              <v-btn
+                v-if="service.supportDocUrl"
+                variant="outlined"
+                size="large"
+                color="text"
+                class="text-on-primary"
+                :href="service.supportDocUrl"
+                target="_blank"
+              >
                 <v-icon start>mdi-download</v-icon>
                 Download Brochure
               </v-btn>
@@ -129,40 +239,95 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useCart } from '~/composables/useCart'
-import { useServices } from '~/composables/useServices'
 
 const route = useRoute()
 const router = useRouter()
 const { addToCart } = useCart()
-const { fetchServiceById, transformSingleService } = useServices()
+const config = useRuntimeConfig()
+
 const service = ref(null)
 const loading = ref(true)
-onMounted(async () => {
+
+const fetchService = async () => {
   const serviceId = parseInt(route.params.id)
-  if (serviceId) {
-    const apiData = await fetchServiceById(serviceId)
-    service.value = transformSingleService(apiData)
+
+  if (!serviceId || isNaN(serviceId)) {
+    loading.value = false
+    return
   }
-  loading.value = false
-})
-const addServiceToCart = () => {
-  if (service.value) {
-    addToCart(service.value.category, {
-      id: service.value.id,
-      name: service.value.name,
-      description: service.value.description,
-      image: service.value.image,
-      icon: service.value.icon
-    })
+
+  try {
+    const apiBase = config.public.backendUrl
+    const data = await $fetch(`${apiBase}/director_list/${serviceId}`)
+
+    if (data) {
+      const desc = data.description || {}
+      service.value = {
+        id: data.id,
+        name: data.name,
+        category: data.service_category || 'Services',
+        image: data.img_url,
+        icon: data.icon_font || 'mdi-leaf',
+        shortDescription: desc.objective || null,
+        objective: desc.objective || null,
+        scope: desc.scope || [],
+        deliverables: desc.deliverables || [],
+        key_kpis: desc.key_kpis || [],
+        expert_composition: desc.expert_composition || [],
+        duration: desc.duration || null,
+        availability: desc.availability || null,
+        coverage: desc.coverage || null,
+        supportDocUrl: desc.support_doc_url || null
+      }
+    } else {
+      service.value = null
+    }
+  } catch (err) {
+    console.error('Error fetching service:', err)
+    service.value = null
+  } finally {
+    loading.value = false
   }
 }
+
+onMounted(fetchService)
+
+const addServiceToCart = () => {
+  if (!service.value) return
+  addToCart(service.value.category, {
+    id: service.value.id,
+    name: service.value.name,
+    description: service.value.objective || service.value.shortDescription || '',
+    image: service.value.image,
+    icon: service.value.icon
+  })
+}
 useSeoMeta({
-  title: computed(() => service.value ? `${service.value.name} - PPA Services` : 'Service Not Found'),
-  shortDescription: computed(() => service.value ? service.value.shortDescription : 'Service not found'),
-  description: computed(() => service.value ? service.value.description : 'Service not found'),
-  ogTitle: computed(() => service.value ? `${service.value.name} - Professional Plantation Services` : 'Service Not Found'),
-  ogDescription: computed(() => service.value ? service.value.description : 'Service not found'),
+  title: computed(() =>
+    service.value ? `${service.value.name} - PPA Services` : 'Service Not Found'
+  ),
+  shortDescription: computed(() =>
+    service.value
+      ? (service.value.shortDescription || service.value.objective || '')
+      : 'Service not found'
+  ),
+  description: computed(() =>
+    service.value
+      ? (service.value.objective || service.value.shortDescription || '')
+      : 'Service not found'
+  ),
+  ogTitle: computed(() =>
+    service.value
+      ? `${service.value.name} - Professional Plantation Services`
+      : 'Service Not Found'
+  ),
+  ogDescription: computed(() =>
+    service.value
+      ? (service.value.objective || service.value.shortDescription || '')
+      : 'Service not found'
+  )
 })
 definePageMeta({
   title: 'Service Details - PPA'
@@ -177,10 +342,18 @@ definePageMeta({
   padding: 4rem 0;
 }
 .v-theme--light .hero-section {
-  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, rgba(var(--v-theme-surface), 0.9) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-primary)) 0%,
+    rgba(var(--v-theme-surface), 0.9) 100%
+  );
 }
 .v-theme--dark .hero-section {
-  background: linear-gradient(135deg, rgb(var(--v-theme-surface)) 0%, rgba(var(--v-theme-surface-variant), 0.8) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-surface)) 0%,
+    rgba(var(--v-theme-surface-variant), 0.8) 100%
+  );
 }
 .hero-title {
   font-size: 3rem;
@@ -200,7 +373,11 @@ definePageMeta({
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(var(--v-theme-primary), 0.1);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--v-theme-primary), 0.8) 0%,
+    rgba(var(--v-theme-primary), 0.6) 100%
+  );
 }
 .section-title {
   font-size: 2.5rem;
@@ -217,12 +394,19 @@ definePageMeta({
 .feature-item {
   margin-bottom: 1.5rem;
 }
-.feature-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: rgb(var(--v-theme-section-title));
+.feature-description {
+  color: rgb(var(--v-theme-on-surface));
+  line-height: 1.6;
 }
+
+.scope-list {
+  background-color: transparent;
+}
+
+.scope-list :deep(.v-list-item) {
+  padding: 0.5rem 0;
+}
+
 .service-info-card {
   background-color: rgb(var(--v-theme-service-card-bg));
   border-radius: 12px;
@@ -240,7 +424,11 @@ definePageMeta({
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
   pointer-events: none;
 }
 .cta-title {
@@ -265,6 +453,9 @@ definePageMeta({
   }
   .section-title {
     font-size: 2rem;
+  }
+  .subsection-title {
+    font-size: 1.3rem;
   }
   .cta-title {
     font-size: 2rem;
