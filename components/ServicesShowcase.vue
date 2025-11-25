@@ -80,8 +80,8 @@ const localItems: ServiceItem[] = [
 ]
 const itemsToRender = computed(() => (props.items?.length ? props.items : localItems))
 const subtitle = computed(() => props.subtitle || 'Featured Services')
-const mainTitle = computed(() => props.mainTitle || 'Popular Services we offer for all')
-const lead = computed(() => props.lead || 'Explore our most trusted agricultural products and services designed to support farmers, businesses, and communities. From high-quality crops to sustainable solutions, we bring you the best to grow, trade, and thrive.')
+const mainTitle = computed(() => props.mainTitle || 'Discover 28 Services We Offer for PPA')
+const lead = computed(() => props.lead || 'These 28 services are organized into 7 key categories, which should be clearly displayed in the cards for easy navigation. Each category encompasses a range of specialized services designed to meet the diverse needs of our clients.')
 function goToServices() {
   window.location.href = '/services'
 }
