@@ -2,8 +2,8 @@
   <div class="card-slider-container">
     <div class="section-title">
       <div class="divider-line">
-        <span class="subtitle">Proprietary Planters Alliance For You</span>
-        <h2 class="main-title">Modern Technologies</h2>
+        <span class="subtitle">Advancing Sri Lankan Proprietary Plantations</span>
+        <h2 class="main-title">Core & Emerging Plantation Technologies</h2>
       </div>
     </div>
     <div v-if="loading" class="loading-state">
