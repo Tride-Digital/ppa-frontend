@@ -47,8 +47,8 @@
                     <h3 class="text-subtitle-1 font-weight-bold mb-2">Phone</h3>
                     <p class="text-body-2 text-medium-emphasis mb-0">
                       <a href="tel:+94772376343" class="contact-link">+94 77 237 6343</a> <br/>
-                      <a href="tel:+94714807594" class="contact-link">+94 71 480 7594</a> (WhatsApp Only)<br/>
-                      <a href="tel:+94772376343" class="contact-link">+94 77 237 6343</a> <br/>
+                      <a href="tel:+94714807594" class="contact-link">+94 71 480 7594</a> <br/>
+                      <a href="tel:+94772376343" class="contact-link">+94 76 949 9270</a> (WhatsApp Only)<br/>
                     </p>
                   </div>
                 </div>
@@ -107,9 +107,9 @@
                         icon 
                         variant="outlined" 
                         size="small"
-                        href="https://twitter.com" 
+                        href="https://x.com" 
                         target="_blank"
-                        aria-label="Twitter"
+                        aria-label="X"
                       >
                         <v-icon>mdi-twitter</v-icon>
                       </v-btn> &nbsp;
