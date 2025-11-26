@@ -58,8 +58,8 @@ import { useBlogData } from '~/composables/useBlogData'
 const props = defineProps({
   navigation: { type: [Boolean, Object], default: true },
   showTitle: { type: Boolean, default: true },
-  subtitleText: { type: String, default: 'Our Products' },        
-  titleText: { type: String, default: 'Value Addition Process' } 
+  subtitleText: { type: String, default: 'Our Aim' },        
+  titleText: { type: String, default: 'Value-added products and export growth' } 
 })
 const { getPostsByType } = useBlogData()
 

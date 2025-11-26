@@ -49,7 +49,7 @@
     <v-toolbar-title class="logo-container">
       <div @click="goToHome" tag="span" style="cursor: pointer">
         <v-row align="center" no-gutters>
-          <v-img class="logo-img" :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo.png'" contain height="90" width="220"/>
+          <v-img class="logo-img" :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo.png'" contain height="110" width="220"/>
         </v-row>
       </div>
     </v-toolbar-title>
@@ -250,8 +250,8 @@ const goToAnnouncements = () => {
 }
 
 .logo-img {
-    width: 220px !important;
-    height: 90px !important;
+    width: 300px !important;
+    height: 110px !important;
     flex-shrink: 0 !important;
     object-fit: contain !important;
     max-width: none !important;
