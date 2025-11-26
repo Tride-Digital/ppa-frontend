@@ -638,7 +638,7 @@
 
       <!-- Help Message Bubble -->
       <div
-          v-if="!chatOpen && showHelpMessage"
+          v-if="!chatOpen"
           class="help-message-bubble"
           @click="openChatFromHelp"
       >
