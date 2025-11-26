@@ -46,7 +46,9 @@
                   <div>
                     <h3 class="text-subtitle-1 font-weight-bold mb-2">Phone</h3>
                     <p class="text-body-2 text-medium-emphasis mb-0">
-                      <a href="tel:+94772376343" class="contact-link">+94 77 237 6343</a>
+                      <a href="tel:+94772376343" class="contact-link">+94 77 237 6343</a> <br/>
+                      <a href="tel:+94714807594" class="contact-link">+94 71 480 7594</a> (WhatsApp Only)<br/>
+                      <a href="tel:+94772376343" class="contact-link">+94 77 237 6343</a> <br/>
                     </p>
                   </div>
                 </div>

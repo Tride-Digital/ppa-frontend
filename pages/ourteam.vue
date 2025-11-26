@@ -3,7 +3,9 @@
     <v-row justify="center">
       <v-col cols="12" class="text-center mb-8">
         <h2 class="directors-title">Senior Leadership Team</h2>
-        <p class="directors-subtitle">Get in touch with our directors directly</p>
+        <p class="directors-subtitle">
+          Click on the director’s profiles and get more information<br>
+        </p>
       </v-col>
     </v-row>
 
@@ -76,6 +78,7 @@ const navigateToDirector = (id: string | number): void => {
   font-size: 1.1rem;
   color: rgb(var(--v-theme-section-subtitle));
   margin-bottom: 2rem;
+  line-height: 1.6;
 }
 
 .director-shell {
@@ -185,6 +188,9 @@ const navigateToDirector = (id: string | number): void => {
 @media (max-width: 480px) {
   .directors-title {
     font-size: 1.5rem;
+  }
+  .directors-subtitle {
+    font-size: 0.9rem;
   }
   .director-image-container {
     width: 100px;

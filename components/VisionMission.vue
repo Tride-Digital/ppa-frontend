@@ -27,7 +27,7 @@
         </template>
       <div class="contact-link-wrapper">
         <p class="contact-text">
-          Have questions or want to know more? 
+          For more information, please 
           <a :href="contactUsUrl" class="contact-link">Contact Us</a>
         </p>
       </div>
@@ -203,7 +203,7 @@ const contactUsUrl = computed(() => props.contactUsUrl ?? '/contactus')
 
 .contact-text {
   color: rgb(var(--v-theme-vision-mission-text));
-  font-size: 16px;
+  font-size: 19px;
   margin: 0;
 }
 

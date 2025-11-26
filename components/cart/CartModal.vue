@@ -42,6 +42,18 @@
               <span class="summary-value">{{ cartItems.length }}</span>
             </div>
           </div>
+          <!-- Pricing -->
+          <v-alert
+            type="info"
+            variant="tonal"
+            density="compact"
+            class="pricing-note mt-4"
+            border="start"
+          >
+            <div class="d-flex align-center">
+              <span class="note-text">For more details about price, please contact us by email or message.</span>
+            </div>
+          </v-alert>
         </div>
       </v-card-text>
       <v-card-actions class="cart-actions" v-if="cartItems.length > 0">
@@ -171,6 +183,15 @@ const proceedToCheckout = () => {
   color: rgb(var(--v-theme-on-surface));
   font-size: 1.1rem;
 }
+.pricing-note {
+  border-radius: 8px !important;
+}
+.note-text {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
 .cart-actions {
   padding: 20px 24px;
   background: rgba(var(--v-theme-surface-variant-rgb), 0.3);
@@ -223,6 +244,9 @@ const proceedToCheckout = () => {
   }
   .cart-summary {
     padding: 10px;
+  }
+  .note-text {
+    font-size: 0.8rem;
   }
   .checkout-btn,
   .continue-btn {
