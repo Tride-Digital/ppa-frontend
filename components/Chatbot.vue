@@ -773,8 +773,19 @@ const quickActionsList = [
   {label: "Funding Calendar", value: "funding"},
   {label: "Plantation Reform Act", value: "reform"},
   {label: "HRM Ministry Proposal", value: "hrm"},
-  {label: "Avocado Project", value: "avocado"},
-  {label: "Zengate Trade Platform", value: "zengate"},
+  // {label: "Avocado Project", value: "avocado"},
+  // {label: "Zengate Trade Platform", value: "zengate"},
+];
+
+const faqList = [
+  { label: "❓ What is this website?", value: "faq_website" },
+  { label: "📞 How to contact directors?", value: "faq_contact" },
+  { label: "🌱 What services offered?", value: "faq_services" },
+  { label: "📝 How to submit request?", value: "faq_submit" },
+  { label: "💰 How to get funding?", value: "faq_funding" },
+  { label: "👥 Who can join PPA?", value: "faq_membership" },
+  { label: "🧭 How to navigate site?", value: "faq_navigate" },
+  { label: "📄 Available resources?", value: "faq_resources" },
 ];
 
 // Watch for service category changes and resets
@@ -1047,8 +1058,9 @@ const initializeChat = () => {
             {label: "Explore Services & Projects", value: "services", icon: "2️⃣"},
             {label: "Partnership / Investment Inquiry", value: "partnership", icon: "3️⃣"},
             {label: "General Information", value: "info", icon: "4️⃣"},
+            {label: "FAQs & Help", value: "show_faq", icon: "❓"},
           ],
-        }
+        },
     );
   } else {
     // First-time user greeting
@@ -1060,6 +1072,7 @@ const initializeChat = () => {
             {label: "Explore Services & Projects", value: "services", icon: "2️⃣"},
             {label: "Partnership / Investment Inquiry", value: "partnership", icon: "3️⃣"},
             {label: "General Information", value: "info", icon: "4️⃣"},
+            {label: "FAQs & Help", value: "show_faq", icon: "❓"},
           ],
         }
     );
@@ -1107,6 +1120,18 @@ const selectOption = (option: { label: string; value: string; icon?: string }) =
   addUserMessage(option.label);
 
   setTimeout(() => {
+    // FAQ Menu
+    if (option.value === "show_faq") {
+      showFAQMenu();
+      return;
+    }
+
+    // faq options handling
+    if (option.value.startsWith("faq_")) {
+      handleFAQ(option.value);
+      return;
+    }
+
     switch (option.value) {
       case "director":
         showDirectors();
@@ -1129,6 +1154,18 @@ const selectOption = (option: { label: string; value: string; icon?: string }) =
     }
   }, 500);
 };
+
+// function to show FAQ menu
+const showFAQMenu = () => {
+  addBotMessage(
+    "<strong>Frequently Asked Questions</strong><br><br>" +
+    "Select a question to get detailed information:",
+    {
+      options: faqList.map(faq => ({ label: faq.label, value: faq.value })),
+    }
+  );
+};
+
 
 const showDirectors = async () => {
   currentStage.value = "directors";
@@ -1283,9 +1320,9 @@ const showServices = () => {
       "💰 <strong>Investment Opportunities</strong><br>" +
       "Connect with investors and funding sources for plantation projects<br><br>" +
       "📦 <strong>Export Services</strong><br>" +
-      "Access to Zengate Trade Platform and international markets<br><br>" +
-      "🥑 <strong>Special Projects</strong><br>" +
-      "Avocado cultivation, sustainable agriculture and innovation initiatives<br><br>" +
+      "Access to international markets and export facilitation support<br><br>" +
+      "🌾 <strong>Special Projects</strong><br>" +
+      "Custom project development for innovative agricultural ventures and diversification<br><br>" +
       "Would you like to connect with a director for any of these services?",
       {
         options: [
@@ -1380,6 +1417,13 @@ const handleQuickAction = (action: { label: string; value: string }) => {
   addUserMessage(action.label);
 
   setTimeout(() => {
+
+    // handle FAQ actions
+    if (action.value.startsWith("faq_")) {
+      handleFAQ(action.value);
+      return;
+    }
+
     switch (action.value) {
       case "funding":
         addBotMessage(
@@ -1480,6 +1524,208 @@ const handleQuickAction = (action: { label: string; value: string }) => {
         break;
     }
   }, 500);
+};
+
+// FAQ handler
+const handleFAQ = (faqKey: string) => {
+  switch (faqKey) {
+    case "faq_website":
+      addBotMessage(
+        "<strong>About PPA Virtual Office</strong><br><br>" +
+        "This is the <strong>Proprietary Planters Alliance (PPA) Virtual Office</strong> - Sri Lanka's first comprehensive digital hub for proprietary planters.<br><br>" +
+        "We connect planters with:<br>" +
+        "• Modern agricultural solutions<br>" +
+        "• Expert guidance from specialized directors<br>" +
+        "• Funding opportunities and grants<br>" +
+        "• International market access<br>" +
+        "• Sustainable farming innovations<br><br>" +
+        "Think of this as your one-stop digital platform for all plantation-related needs!",
+        {
+          options: [
+            { label: "Explore Services", value: "services" },
+            { label: "Meet Our Directors", value: "director" },
+            { label: "More FAQs", value: "show_faq" },
+          ],
+        }
+      );
+      break;
+
+    case "faq_contact":
+      addBotMessage(
+        "<strong>How to Contact Our Directors</strong><br><br>" +
+        "There are two easy ways:<br><br>" +
+        "1️⃣ <strong>Through Chat</strong>:<br>" +
+        "• Select 'Connect with a Director'<br>" +
+        "• Browse available directors<br>" +
+        "• Click to view their profile<br><br>" +
+        "2️⃣ <strong>Direct Profile Visit</strong>:<br>" +
+        "• Navigate to Directors page<br>" +
+        "• View full qualifications<br>" +
+        "• Submit service requests<br>" +
+        "• Get contact information<br><br>" +
+        "Each director specializes in different areas - choose based on your needs!",
+        {
+          options: [
+            { label: "View Directors Now", value: "director" },
+            { label: "Submit Service Request", value: "submit_request" },
+            { label: "More FAQs", value: "show_faq" },
+          ],
+        }
+      );
+      break;
+
+    case "faq_services":
+      addBotMessage(
+        "<strong>PPA Services Overview</strong><br><br>" +
+        "🌱 <strong>Plantation Support</strong><br>" +
+        "Sustainable plantation management and advisory services<br><br>" +
+        "👥 <strong>HRM Reform</strong><br>" +
+        "Human Resource Management modernization and policy development<br><br>" +
+        "💰 <strong>Investment Opportunities</strong><br>" +
+        "Connect with investors and funding sources for plantation projects<br><br>" +
+        "📦 <strong>Export Services</strong><br>" +
+        "Access to international markets and export facilitation support<br><br>" +
+        "🌾 <strong>Special Projects</strong><br>" +
+        "Custom project development for innovative agricultural ventures and diversification<br><br>" +
+        "Would you like to connect with a director for any of these services?",
+        {
+          options: [
+            { label: "Connect with Expert", value: "director" },
+            { label: "Request Specific Service", value: "submit_request" },
+            { label: "More FAQs", value: "show_faq" },
+          ],
+        }
+      );
+      break;
+
+    case "faq_submit":
+      addBotMessage(
+        "<strong>How to Submit a Service Request</strong><br><br>" +
+        "Follow these simple steps:<br><br>" +
+        "1️⃣ <strong>Choose Your Director</strong><br>" +
+        "Select the expert whose specialization matches your needs<br><br>" +
+        "2️⃣ <strong>Fill the Form</strong><br>" +
+        "Provide your contact details and describe your requirement<br><br>" +
+        "3️⃣ <strong>Submit</strong><br>" +
+        "You'll receive a confirmation email with a reference number<br><br>" +
+        "4️⃣ <strong>Get Response</strong><br>" +
+        "Our team will contact you within 24-48 hours<br><br>" +
+        "Ready to start?",
+        {
+          options: [
+            { label: "Yes, Submit Request", value: "director" },
+            { label: "View Services First", value: "services" },
+            { label: "More FAQs", value: "show_faq" },
+          ],
+        }
+      );
+      break;
+
+    case "faq_funding":
+      addBotMessage(
+        "<strong>Funding Opportunities at PPA</strong><br><br>" +
+        "Multiple pathways to financial support:<br><br>" +
+        "💰 <strong>Quarterly Grant Programs</strong><br>" +
+        "Check our 2025 funding calendar for upcoming opportunities<br><br>" +
+        "🤝 <strong>Investment Matching</strong><br>" +
+        "Connect with potential investors for your projects<br><br>" +
+        "📦 <strong>Export Development Funds</strong><br>" +
+        "Financial support for market access and expansion<br><br>" +
+        "💻 <strong>Technology Adoption Support</strong><br>" +
+        "Grants for digital transformation and innovation<br><br>" +
+        "🌍 <strong>Climate Resilience Funding</strong><br>" +
+        "Support for sustainable and climate-smart agriculture<br><br>" +
+        "Contact our funding experts for detailed application guidance!",
+        {
+          options: [
+            { label: "View Funding Calendar", value: "funding" },
+            { label: "Talk to Funding Expert", value: "director" },
+            { label: "More FAQs", value: "show_faq" },
+          ],
+        }
+      );
+      break;
+
+    case "faq_membership":
+      addBotMessage(
+        "<strong>PPA Membership & Partnerships</strong><br><br>" +
+        "We welcome various stakeholders:<br><br>" +
+        "🌱 <strong>Proprietary Planters</strong><br>" +
+        "Individual plantation owners seeking modern solutions<br><br>" +
+        "🤝 <strong>Associate Members</strong><br>" +
+        "Agricultural businesses and professionals in related fields<br><br>" +
+        "💼 <strong>Investment Partners</strong><br>" +
+        "Those interested in plantation ventures and joint projects<br><br>" +
+        "🌐 <strong>Export Partners</strong><br>" +
+        "International trade collaborators and market facilitators<br><br>" +
+        "📋 <strong>Membership Benefits</strong>:<br>" +
+        "• Priority access to funding opportunities<br>" +
+        "• Expert consultation services<br>" +
+        "• Networking events and workshops<br>" +
+        "• Market intelligence and research<br>" +
+        "• Technology and innovation support",
+        {
+          options: [
+            { label: "Learn About Partnership", value: "partnership" },
+            { label: "Contact Membership Team", value: "director" },
+            { label: "More FAQs", value: "show_faq" },
+          ],
+        }
+      );
+      break;
+
+    case "faq_navigate":
+      addBotMessage(
+        "<strong>Website Navigation Guide</strong><br><br>" +
+        "Here's how to explore the PPA Virtual Office:<br><br>" +
+        "🏠 <strong>Home Page</strong><br>" +
+        "Overview, latest news, and quick access to main features<br><br>" +
+        "👥 <strong>Directors Section</strong><br>" +
+        "Browse expert profiles, specializations, and contact info<br><br>" +
+        "🌱 <strong>Services Page</strong><br>" +
+        "Explore all available services and support programs<br><br>" +
+        "📊 <strong>Projects Section</strong><br>" +
+        "View ongoing initiatives like Avocado cultivation<br><br>" +
+        "💬 <strong>Chat Assistant (Me!)</strong><br>" +
+        "Get instant help, submit requests, access information<br><br>" +
+        "📞 <strong>Contact Page</strong><br>" +
+        "Find office locations, phone numbers, email addresses<br><br>" +
+        "Where would you like to go?",
+        {
+          quickActions: true,
+        }
+      );
+      break;
+
+    case "faq_resources":
+      addBotMessage(
+        "<strong>PPA Resources & Documents</strong><br><br>" +
+        "Quick access to important resources:<br><br>" +
+        "📅 <strong>Funding Calendar 2025</strong><br>" +
+        "Quarterly grant programs and application deadlines<br><br>" +
+        "📜 <strong>Plantation Reform Act</strong><br>" +
+        "Legislative framework and compliance guidelines<br><br>" +
+        "📋 <strong>HRM Ministry Proposal</strong><br>" +
+        "Workforce modernization and policy development<br><br>" +
+        "🥑 <strong>Avocado Project Details</strong><br>" +
+        "Cultivation program specifications and benefits<br><br>" +
+        "🌐 <strong>Zengate Platform Info</strong><br>" +
+        "Export services and international market access<br><br>" +
+        "📝 <strong>Service Request Forms</strong><br>" +
+        "Templates for various service applications<br><br>" +
+        "Click 'Quick Links' below to access these resources!",
+        {
+          quickActions: true,
+        }
+      );
+      break;
+
+    default:
+      addBotMessage(
+        "I'm not sure about that question. Let me show you our FAQ menu!",
+        { options: faqList.slice(0, 5).map(faq => ({ label: faq.label, value: faq.value })) }
+      );
+  }
 };
 
 const sendUserMessage = () => {
