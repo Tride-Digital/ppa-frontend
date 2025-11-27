@@ -55,7 +55,17 @@
             <v-col cols="12" sm="8" md="9">
               <v-card-text class="pa-6 d-flex flex-column justify-center h-100">
                 <h1 class="director-profile-name mb-2">{{ director.name }}</h1>
-                <p class="director-title mb-0">{{ director.position || 'Director' }}</p>
+                <p class="director-title mb-0">
+                  <template v-if="directorTitle">
+                    Director of {{ directorTitle }}
+                  </template>
+                  <template v-else>
+                    {{ director.position || 'Director' }}
+                  </template>
+                </p>
+                <p class="director-province mb-0" v-if="directorProvince">
+                  {{ directorProvince }}
+                </p>
               </v-card-text>
             </v-col>
           </v-row>
@@ -168,6 +178,8 @@ const router = useRouter()
 const { addToCart: addToGlobalCart } = useCart()
 const { fetchDirectorById } = useDirectors()
 const { fetchLinkedServiceCardsByUser } = useDIrectorService()
+const directorTitle = route.query.title as string || ''
+const directorProvince = route.query.province as string || ''
 
 type DirectorProfile = {
   id: string

@@ -26,6 +26,11 @@ export interface DirectorContact {
   image: string
 }
 
+export interface DirectorInfo {
+  directorTitle?: string
+  directorProvince?: string
+}
+
 interface ServiceCategory {
   id: number
   name: string
@@ -44,6 +49,7 @@ interface ServiceSubcategory {
 
 const directorContacts = ref<DirectorContact[]>([])
 const directorDetailsCache = ref<Record<string, Director>>({})
+const directorInfoMap = ref<Record<string, DirectorInfo>>({})
 const serviceCategoriesCache = ref<ServiceCategory[]>([])
 const isLoading = ref<boolean>(false)
 
@@ -85,6 +91,36 @@ const getSubcategoryById = (subcategoryId: number): ServiceSubcategory | null =>
  */
 const getCategoryById = (categoryId: number): ServiceCategory | null => {
   return serviceCategoriesCache.value.find(cat => cat.id === categoryId) || null
+}
+
+/**
+ * Fetch director info (title and province) by user ID
+ */
+const fetchDirectorInfo = async (userId: string) => {
+  try {
+    const config = useRuntimeConfig()
+    const baseURL = config.public.backendUrl || 'http://localhost:8000'
+    const response = await $fetch<DirectorInfo>(`${baseURL}/directorinfo/user/${userId}`)
+    if (response) {
+      directorInfoMap.value[userId] = response
+    }
+  } catch (error) {
+    console.log(`No director info found for user ${userId}`)
+  }
+}
+
+/**
+ * Get director title by ID
+ */
+const getDirectorTitle = (directorId: string): string => {
+  return directorInfoMap.value[directorId]?.directorTitle || ''
+}
+
+/**
+ * Get director province by ID
+ */
+const getDirectorProvince = (directorId: string): string => {
+  return directorInfoMap.value[directorId]?.directorProvince || ''
 }
 
 /**
@@ -204,8 +240,12 @@ const fetchDirectorById = async (id: string): Promise<Director | null> => {
 export const useDirectors = () => {
   return {
     directorContacts,
+    directorInfoMap,
     isLoading,
     fetchDirectorContacts,
     fetchDirectorById,
+    fetchDirectorInfo,
+    getDirectorTitle,
+    getDirectorProvince,
   }
 }

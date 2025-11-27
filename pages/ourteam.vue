@@ -21,8 +21,8 @@
           class="director-shell"
           role="button"
           tabindex="0"
-          @click="navigateToDirector(director.id)"
-          @keydown.enter="navigateToDirector(director.id)"
+          @click="navigateToDirector(director.id, getDirectorTitle(director.id), getDirectorProvince(director.id))"
+          @keydown.enter="navigateToDirector(director.id, getDirectorTitle(director.id), getDirectorProvince(director.id))"
         >
           <v-card class="director-card" elevation="0">
             <v-card-text class="text-center pa-6">
@@ -40,7 +40,15 @@
                   </template>
                 </v-img>
               </div>
-              <h3 class="director-name mt-4">Director : {{ director.name }}</h3>
+              <h3 class="director-name mt-4">
+                Director
+                <template v-if="getDirectorTitle(director.id)">
+                  of {{ getDirectorTitle(director.id) }} {{ director.name }}
+                </template>
+                <template v-else>
+                  {{ director.name }}
+                </template>
+              </h3>
             </v-card-text>
           </v-card>
         </div>
@@ -56,12 +64,31 @@ import { useRouter } from 'vue-router'
 import { useDirectors } from '~/composables/useDirectors'
 
 const router = useRouter()
-const { directorContacts, fetchDirectorContacts } = useDirectors()
+const { 
+  directorContacts, 
+  fetchDirectorContacts, 
+  fetchDirectorInfo,
+  getDirectorTitle,
+  getDirectorProvince 
+} = useDirectors()
 
-onMounted(fetchDirectorContacts)
+onMounted(async () => {
+  await fetchDirectorContacts()
+  // Fetch director info for all directors
+  for (const director of directorContacts.value) {
+    await fetchDirectorInfo(director.id)
+  }
+})
 
-const navigateToDirector = (id: string | number): void => {
-  router.push(`/director/${id}`)
+const navigateToDirector = (id: string | number, title?: string, province?: string): void => {
+  const query: Record<string, string> = {}
+  if (title) query.title = title
+  if (province) query.province = province
+  
+  router.push({
+    path: `/director/${id}`,
+    query: Object.keys(query).length > 0 ? query : undefined
+  })
 }
 </script>
 
