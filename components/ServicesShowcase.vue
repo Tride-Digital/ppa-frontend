@@ -53,28 +53,28 @@ const props = defineProps<{
 }>()
 useTheme()
 const localItems: ServiceItem[] = [
-  {
-    title: 'Investor & Land Services',
+{
+    title: 'Plantation Advisory and Governence',
     description:
-      'We provide comprehensive investor and land services to help you establish and grow your business.',
+      'Strategic end-to-end guidance on estate planning, compliance, and governance to run each plantation as a professionally managed business unit.',
     image: '/images/services/service-1.png',
   },
   {
-    title: 'Project Planning & Finance',
+    title: 'HRM & Labour Transformation',
     description:
-      'We offer expert project planning and finance services to help businesses optimize their operations and achieve sustainable growth.',
+      'Modern HR, productivity, and welfare solutions that uplift estate workforces, reduce disputes, and align labour practices with national standards.',
     image: '/images/services/service-2.png',
   },
   {
-    title: 'Agronomy & Farm Development',
+    title: 'Agronomy & Soil Health Services',
     description:
-      'We provide a range of agronomy and farm development services to enhance the quality and marketability of agricultural products.',
+      'Scientific crop and soil management, from fertilizer plans to replanting strategies, to maximize yields while protecting long-term land health.',
     image: '/images/services/service-3.png',
   },
   {
-    title: 'Processing & Value Addition',
+    title: 'Sustainability, ESG & Certification',
     description:
-      'We assist businesses in navigating the complexities of processing and value addition, ensuring smooth and efficient transactions across borders.',
+      'Roadmaps to meet global ESG expectations, secure certifications, and adopt climate-smart practices that protect both the environment and profitability.',
     image: '/images/services/service-4.png',
   },
 ]
@@ -87,10 +87,10 @@ function goToServices() {
 }
 function goToServiceCategory(serviceTitle: string) {
   const categoryMap: { [key: string]: number } = {
-    'Investor & Land Services': 0,
-    'Project Planning & Finance': 1,
-    'Agronomy & Farm Development': 2,
-    'Processing & Value Addition': 3
+    'Plantation Advisory and Governence': 0,
+    'HRM & Labour Transformation': 1,
+    'Agronomy & Soil Health Services': 2,
+    'Sustainability, ESG & Certification': 3
   }
   const categoryIndex = categoryMap[serviceTitle]
   if (categoryIndex !== undefined) {

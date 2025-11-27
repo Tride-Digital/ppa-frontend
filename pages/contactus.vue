@@ -6,9 +6,18 @@
         <v-col cols="12"  class="text-center">
           <h2 class="contact-title">Contact Us</h2>
           <p class="contact-subtitle">
-            Have a question or want to work with us? We'd love to hear from you. 
+            Have a question or want to work with us? We'd love to hear from you.
             Send us a message and we'll respond as soon as possible.
           </p>
+          <v-btn
+            color="secondary"
+            size="large"
+            class="mt-4"
+            prepend-icon="mdi-comment-alert"
+            @click="feedbackDialog = true"
+          >
+            Customer Feedback & Complaints
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -46,7 +55,9 @@
                   <div>
                     <h3 class="text-subtitle-1 font-weight-bold mb-2">Phone</h3>
                     <p class="text-body-2 text-medium-emphasis mb-0">
-                      <a href="tel:+94772376343" class="contact-link">+94 77 237 6343</a>
+                      <a href="tel:+94772376343" class="contact-link">+94 77 237 6343</a> <br/>
+                      <a href="tel:+94714807594" class="contact-link">+94 71 480 7594</a> <br/>
+                      <a href="tel:+94772376343" class="contact-link">+94 76 949 9270</a> (WhatsApp Only)<br/>
                     </p>
                   </div>
                 </div>
@@ -91,46 +102,47 @@
                   <div>
                     <h3 class="text-subtitle-1 font-weight-bold mb-3">Follow Us</h3>
                     <div class="d-flex gap-4">
-                      <v-btn 
-                        icon 
-                        variant="outlined" 
+                      <v-btn
+                        icon
+                        variant="outlined"
                         size="small"
-                        href="https://www.facebook.com/share/1BZSphvAiV/?mibextid=wwXIfr" 
+                        href="https://www.facebook.com/share/1BZSphvAiV/?mibextid=wwXIfr"
                         target="_blank"
                         aria-label="Facebook"
                       >
                         <v-icon>mdi-facebook</v-icon>
                       </v-btn> &nbsp;
-                      <v-btn 
-                        icon 
-                        variant="outlined" 
+                      <v-btn
+                        icon
+                        variant="outlined"
                         size="small"
-                        href="https://twitter.com" 
+                        href="https://x.com"
                         target="_blank"
-                        aria-label="Twitter"
+                        aria-label="X"
                       >
                         <v-icon>mdi-twitter</v-icon>
-                      </v-btn> &nbsp;
-                      <v-btn 
-                        icon 
-                        variant="outlined" 
+                      </v-btn>
+                      &nbsp;
+                      <v-btn
+                        icon
+                        variant="outlined"
                         size="small"
-                        href="https://linkedin.com" 
+                        href="https://linkedin.com"
                         target="_blank"
                         aria-label="LinkedIn"
                       >
                         <v-icon>mdi-linkedin</v-icon>
                       </v-btn> &nbsp;
-                      <v-btn 
-                        icon 
-                        variant="outlined" 
+                      <v-btn
+                        icon
+                        variant="outlined"
                         size="small"
-                        href="https://instagram.com" 
+                        href="https://instagram.com"
                         target="_blank"
                         aria-label="Instagram"
                       >
                         <v-icon>mdi-instagram</v-icon>
-                      </v-btn> 
+                      </v-btn>
                     </div>
                   </div>
                 </div>
@@ -150,49 +162,49 @@
             </v-card-subtitle>
             <v-card-text class="px-6 pb-6">
               <v-form ref="contactForm" v-model="valid" @submit.prevent="submitForm">
-                <v-text-field 
-                  v-model="formData.fullName" 
-                  label="Full Name" 
-                  :rules="nameRules" 
-                  required 
-                  prepend-inner-icon="mdi-account" 
+                <v-text-field
+                  v-model="formData.fullName"
+                  label="Full Name"
+                  :rules="nameRules"
+                  required
+                  prepend-inner-icon="mdi-account"
                   variant="outlined"
                   class="mb-3"
                 />
-                <v-text-field 
-                  v-model="formData.phoneNumber" 
-                  label="Phone Number" 
-                  :rules="phoneRules" 
-                  required 
-                  prepend-inner-icon="mdi-phone" 
+                <v-text-field
+                  v-model="formData.phoneNumber"
+                  label="Phone Number"
+                  :rules="phoneRules"
+                  required
+                  prepend-inner-icon="mdi-phone"
                   variant="outlined"
                   class="mb-3"
                 />
-                <v-text-field 
-                  v-model="formData.email" 
-                  label="Email Address (Optional)" 
-                  :rules="emailRules" 
-                  prepend-inner-icon="mdi-email" 
+                <v-text-field
+                  v-model="formData.email"
+                  label="Email Address (Optional)"
+                  :rules="emailRules"
+                  prepend-inner-icon="mdi-email"
                   variant="outlined"
                   class="mb-3"
                 />
-                <v-textarea 
-                  v-model="formData.message" 
-                  label="Message" 
-                  :rules="messageRules" 
-                  required 
-                  prepend-inner-icon="mdi-message-text" 
-                  rows="5" 
+                <v-textarea
+                  v-model="formData.message"
+                  label="Message"
+                  :rules="messageRules"
+                  required
+                  prepend-inner-icon="mdi-message-text"
+                  rows="5"
                   variant="outlined"
                   class="mb-4"
                 />
-                <v-btn 
-                  type="submit" 
-                  color="primary" 
-                  size="large" 
-                  block 
-                  :loading="loading" 
-                  :disabled="!valid" 
+                <v-btn
+                  type="submit"
+                  color="primary"
+                  size="large"
+                  block
+                  :loading="contactLoading"
+                  :disabled="!valid"
                   class="submit-btn"
                 >
                   <v-icon class="mr-2">mdi-send</v-icon>
@@ -256,16 +268,101 @@
         </v-col>
       </v-row>
     </v-container>
+    <!-- Feedback/Complaints -->
+    <v-dialog v-model="feedbackDialog" max-width="700px">
+      <v-card class="d-flex flex-column" style="max-height: 80vh;">
+        <v-card-title class="text-h5 font-weight-bold pa-6 pb-4 bg-secondary">
+          <v-icon class="mr-2">mdi-comment-alert</v-icon>
+          Customer Feedback & Complaints
+        </v-card-title>
+        <v-divider></v-divider>
+
+        <!-- Scrollable form content -->
+        <v-card-text class="pa-6" style="overflow-y: auto;">
+          <p class="text-body-1 mb-4">
+            We value your feedback and take all complaints seriously. Please share your experience with us so we can improve our services.
+          </p>
+          <v-form ref="feedbackForm" v-model="feedbackValid">
+            <v-text-field
+              v-model="feedbackData.fullName"
+              label="Full Name"
+              :rules="nameRules"
+              required
+              prepend-inner-icon="mdi-account"
+              variant="outlined"
+              class="mb-3"
+            />
+            <v-text-field
+              v-model="feedbackData.phoneNumber"
+              label="Phone Number"
+              :rules="phoneRules"
+              required
+              prepend-inner-icon="mdi-phone"
+              variant="outlined"
+              class="mb-3"
+            />
+            <v-text-field
+              v-model="feedbackData.email"
+              label="Email Address (Optional)"
+              :rules="emailRules"
+              prepend-inner-icon="mdi-email"
+              variant="outlined"
+              class="mb-3"
+            />
+            <v-select
+              v-model="feedbackData.type"
+              :items="feedbackTypes"
+              label="Type"
+              :rules="[(v) => !!v || 'Type is required']"
+              required
+              prepend-inner-icon="mdi-format-list-bulleted-type"
+              variant="outlined"
+              class="mb-3"
+            />
+            <v-textarea
+              v-model="feedbackData.message"
+              label="Your Feedback or Complaint"
+              :rules="messageRules"
+              required
+              prepend-inner-icon="mdi-message-text"
+              rows="6"
+              variant="outlined"
+              class="mb-3"
+            />
+          </v-form>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions class="pa-4">
+  <v-spacer></v-spacer>
+  <v-btn variant="text" @click="feedbackDialog = false">
+    Close
+  </v-btn>
+  <v-btn
+    color="success"
+    size="large"
+    :loading="complaintLoading"
+    :disabled="!feedbackValid"
+    @click="submitFeedback"
+  >
+    <v-icon class="mr-2">mdi-send</v-icon>
+    Submit Feedback
+  </v-btn>
+</v-card-actions>
+
+      </v-card>
+    </v-dialog>
 
     <!-- Snackbar -->
-    <v-snackbar 
-      v-model="snackbar" 
-      :color="snackbarColor" 
-      :timeout="3000" 
+    <v-snackbar
+      v-model="snackbar"
+      :color="snackbarColor"
+      :timeout="3000"
       location="top"
     >
       {{ snackbarText }}
-      <template v-slot:actions>
+      <template #actions>
         <v-btn variant="text" @click="snackbar = false">Close</v-btn>
       </template>
     </v-snackbar>
@@ -276,13 +373,19 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDirectors } from '~/composables/useDirectors'
+import { useRuntimeConfig } from '#app'
 import { useContactUs } from '~/composables/useContactUs'
 
 const contactForm = ref<any>(null)
+const feedbackForm = ref<any>(null)
 const valid = ref(false)
+const feedbackValid = ref(false)
 const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
+const feedbackDialog = ref(false)
+const contactLoading = ref(false)
+const complaintLoading = ref(false)
 
 const formData = ref({
   fullName: '',
@@ -290,6 +393,23 @@ const formData = ref({
   email: '',
   message: ''
 })
+const feedbackData = ref({
+  fullName: '',
+  phoneNumber: '',
+  email: '',
+  type: '',
+  message: ''
+})
+
+const feedbackTypes = [
+  'General Feedback',
+  'Service Complaint',
+  'Product Complaint',
+  'Service Issue',
+  'Director Behavior',
+  'Pricing Inquiry',
+  'Other'
+]
 
 const nameRules = [
   (v: string) => !!v || 'Full name is required',
@@ -309,7 +429,11 @@ const messageRules = [
   (v: string) => !!v || 'Message is required',
   (v: string) => (v && v.length >= 10) || 'Message must be at least 10 characters',
 ]
-const { loading, sendContactUs } = useContactUs()
+
+const {sendContactUs } = useContactUs()
+
+const config = useRuntimeConfig()
+const apiBaseUrl = config.public.apiBaseUrl || 'http://localhost:8000'
 
 // Province map -> director navigation
 const router = useRouter()
@@ -346,24 +470,65 @@ const onProvinceSelected = async (provinceName: string) => {
 const submitForm = async () => {
   if (!contactForm.value) return
   const { valid: isValid } = await contactForm.value.validate()
-  if (isValid) {
-    try {
-      await sendContactUs(formData.value)
-      snackbarText.value = 'Message sent successfully! We\'ll get back to you soon.'
-      snackbarColor.value = 'success'
-      snackbar.value = true
-      contactForm.value.reset()
-      formData.value = {
-        fullName: '',
-        phoneNumber: '',
-        email: '',
-        message: ''
-      }
-    } catch (err) {
-      snackbarText.value = 'Failed to send message. Please try again.'
-      snackbarColor.value = 'error'
-      snackbar.value = true
+  if (!isValid) return
+  contactLoading.value = true
+  try {
+    await sendContactUs(formData.value)
+    snackbarText.value = "Message sent successfully! We'll get back to you soon."
+    snackbarColor.value = 'success'
+    snackbar.value = true
+    contactForm.value.reset()
+    formData.value = {
+      fullName: '',
+      phoneNumber: '',
+      email: '',
+      message: ''
     }
+  } catch (err) {
+    snackbarText.value = 'Failed to send message. Please try again.'
+    snackbarColor.value = 'error'
+    snackbar.value = true
+  } finally {
+    contactLoading.value = false
+  }
+}
+
+const submitFeedback = async () => {
+  if (!feedbackForm.value) return
+  const { valid: isValid } = await feedbackForm.value.validate()
+  if (!isValid) return
+
+  complaintLoading.value = true
+  try {
+    const feedbackSubmission = {
+      ...feedbackData.value,
+      message: `[${feedbackData.value.type}] ${feedbackData.value.message}`
+    }
+    await $fetch('/complaint/', {
+      baseURL: apiBaseUrl,
+      method: 'POST',
+      body: feedbackSubmission
+    })
+
+    snackbarText.value = 'Feedback submitted successfully! We appreciate your input.'
+    snackbarColor.value = 'success'
+    snackbar.value = true
+    feedbackDialog.value = false
+
+    feedbackForm.value.reset()
+    feedbackData.value = {
+      fullName: '',
+      phoneNumber: '',
+      email: '',
+      type: '',
+      message: ''
+    }
+  } catch (err) {
+    snackbarText.value = 'Failed to submit feedback. Please try again.'
+    snackbarColor.value = 'error'
+    snackbar.value = true
+  } finally {
+    complaintLoading.value = false
   }
 }
 </script>
@@ -384,7 +549,7 @@ const submitForm = async () => {
 .contact-subtitle {
   font-size: 1.1rem;
   color: rgb(var(--v-theme-section-subtitle));
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
@@ -460,7 +625,7 @@ const submitForm = async () => {
   .contact-info-card {
     margin-top: 24px;
   }
-  
+
   .map-container iframe {
     height: 400px;
   }
@@ -475,7 +640,7 @@ const submitForm = async () => {
   .map-subtitle {
     font-size: 1rem;
   }
-  
+
   .map-container iframe {
     height: 350px;
   }
@@ -486,9 +651,12 @@ const submitForm = async () => {
   .map-title {
     font-size: 1.5rem;
   }
-  
+
   .map-container iframe {
     height: 300px;
+  }
+  .pricing-note {
+    font-size: 0.9rem;
   }
 }
 </style>
