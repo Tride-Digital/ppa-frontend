@@ -124,6 +124,47 @@ const getDirectorProvince = (directorId: string): string => {
 }
 
 /**
+ * Fetch directors assigned to a given province
+ */
+const fetchDirectorsByProvince = async (province: string): Promise<DirectorContact[]> => {
+  try {
+    const config = useRuntimeConfig()
+    const baseURL = config.public.backendUrl || 'http://localhost:8000'
+    const list = await $fetch<any[]>(`${baseURL}/directorinfo/province/${encodeURIComponent(province)}`)
+
+    if (directorContacts.value.length === 0) {
+      await fetchDirectorContacts()
+    }
+
+    const contacts: DirectorContact[] = (list || [])
+      .map((item: any) => {
+        const userId = String(
+          item?.user_id ?? item?.userId ?? item?.user ?? item?.id ?? ''
+        )
+        if (!userId) return null
+        const match = directorContacts.value.find(c => String(c.id) === userId)
+        if (match) return match
+        // fallback minimal contact if not found
+        return { id: userId, name: item?.fullName || 'Director', image: '' }
+      })
+      .filter(Boolean) as DirectorContact[]
+
+    return contacts
+  } catch (e) {
+    return []
+  }
+}
+
+/**
+ * Convenience: return the first director id for a province or null
+ */
+const getPrimaryDirectorIdByProvince = async (province: string): Promise<string | null> => {
+  const matches = await fetchDirectorsByProvince(province)
+  if (!matches || matches.length === 0) return null
+  return matches[0].id
+}
+
+/**
  * Fetch all directors for contact cards (name, id, image)
  */
 const fetchDirectorContacts = async () => {
@@ -247,5 +288,7 @@ export const useDirectors = () => {
     fetchDirectorInfo,
     getDirectorTitle,
     getDirectorProvince,
+    fetchDirectorsByProvince,
+    getPrimaryDirectorIdByProvince,
   }
 }

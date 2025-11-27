@@ -208,7 +208,7 @@
     </v-container>
 
     <!-- Map Section -->
-    <v-container class="map-section py-8 mt-2">
+    <!-- <v-container class="map-section py-8 mt-2">
       <v-row justify="center" class="mb-6">
         <v-col cols="12" class="text-center">
           <p class="map-subtitle">
@@ -234,6 +234,27 @@
           </v-card>
         </v-col>
       </v-row>
+    </v-container> -->
+
+    <!-- Province map to navigate to assigned director for contacts -->
+    <v-container class="map-section py-8 mt-2">
+      <v-row justify="center" class="mb-6">
+        <v-col cols="12" class="text-center">
+          <h2 class="map-title">Find Your Provincial Director</h2>
+          <p class="map-subtitle">
+            Select your province to get contact details of the assigned director.
+          </p>
+        </v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-col cols="12" md="10" lg="8">
+          <v-card class="map-card" elevation="4">
+            <v-card-text class="pa-6">
+              <SvgmapSriLankaMap @province-selected="onProvinceSelected" />
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
 
     <!-- Snackbar -->
@@ -253,6 +274,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useDirectors } from '~/composables/useDirectors'
 import { useContactUs } from '~/composables/useContactUs'
 
 const contactForm = ref<any>(null)
@@ -287,6 +310,39 @@ const messageRules = [
   (v: string) => (v && v.length >= 10) || 'Message must be at least 10 characters',
 ]
 const { loading, sendContactUs } = useContactUs()
+
+// Province map -> director navigation
+const router = useRouter()
+const { 
+  fetchDirectorContacts,
+  fetchDirectorsByProvince,
+  getPrimaryDirectorIdByProvince,
+  fetchDirectorInfo,
+  getDirectorTitle
+} = useDirectors()
+
+const onProvinceSelected = async (provinceName: string) => {
+  try {
+    await fetchDirectorContacts()
+    const directorId = await getPrimaryDirectorIdByProvince(provinceName)
+    if (!directorId) {
+      snackbarText.value = `No director found for ${provinceName}.`
+      snackbarColor.value = 'warning'
+      snackbar.value = true
+      return
+    }
+    await fetchDirectorInfo(directorId)
+    const title = getDirectorTitle(directorId) || undefined
+    router.push({
+      path: `/director/${directorId}`,
+      query: { province: provinceName, ...(title ? { title } : {}) },
+    })
+  } catch (e) {
+    snackbarText.value = 'Something went wrong. Please try again.'
+    snackbarColor.value = 'error'
+    snackbar.value = true
+  }
+}
 
 const submitForm = async () => {
   if (!contactForm.value) return
