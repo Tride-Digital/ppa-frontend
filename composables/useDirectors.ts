@@ -26,6 +26,11 @@ export interface DirectorContact {
   image: string
 }
 
+export interface DirectorInfo {
+  directorTitle?: string
+  directorProvince?: string
+}
+
 interface ServiceCategory {
   id: number
   name: string
@@ -44,6 +49,7 @@ interface ServiceSubcategory {
 
 const directorContacts = ref<DirectorContact[]>([])
 const directorDetailsCache = ref<Record<string, Director>>({})
+const directorInfoMap = ref<Record<string, DirectorInfo>>({})
 const serviceCategoriesCache = ref<ServiceCategory[]>([])
 const isLoading = ref<boolean>(false)
 
@@ -85,6 +91,77 @@ const getSubcategoryById = (subcategoryId: number): ServiceSubcategory | null =>
  */
 const getCategoryById = (categoryId: number): ServiceCategory | null => {
   return serviceCategoriesCache.value.find(cat => cat.id === categoryId) || null
+}
+
+/**
+ * Fetch director info (title and province) by user ID
+ */
+const fetchDirectorInfo = async (userId: string) => {
+  try {
+    const config = useRuntimeConfig()
+    const baseURL = config.public.backendUrl || 'http://localhost:8000'
+    const response = await $fetch<DirectorInfo>(`${baseURL}/directorinfo/user/${userId}`)
+    if (response) {
+      directorInfoMap.value[userId] = response
+    }
+  } catch (error) {
+    console.log(`No director info found for user ${userId}`)
+  }
+}
+
+/**
+ * Get director title by ID
+ */
+const getDirectorTitle = (directorId: string): string => {
+  return directorInfoMap.value[directorId]?.directorTitle || ''
+}
+
+/**
+ * Get director province by ID
+ */
+const getDirectorProvince = (directorId: string): string => {
+  return directorInfoMap.value[directorId]?.directorProvince || ''
+}
+
+/**
+ * Fetch directors assigned to a given province
+ */
+const fetchDirectorsByProvince = async (province: string): Promise<DirectorContact[]> => {
+  try {
+    const config = useRuntimeConfig()
+    const baseURL = config.public.backendUrl || 'http://localhost:8000'
+    const list = await $fetch<any[]>(`${baseURL}/directorinfo/province/${encodeURIComponent(province)}`)
+
+    if (directorContacts.value.length === 0) {
+      await fetchDirectorContacts()
+    }
+
+    const contacts: DirectorContact[] = (list || [])
+      .map((item: any) => {
+        const userId = String(
+          item?.user_id ?? item?.userId ?? item?.user ?? item?.id ?? ''
+        )
+        if (!userId) return null
+        const match = directorContacts.value.find(c => String(c.id) === userId)
+        if (match) return match
+        // fallback minimal contact if not found
+        return { id: userId, name: item?.fullName || 'Director', image: '' }
+      })
+      .filter(Boolean) as DirectorContact[]
+
+    return contacts
+  } catch (e) {
+    return []
+  }
+}
+
+/**
+ * Convenience: return the first director id for a province or null
+ */
+const getPrimaryDirectorIdByProvince = async (province: string): Promise<string | null> => {
+  const matches = await fetchDirectorsByProvince(province)
+  if (!matches || matches.length === 0) return null
+  return matches[0].id
 }
 
 /**
@@ -204,8 +281,14 @@ const fetchDirectorById = async (id: string): Promise<Director | null> => {
 export const useDirectors = () => {
   return {
     directorContacts,
+    directorInfoMap,
     isLoading,
     fetchDirectorContacts,
     fetchDirectorById,
+    fetchDirectorInfo,
+    getDirectorTitle,
+    getDirectorProvince,
+    fetchDirectorsByProvince,
+    getPrimaryDirectorIdByProvince,
   }
 }
