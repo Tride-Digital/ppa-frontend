@@ -315,7 +315,6 @@ const { loading, sendContactUs } = useContactUs()
 const router = useRouter()
 const { 
   fetchDirectorContacts,
-  fetchDirectorsByProvince,
   getPrimaryDirectorIdByProvince,
   fetchDirectorInfo,
   getDirectorTitle

@@ -5,13 +5,28 @@
     </div>
     <div id="sri-lanka-map" class="map-container"></div>
   </div>
+
+      <!-- Snackbar -->
+    <v-snackbar 
+      v-model="snackbar" 
+      :color="snackbarColor" 
+      :timeout="3000" 
+      location="top"
+    >
+      {{ snackbarText }}
+      <template v-slot:actions>
+        <v-btn variant="text" @click="snackbar = false">Close</v-btn>
+      </template>
+    </v-snackbar>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { fi } from 'vuetify/locale';
 const router = useRouter()
+const snackbar = ref(false)
+const snackbarText = ref('')
+const snackbarColor = ref('success')
 
 const emit = defineEmits<{
   provinceSelected: [provinceName: string]
@@ -528,7 +543,9 @@ async function navigateToDirector(provinceName: string) {
     const directorId = await getPrimaryDirectorIdByProvince(provinceName)
 
     if (!directorId) {
-      alert(`No director is currently assigned to ${provinceName} province.`)
+      snackbarText.value = `No director found for ${provinceName}.`
+      snackbarColor.value = 'warning'
+      snackbar.value = true
       return
     }
 
