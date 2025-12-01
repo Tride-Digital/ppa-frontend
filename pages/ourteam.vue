@@ -48,7 +48,7 @@
                   of {{ getDirectorTitle(director.id) }} {{ director.name }}
                 </template>
                 <template v-else>
-                  {{ director.name }}
+                 - {{ director.name }}
                 </template>
               </h3>
             </v-card-text>
