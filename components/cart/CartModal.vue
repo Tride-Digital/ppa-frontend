@@ -199,7 +199,24 @@ const proceedToCheckout = () => {
 .continue-btn {
   text-transform: none;
   font-weight: 500;
+  white-space: normal !important;
+  height: auto !important;
+  min-height: 36px !important;
+  padding: 8px 16px !important;
+  max-width: 200px;
+  line-height: 1.3 !important;
 }
+
+.continue-btn :deep(.v-btn__content) {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  text-align: center !important;
+  flex-wrap: wrap !important;
+  display: flex !important;
+  line-height: 1.3 !important;
+}
+
 .checkout-btn {
   text-transform: none;
   font-weight: 600;
