@@ -2401,6 +2401,17 @@ onMounted(async () => {
   padding: 8px 12px !important;
   height: auto !important;
   line-height: 1.3 !important;
+  text-align: left !important;
+}
+
+.option-btn :deep(.v-btn__content) {
+  white-space: normal !important;
+  flex-wrap: wrap !important;
+  word-break: break-word !important;
+  text-align: left !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
 }
 
 @media (max-width: 600px) {
@@ -2583,6 +2594,14 @@ onMounted(async () => {
   font-weight: 500 !important;
   padding: 6px 10px !important;
   height: auto !important;
+}
+
+.quick-link-btn :deep(.v-btn__content) {
+  white-space: normal !important;
+  flex-wrap: wrap !important;
+  word-break: break-word !important;
+  display: flex !important;
+  text-align: left !important;
 }
 
 @media (max-width: 600px) {
