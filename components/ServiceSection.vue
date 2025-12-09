@@ -35,7 +35,7 @@
         </v-col>
       </v-row>
       <v-row v-if="activeCategory !== -1 && !loading">
-        <v-col v-for="(subItem, subIndex) in navigationItems[activeCategory]?.subItems" :key="subIndex" cols="12" sm="6" md="4" lg="3" class="mb-6">
+        <v-col v-for="(subItem, subIndex) in navigationItems[activeCategory]?.subItems" :key="subIndex" cols="12" sm="6" md="4" lg="3" class="mb-6 service-card-col">
           <ServiceCard :service="subItem" :category-label="navigationItems[activeCategory].label" @service-click="handleServiceClick" @learn-more="learnMoreService" @add-to-cart="addToCartHandler"/>
         </v-col>
       </v-row>
@@ -63,11 +63,11 @@ const route = useRoute()
 const router = useRouter()
 const { addToCart } = useCart()
 const {
-  loading, 
-  error, 
-  fetchAllServices, 
+  loading,
+  error,
+  fetchAllServices,
   transformServiceCategories,
-  getServiceIdByName 
+  getServiceIdByName
 } = useServices()
 
 const sectionDescription = ref('Discover the diverse range of high-quality services offered by our plantation experts across Sri Lanka')
@@ -196,6 +196,16 @@ const addToCartHandler = (category, service) => {
 .no-selection p {
   color: rgb(var(--v-theme-section-subtitle));
 }
+
+.service-card-col {
+  display: flex;
+}
+.service-card-col :deep(.v-card) {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 1200px) {
   .nav-container {
     justify-content: center;
