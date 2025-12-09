@@ -2977,7 +2977,9 @@ onMounted(async () => {
 }
 
 .help-message-text {
-  white-space: nowrap;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.4;
 }
 
 .help-message-arrow {
