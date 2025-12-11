@@ -49,7 +49,7 @@
     <v-toolbar-title class="logo-container">
       <div @click="goToHome" tag="span" style="cursor: pointer">
         <v-row align="center" no-gutters>
-          <v-img class="logo-img" :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo.png'" contain height="110" width="220"/>
+          <v-img class="logo-img" :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo.png'"/>
         </v-row>
       </div>
     </v-toolbar-title>
@@ -170,6 +170,70 @@ const goToAnnouncements = () => {
     text-transform: none;
 }
 
+.nav-items .nav-link :deep(.v-btn__content) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    text-align: center !important;
+    line-height: 1.3 !important;
+    flex-wrap: wrap !important;
+}
+
+/* Responsive adjustments for navbar */
+@media (max-width: 1624px) {
+    .nav-items {
+        gap: 2px;
+    }
+    
+    .nav-items .nav-link {
+        padding: 6px 8px !important;
+        max-width: 120px;
+    }
+
+    .logo-container {
+        min-width: 250px !important;
+    }
+
+    .logo-img {
+        width: 250px !important;
+        height: 110px !important;
+    }
+    
+    .logo-img :deep(.v-img__img) {
+        width: 250px !important;
+        height: 110px !important;
+    }
+}
+
+
+@media (max-width: 1440px) {
+    .nav-items .nav-link {
+        padding: 6px 6px !important;
+        max-width: 100px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .nav-items .nav-link {
+        padding: 4px 4px !important;
+        max-width: 90px;
+    }
+    
+    .logo-container {
+        min-width: 110px !important;
+    }
+    
+    .logo-img {
+        width: 200px !important;
+        height: 110px !important;
+    }
+
+    .logo-img :deep(.v-img__img) {
+        width: 200px !important;
+        height: 110px !important;
+    }
+}
+
 /* Latest dropdown styling */
 .latest-dropdown {
     min-width: 180px;
@@ -243,7 +307,7 @@ const goToAnnouncements = () => {
 
 .logo-container {
     flex-shrink: 0 !important;
-    min-width: 220px !important;
+    min-width: 300px !important;
     height: 100% !important;
     display: flex !important;
     align-items: center !important;
