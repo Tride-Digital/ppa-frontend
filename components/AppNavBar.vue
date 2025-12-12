@@ -308,6 +308,7 @@ const goToAnnouncements = () => {
 .logo-container {
     flex-shrink: 0 !important;
     min-width: 300px !important;
+    max-width: 300px !important;
     height: 100% !important;
     display: flex !important;
     align-items: center !important;
@@ -316,10 +317,107 @@ const goToAnnouncements = () => {
 .logo-img {
     width: 300px !important;
     height: 110px !important;
+    max-width: 300px !important;
+    max-height: 110px !important;
     flex-shrink: 0 !important;
     object-fit: contain !important;
-    max-width: none !important;
-    max-height: none !important;
+}
+
+@media (max-width: 1624px) {
+    .logo-container {
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+
+    .logo-img {
+        width: 200px !important;
+        height: 90px !important;
+        max-width: 200px !important;
+        max-height: 90px !important;
+    }
+
+    .logo-img :deep(.v-img__img) {
+        width: 200px !important;
+        height: 90px !important;
+    }
+}
+
+@media (max-width: 1440px) {
+    .logo-container {
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+    
+    .logo-img {
+        width: 200px !important;
+        height: 90px !important;
+        max-width: 200px !important;
+        max-height: 90px !important;
+    }
+
+    .logo-img :deep(.v-img__img) {
+        width: 200px !important;
+        height: 90px !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .logo-container {
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+    
+    .logo-img {
+        width: 200px !important;
+        height: 90px !important;
+        max-width: 200px !important;
+        max-height: 90px !important;
+    }
+
+    
+    .logo-img :deep(.v-img__img) {
+        width: 200px !important;
+        height: 90px !important;
+    }
+}
+
+@media (max-width: 1060px) {
+    .logo-container {
+        min-width: 100px !important;
+        max-width: 100px !important;
+    }
+    
+    .logo-img {
+        width: 100px !important;
+        height: 100px !important;
+        max-width: 100px !important;
+
+    }
+    
+    .logo-img :deep(.v-img__img) {
+        width: 100px !important;
+
+    }
+}
+
+@media (max-width: 960px) {
+    .logo-container {
+        min-width: 70px !important;
+        max-width: 70px !important;
+    }
+    
+    .logo-img {
+        width: 70px !important;
+        height: 35px !important;
+        max-width: 70px !important;
+        max-height: 35px !important;
+    }
+
+    
+    .logo-img :deep(.v-img__img) {
+        width: 70px !important;
+        height: 35px !important;
+    }
 }
 
 .mobile-logo {
