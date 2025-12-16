@@ -93,7 +93,11 @@ function initMap() {
   const Raphael = (window as any).Raphael
   if (!Raphael) return
 
-  const rsr = Raphael('sri-lanka-map', '449.68774', '792.54926')
+  // Use fluid sizing instead of fixed dimensions
+  const container = document.getElementById('sri-lanka-map')
+  if (!container) return
+  
+  const rsr = Raphael(container, '100%', '100%')
 
   // Define all district paths (keeping original code)
   const colombo = rsr.path(
@@ -533,6 +537,15 @@ function initMap() {
       navigateToDirector(province.route)
     })
   })
+
+  // Make SVG responsive with proper viewBox
+  const svg = document.querySelector('#sri-lanka-map svg') as SVGElement
+  if (svg) {
+    svg.setAttribute('viewBox', '0 0 449.68774 792.54926')
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet')
+    svg.style.width = '100%'
+    svg.style.height = 'auto'
+  }
 }
 
 async function navigateToDirector(provinceName: string) {

@@ -144,11 +144,11 @@ const showPrevious = () => {
   }
 }
 const rscs = shallowReactive([
-  new Img('/images/cover/cover23.png'),
-  new Img('/images/cover/cover29.png'),
-  new Img('/images/cover/cover30.png'),
-  new Img('/images/cover/cover27.png'),
-  new Img('/images/cover/cover28.png'),
+  new Img('/images/cover/cover23.webp'),
+  new Img('/images/cover/cover29.webp'),
+  new Img('/images/cover/cover30.webp'),
+  new Img('/images/cover/cover27.webp'),
+  new Img('/images/cover/cover28.webp'),
 ])
 const transitions = shallowReactive([
   { component: Fade, options: { totalDuration: 3000, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' } },
