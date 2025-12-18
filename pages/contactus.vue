@@ -252,9 +252,9 @@
     <v-container class="map-section py-8 mt-2">
       <v-row justify="center" class="mb-6">
         <v-col cols="12" class="text-center">
-          <h2 class="map-title">Find Your Provincial Director</h2>
+          <h2 class="map-title">Find Your Provincial Coordinator</h2>
           <p class="map-subtitle">
-            Select your province to get contact details of the assigned director.
+            Select your province to get contact details of the assigned coordinator.
           </p>
         </v-col>
       </v-row>
