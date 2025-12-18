@@ -166,7 +166,7 @@
                 @click="navigateToServiceProvider"
                 append-icon="mdi-arrow-right"
               >
-                Register as Service Provider
+                Register as PPA Service Provider
               </v-btn>
             </v-card-actions>
           </v-card>
