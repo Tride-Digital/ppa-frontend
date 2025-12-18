@@ -4,7 +4,7 @@
       <v-col cols="12" class="text-center mb-8">
         <h2 class="directors-title">Senior Leadership Team</h2>
         <p class="directors-subtitle">
-          Click on the director’s profiles and get more information<br>
+          Click on the directors’ profiles to view detailed information below about their services and roles.<br>
         </p>
       </v-col>
     </v-row>

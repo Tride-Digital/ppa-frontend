@@ -1,16 +1,83 @@
 <template>
   <div>
     <div class="map-header text-center mb-4">
-      <h3 id="province-name" class="province-name">{{ selectedProvince || 'Select a Province' }}</h3>
+      <h3 id="province-name" class="province-name">
+        {{ selectedProvince || 'Select a Province' }}
+      </h3>
     </div>
     <div id="sri-lanka-map" class="map-container"></div>
-  </div>
 
-      <!-- Snackbar -->
-    <v-snackbar 
-      v-model="snackbar" 
-      :color="snackbarColor" 
-      :timeout="3000" 
+    <!-- Hover Card -->
+    <ClientOnly>
+      <Teleport to="body">
+        <div
+          v-show="hoverCard.show"
+          class="hover-card-wrapper"
+          :style="{
+            left: hoverCard.x + 'px',
+            top: hoverCard.y + 'px'
+          }"
+        >
+          <v-card class="hover-card" elevation="10">
+            <v-card-title class="py-3 px-4 d-flex align-center">
+              <v-icon color="primary" class="mr-2">mdi-map-marker</v-icon>
+              <span class="text-subtitle-1 font-weight-bold">
+                {{ hoverCard.province }}
+              </span>
+            </v-card-title>
+
+            <v-divider />
+
+            <v-card-text class="py-3 px-4">
+              <div v-if="hoverCard.loading" class="d-flex align-center">
+                <v-progress-circular indeterminate size="18" class="mr-2" />
+                <span class="text-body-2">Loading coordinator...</span>
+              </div>
+
+              <template v-else>
+                <div v-if="hoverCard.hasDirector">
+                  <div class="d-flex align-start mb-2">
+                    <v-icon color="primary" class="mr-2 mt-1" size="18">mdi-account</v-icon>
+                    <div>
+                      <div class="text-body-1 font-weight-medium">
+                        {{ hoverCard.directorName }}
+                      </div>
+                      <div v-if="hoverCard.directorTitle" class="text-caption text-medium-emphasis">
+                        {{ hoverCard.directorTitle }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div v-if="hoverCard.directorPhone" class="d-flex align-center">
+                    <v-icon color="primary" class="mr-2" size="18">mdi-phone</v-icon>
+                    <a
+                      class="hover-phone-link"
+                      :href="`tel:${(hoverCard.directorPhone || '').replace(/[^\d+]/g, '')}`"
+                    >
+                      {{ hoverCard.directorPhone }}
+                    </a>
+                  </div>
+
+                  <div v-else class="text-caption text-medium-emphasis">
+                    Phone number not available
+                  </div>
+                </div>
+
+                <div v-else class="text-body-2 text-medium-emphasis">
+                  No coordinator assigned for this province.
+                </div>
+              </template>
+            </v-card-text>
+          </v-card>
+        </div>
+      </Teleport>
+    </ClientOnly>
+
+    <!-- Snackbar -->
+    <v-snackbar
+      v-model="snackbar"
+      :color="snackbarColor"
+      :timeout="3000"
       location="top"
     >
       {{ snackbarText }}
@@ -18,40 +85,52 @@
         <v-btn variant="text" @click="snackbar = false">Close</v-btn>
       </template>
     </v-snackbar>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useDirectors } from '~/composables/useDirectors'
 const router = useRouter()
 const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
-
-const emit = defineEmits<{
-  provinceSelected: [provinceName: string]
-}>()
 
 const { getPrimaryDirectorIdByProvince, fetchDirectorsByProvince, getDirectorTitle, fetchDirectorInfo } = useDirectors()
 
 const selectedProvince = ref<string>('')
 const isLoadingDirector = ref<boolean>(false)
 
-// store director info for tooltips
-const provinceDirectors = ref<Record<string, { name: string; title: string } | null>>({})
+// store director info for hover cards
+const provinceDirectors = ref<Record<string, { name: string; title: string; phone: string } | null>>({})
 
 // Province colors - different color for each province
 const provinceColors: Record<string, string> = {
-  'Western': 'rgb(100, 149, 237)',      // Cornflower Blue
-  'Central': 'rgb(60, 179, 113)',       // Medium Sea Green
-  'Southern': 'rgb(255, 165, 0)',       // Orange
-  'Northern': 'rgb(186, 85, 211)',      // Medium Orchid
-  'Eastern': 'rgb(220, 20, 60)',        // Crimson
-  'North Western': 'rgb(218, 165, 32)', // Goldenrod
-  'North Central': 'rgb(70, 130, 180)', // Steel Blue
-  'Uva': 'rgb(199, 21, 133)',           // Medium Violet Red
-  'Sabaragamuwa': 'rgb(46, 139, 87)'    // Sea Green
+  'Western': 'rgb(100, 149, 237)',
+  'Central': 'rgb(60, 179, 113)',
+  'Southern': 'rgb(255, 165, 0)',
+  'Northern': 'rgb(186, 85, 211)',
+  'Eastern': 'rgb(220, 20, 60)',
+  'North Western': 'rgb(218, 165, 32)',
+  'North Central': 'rgb(70, 130, 180)',
+  'Uva': 'rgb(199, 21, 133)',
+  'Sabaragamuwa': 'rgb(46, 139, 87)'
 }
+
+// hover card state
+const hoverCard = reactive({
+  show: false,
+  x: 0,
+  y: 0,
+  province: '',
+  loading: false,
+  hasDirector: false,
+  directorName: '',
+  directorTitle: '',
+  directorPhone: '',
+})
+
 
 onMounted(() => {
   // Load Raphael from CDN if not already loaded
@@ -78,7 +157,8 @@ async function loadProvinceDirectors() {
 
         provinceDirectors.value[province] = {
           name: directors[0].name,
-          title: title || 'Director'
+          title: title || 'Director',
+          phone: directors[0].phone || ''
         }
       } else {
         provinceDirectors.value[province] = null
@@ -89,6 +169,64 @@ async function loadProvinceDirectors() {
   }
 }
 
+function setHoverCardPosition(event: MouseEvent) {
+  const offset = 12
+  const pad = 12
+
+  // card size to keep inside viewport
+  const cardW = 280
+  const cardH = 160
+
+  let x = event.clientX + offset
+  let y = event.clientY + offset
+
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+
+  if (x + cardW + pad > vw) x = event.clientX - cardW - offset
+  if (y + cardH + pad > vh) y = event.clientY - cardH - offset
+
+  hoverCard.x = Math.max(pad, x)
+  hoverCard.y = Math.max(pad, y)
+}
+
+function showHoverCard(provinceName: string, event: MouseEvent) {
+  selectedProvince.value = provinceName
+  hoverCard.province = provinceName
+  setHoverCardPosition(event)
+  hoverCard.show = true
+
+  const info = provinceDirectors.value[provinceName]
+
+  // if we haven't loaded this province yet, show loading
+  if (info === undefined) {
+    hoverCard.loading = true
+    hoverCard.hasDirector = false
+    hoverCard.directorName = ''
+    hoverCard.directorTitle = ''
+    hoverCard.directorPhone = ''
+    return
+  }
+
+  hoverCard.loading = false
+
+  if (info) {
+    hoverCard.hasDirector = true
+    hoverCard.directorName = info.name || ''
+    hoverCard.directorTitle = info.title || ''
+    hoverCard.directorPhone = info.phone || ''
+  } else {
+    hoverCard.hasDirector = false
+    hoverCard.directorName = ''
+    hoverCard.directorTitle = ''
+    hoverCard.directorPhone = ''
+  }
+}
+
+function hideHoverCard() {
+  hoverCard.show = false
+}
+
 function initMap() {
   const Raphael = (window as any).Raphael
   if (!Raphael) return
@@ -96,7 +234,7 @@ function initMap() {
   // Use fluid sizing instead of fixed dimensions
   const container = document.getElementById('sri-lanka-map')
   if (!container) return
-  
+
   const rsr = Raphael(container, '100%', '100%')
 
   // Define all district paths (keeping original code)
@@ -456,7 +594,7 @@ function initMap() {
   const uva = rsr.set().push(badulla, moneragala)
   const sabaragamuwa = rsr.set().push(ratnapura, kegalle)
 
-  const provinceSets = [
+const provinceSets = [
     { set: western, name: 'Western', route: 'Western' },
     { set: central, name: 'Central', route: 'Central' },
     { set: southern, name: 'Southern', route: 'Southern' },
@@ -468,28 +606,11 @@ function initMap() {
     { set: sabaragamuwa, name: 'Sabaragamuwa', route: 'Sabaragamuwa' }
   ]
 
-  // Load director data for tooltips
+  // Load director data for hover cards
   loadProvinceDirectors()
 
-  // Create tooltip element
-  const tooltip = document.createElement('div')
-  tooltip.id = 'province-tooltip'
-  tooltip.style.cssText = `
-    position: fixed;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 4px;
-    font-size: 14px;
-    pointer-events: none;
-    z-index: 1000;
-    display: none;
-    max-width: 200px;
-  `
-  document.body.appendChild(tooltip)
-
   // Apply colors and interactions
-  provinceSets.forEach((province, index) => {
+  provinceSets.forEach((province) => {
     const color = provinceColors[province.name]
 
     province.set.attr({
@@ -499,37 +620,18 @@ function initMap() {
     })
 
     province.set.mouseover(function (event: MouseEvent) {
-      province.set.attr({ opacity: 0.7, cursor: 'pointer' })
-      selectedProvince.value = province.name
-
-      // Show tooltip with director info
-      const directorInfo = provinceDirectors.value[province.name]
-      if (directorInfo) {
-        tooltip.innerHTML = `
-          <strong>${province.name}</strong><br/>
-          ${directorInfo.name}<br/>
-          <em>${directorInfo.title}</em>
-        `
-      } else {
-        tooltip.innerHTML = `
-          <strong>${province.name}</strong><br/>
-          <em style="color: #ffcccc;">No director assigned</em>
-        `
-      }
-
-      tooltip.style.display = 'block'
-      tooltip.style.left = event.pageX + 10 + 'px'
-      tooltip.style.top = event.pageY + 10 + 'px'
+      province.set.attr({ opacity: 0.75, cursor: 'pointer' })
+      showHoverCard(province.name, event)
     })
 
     province.set.mousemove(function (event: MouseEvent) {
-      tooltip.style.left = event.pageX + 10 + 'px'
-      tooltip.style.top = event.pageY + 10 + 'px'
+      if (!hoverCard.show) return
+      setHoverCardPosition(event)
     })
 
     province.set.mouseout(function () {
       province.set.attr({ opacity: 1 })
-      tooltip.style.display = 'none'
+      hideHoverCard()
     })
 
     province.set.click(function () {
@@ -610,5 +712,29 @@ async function navigateToDirector(provinceName: string) {
 :deep(svg) {
   max-width: 100%;
   height: auto;
+}
+
+.hover-card-wrapper {
+  position: fixed;
+  z-index: 3000;
+  pointer-events: none; /* don't block hover / click on map */
+}
+
+/* Vuetify card styling tweaks */
+.hover-card {
+  width: 280px;
+  border-radius: 12px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Phone link inside hover card */
+.hover-phone-link {
+  color: rgb(var(--v-theme-primary));
+  text-decoration: none;
+  font-weight: 600;
+}
+.hover-phone-link:hover {
+  text-decoration: underline;
 }
 </style>
