@@ -24,6 +24,7 @@ export interface DirectorContact {
   id: string
   name: string
   image: string
+  phone?: string
 }
 
 export interface DirectorInfo {
@@ -60,12 +61,12 @@ const fetchServiceCategories = async () => {
   if (serviceCategoriesCache.value.length > 0) {
     return serviceCategoriesCache.value
   }
-  
+
   try {
     const config = useRuntimeConfig()
     const baseURL = config.public.backendUrl || 'http://localhost:8000'
     const response = await $fetch<ServiceCategory[]>(`${baseURL}/service_list/categories/all`)
-   
+
     serviceCategoriesCache.value = response || []
     return serviceCategoriesCache.value
   } catch (error) {
@@ -138,14 +139,12 @@ const fetchDirectorsByProvince = async (province: string): Promise<DirectorConta
 
     const contacts: DirectorContact[] = (list || [])
       .map((item: any) => {
-        const userId = String(
-          item?.user_id ?? item?.userId ?? item?.user ?? item?.id ?? ''
-        )
+        const userId = String(item?.user_id ?? item?.userId ?? item?.user ?? item?.id ?? '')
         if (!userId) return null
         const match = directorContacts.value.find(c => String(c.id) === userId)
         if (match) return match
         // fallback minimal contact if not found
-        return { id: userId, name: item?.fullName || 'Director', image: '' }
+        return { id: userId, name: item?.fullName || 'Director', image: '', phone: '' }
       })
       .filter(Boolean) as DirectorContact[]
 
@@ -171,7 +170,7 @@ const fetchDirectorContacts = async () => {
   const config = useRuntimeConfig()
   const baseURL = config.public.backendUrl || 'http://localhost:8000'
   const res = await fetch(`${baseURL}/directorservice/directors?skip=0&limit=100`)
-  const data = await res.json() || []
+  const data = (await res.json()) || []
 
   const mapped = (data || []).map((d: any) => {
     const fullName = d.profile?.fullName || `${d.fname || ''} ${d.lname || ''}`.trim()
@@ -199,14 +198,25 @@ const fetchDirectorContacts = async () => {
       name: fullName,
       sortName,
       image: d.profile?.profilePic || '',
+      phone: d.profile?.mobile || '',
     }
   })
-  mapped.sort((a: { sortName: string; name: string }, b: { sortName: string; name: string }) => {
-    const cmp = a.sortName.localeCompare(b.sortName, undefined, { sensitivity: 'base' })
-    if (cmp !== 0) return cmp
-    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
-  })
-  directorContacts.value = mapped.map(({ id, name, image }: { id: string; name: string; image: string }) => ({ id, name, image }))
+  mapped.sort(
+    (a: { sortName: string; name: string }, b: { sortName: string; name: string }) => {
+      const cmp = a.sortName.localeCompare(b.sortName, undefined, { sensitivity: 'base' })
+      if (cmp !== 0) return cmp
+      return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+    }
+  )
+
+  directorContacts.value = mapped.map(
+    ({ id, name, image, phone }: { id: string; name: string; image: string; phone: string }) => ({
+      id,
+      name,
+      image,
+      phone,
+    })
+  )
 }
 
 /**
@@ -217,35 +227,35 @@ const fetchDirectorById = async (id: string): Promise<Director | null> => {
   if (directorDetailsCache.value[id]) {
     return directorDetailsCache.value[id]
   }
-  
+
   isLoading.value = true
-  
+
   try {
     const config = useRuntimeConfig()
     const baseURL = config.public.backendUrl || 'http://localhost:8000'
-    
+
     // Fetch service categories first
     await fetchServiceCategories()
-    
+
     // Ensure contacts are loaded to get profile info
     if (directorContacts.value.length === 0) {
       await fetchDirectorContacts()
     }
-    
+
     // Fetch director service data
     const res = await fetch(`${baseURL}/directorservice/user/${id}`)
     const data = await res.json()
-    
+
     // Find the full director object to get email and phone
     const contactDataRes = await fetch(`${baseURL}/directorservice/directors?skip=0&limit=100`)
     const contactsData = await contactDataRes.json()
     const contact = contactsData.find((d: any) => d.id === id)
-    
+
     // Map {category: int, subcategory: int} to Service objects
     const transformedServices: Service[] = (data.services || []).map((service: any) => {
       const subcategory = getSubcategoryById(service.subcategory)
       const category = getCategoryById(service.category)
-      
+
       return {
         name: subcategory?.name || `Service ${service.subcategory}`,
         description: subcategory?.description || '',
@@ -255,7 +265,7 @@ const fetchDirectorById = async (id: string): Promise<Director | null> => {
         id: service.subcategory || '',
       }
     })
-    
+
     const director: Director = {
       id: data.user_id || id,
       name: contact?.profile?.fullName || '',
@@ -267,7 +277,7 @@ const fetchDirectorById = async (id: string): Promise<Director | null> => {
       email: contact?.profile?.email || '',
       phone: contact?.profile?.mobile || '',
     }
-    
+
     directorDetailsCache.value[id] = director
     return director
   } catch (error) {
