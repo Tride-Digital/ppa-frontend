@@ -1,0 +1,162 @@
+<template>
+  <v-card class="provider-card h-100" elevation="4" hover @click="$emit('click')">
+    <div class="card-image-container">
+      <v-img :src="provider.image_url || fallbackImage" height="200" cover class="card-image">
+        <template #placeholder>
+          <div class="d-flex align-center justify-center fill-height">
+            <v-progress-circular indeterminate></v-progress-circular>
+          </div>
+        </template>
+      </v-img>
+
+      <div class="image-overlay d-flex gap-2">
+        <v-chip v-if="provider.is_featured" size="small" color="primary" variant="elevated" class="category-chip">
+          <v-icon start size="small">mdi-star</v-icon>
+          Featured
+        </v-chip>
+        <v-chip v-if="provider.has_certifications" size="small" color="success" variant="elevated" class="category-chip">
+          <v-icon start size="small">mdi-certificate</v-icon>
+          Verified
+        </v-chip>
+      </div>
+    </div>
+
+    <v-card-title class="provider-name">
+      {{ provider.business_name }}
+    </v-card-title>
+
+    <v-card-text class="provider-meta">
+      <div class="text-body-2 mb-2" style="opacity:.9" v-if="provider.owner_name">
+        <v-icon size="16" class="me-1">mdi-account</v-icon>
+        {{ provider.owner_name }}
+      </div>
+
+      <div class="text-body-2 mb-2" v-if="provider.province_name || provider.district_name">
+        <v-icon size="16" class="me-1">mdi-map-marker</v-icon>
+        {{ provider.province_name || provider.province_code }} • {{ provider.district_name || provider.district_code }}
+      </div>
+
+      <div class="chips mt-2">
+        <v-chip
+          v-for="(t, i) in serviceTags"
+          :key="i"
+          size="x-small"
+          variant="tonal"
+          color="primary"
+          class="me-1 mb-1"
+        >
+          {{ t }}
+        </v-chip>
+      </div>
+
+      <div class="desc mt-3" v-if="provider.description">
+        {{ provider.description }}
+      </div>
+    </v-card-text>
+
+    <v-card-actions class="card-actions">
+      <v-btn variant="outlined" color="primary" size="small" @click.stop="$emit('view')">
+        View Details
+        <v-icon end>mdi-arrow-right</v-icon>
+      </v-btn>
+      <v-spacer />
+      <!-- <v-spacer />
+      <v-btn variant="outlined" color="primary" size="small" @click.stop="copyContact">
+        <v-icon start>mdi-content-copy</v-icon>
+        Contact
+      </v-btn> -->
+    </v-card-actions>
+  </v-card>
+</template>
+
+<script setup lang="ts">
+import type { ProviderCard } from "~/composables/usePublicDirectory";
+
+const props = defineProps<{
+  provider: ProviderCard;
+}>();
+
+defineEmits<{
+  (e: "click"): void;
+  (e: "view"): void;
+}>();
+
+const fallbackImage =
+  "https://static.vecteezy.com/system/resources/thumbnails/037/336/395/small/user-profile-flat-illustration-avatar-person-icon-gender-neutral-silhouette-profile-picture-free-vector.jpg";
+
+const serviceTags = computed(() => {
+  // show unique categories/subcategories (short)
+  const subs = props.provider.services?.map(s => s.subcategory).filter(Boolean) as string[];
+  const unique = Array.from(new Set(subs));
+  return unique.slice(0, 6);
+});
+
+const copyContact = async () => {
+  const email = props.provider.email || "";
+  const phone = props.provider.phone || "";
+  const website = props.provider.website || "";
+  const text = [phone && `Phone: ${phone}`, email && `Email: ${email}`, website && `Web: ${website}`].filter(Boolean).join("\n");
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {}
+};
+</script>
+
+<style scoped>
+.provider-card {
+  width: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: rgb(var(--v-theme-service-card-bg));
+}
+.provider-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgb(var(--v-theme-card-shadow-hover));
+}
+.card-image-container {
+  position: relative;
+  overflow: hidden;
+}
+.card-image {
+  transition: transform 0.3s ease;
+}
+.provider-card:hover .card-image {
+  transform: scale(1.05);
+}
+.image-overlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+.category-chip {
+  backdrop-filter: blur(10px);
+  color: rgb(var(--v-theme-on-primary)) !important;
+}
+.provider-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: rgb(var(--v-theme-section-title));
+  padding-bottom: 8px;
+  line-height: 1.3;
+}
+.provider-meta {
+  color: rgb(var(--v-theme-section-subtitle));
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding-top: 0;
+}
+.desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-actions {
+  padding: 16px;
+  gap: 8px;
+  background-color: rgb(var(--v-theme-service-card-bg));
+}
+</style>
