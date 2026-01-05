@@ -125,6 +125,7 @@ const menuItems = ref([
     { title: 'Home', path: '/', icon: 'mdi-home' },
     { title: 'About us', path: '/aboutus', icon: 'mdi-home' },
     { title: 'Services', path: '/services', icon: 'mdi-leaf' },
+    { title: 'Directory', path: '/directory', icon: 'mdi-account-search' },
     { title: 'Our Team', path: '/ourteam', icon: 'mdi-phone' },
     { title: 'Contact Us', path: '/contactus', icon: 'mdi-phone' },
 ]);
