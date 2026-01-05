@@ -190,13 +190,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import ProviderCard from '@/components/directory/ProviderCard.vue'
-import { useProvidersDirectory } from '~/composables/usePublicDirectory'
-import { useDistricts } from '~/composables/useLocations'
+import { usePublicDirectory } from '~/composables/usePublicDirectory'
+import { useLocations } from '~/composables/useLocations'
 import { useServices } from '~/composables/useServices'
 
 const router = useRouter()
-const { fetchPublicProviders } = useProvidersDirectory()
-const { fetchProvinces, fetchDistrictsByProvince } = useDistricts()
+const { searchProviders } = usePublicDirectory()
+const { fetchProvinces, fetchDistrictsByProvince } = useLocations()
 const { fetchAllServices, transformServiceCategories } = useServices()
 
 const loading = ref(false)
@@ -292,9 +292,7 @@ const fetchPage = async () => {
   loading.value = true
   try {
     const skip = (page.value - 1) * limit
-    const res = await fetchPublicProviders({
-      skip,
-      limit,
+    const res = await searchProviders({
       q: filters.value.q || undefined,
       category_id: filters.value.category_id,
       subcategory_id: filters.value.subcategory_id,
