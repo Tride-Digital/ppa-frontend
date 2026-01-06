@@ -90,7 +90,8 @@
               <div v-else>
                 <v-chip size="small" variant="outlined" class="me-2 mb-2">
                   <v-icon start size="small">mdi-map-marker</v-icon>
-                  {{ provider.province_name || provider.province_code }} • {{ provider.district_name || provider.district_code }}
+                  {{ provider.province_name || provider.province_code }} •
+                  {{ provider.district_name || provider.district_code }}
                 </v-chip>
               </div>
             </div>
@@ -100,14 +101,51 @@
               {{ provider.description || "No additional description available." }}
             </p>
 
-            <div v-if="provider.qualifications" class="mt-8">
+            <div v-if="qualifications.length" class="mt-8">
               <h3 class="subsection-title mb-3">Qualifications</h3>
-              <pre class="json-box">{{ provider.qualifications }}</pre>
+
+              <v-card class="info-card" elevation="0" variant="tonal">
+                <v-list density="compact">
+                  <v-list-item v-for="(q, i) in qualifications" :key="i">
+                    <template #prepend>
+                      <v-icon color="primary">mdi-school</v-icon>
+                    </template>
+
+                    <v-list-item-title class="font-weight-bold">
+                      {{ q.qualification || q.title || "Qualification" }}
+                    </v-list-item-title>
+
+                    <v-list-item-subtitle v-if="q.yearsOfExperience || q.institute || q.year">
+                      <span v-if="q.yearsOfExperience">{{ q.yearsOfExperience }}</span>
+                      <span v-if="q.institute"> • {{ q.institute }}</span>
+                      <span v-if="q.year"> • {{ q.year }}</span>
+                    </v-list-item-subtitle>
+                  </v-list-item>
+                </v-list>
+              </v-card>
             </div>
 
-            <div v-if="provider.clients" class="mt-8">
+            <div v-if="clients.length" class="mt-8">
               <h3 class="subsection-title mb-3">Clients</h3>
-              <pre class="json-box">{{ provider.clients }}</pre>
+
+              <v-card class="info-card" elevation="0" variant="tonal">
+                <v-list density="compact">
+                  <v-list-item v-for="(c, i) in clients" :key="i">
+                    <template #prepend>
+                      <v-icon color="primary">mdi-account-group</v-icon>
+                    </template>
+
+                    <v-list-item-title class="font-weight-bold">
+                      {{ c.clientName || c.client_name || c.name || "Client" }}
+                    </v-list-item-title>
+
+                    <v-list-item-subtitle v-if="c.project || c.description">
+                      <span v-if="c.project">{{ c.project }}</span>
+                      <span v-else-if="c.description">{{ c.description }}</span>
+                    </v-list-item-subtitle>
+                  </v-list-item>
+                </v-list>
+              </v-card>
             </div>
           </v-col>
 
@@ -201,10 +239,60 @@ const getDistrictName = (code: string): string => {
   return district?.district_en || code;
 };
 
+type QualificationItem = {
+  qualification?: string;
+  title?: string;
+  yearsOfExperience?: string;
+  institute?: string;
+  year?: string;
+};
+
+type ClientItem = {
+  clientName?: string;
+  client_name?: string;
+  name?: string;
+  project?: string;
+  description?: string;
+};
+
+// Handles: array | JSON-string | object | null
+function normalizeToArray<T = any>(val: any): T[] {
+  if (!val) return [];
+
+  if (Array.isArray(val)) return val as T[];
+
+  if (typeof val === "string") {
+    const s = val.trim();
+    if (!s) return [];
+    try {
+      const parsed = JSON.parse(s);
+      return normalizeToArray<T>(parsed);
+    } catch {
+      // not JSON -> show as single text
+      return [val as any];
+    }
+  }
+
+  if (typeof val === "object") {
+    if (Array.isArray((val as any).items)) return (val as any).items as T[];
+    return [val as T];
+  }
+
+  return [];
+}
+
+const qualifications = computed<QualificationItem[]>(() =>
+  normalizeToArray<QualificationItem>(provider.value?.qualifications)
+);
+
+const clients = computed<ClientItem[]>(() =>
+  normalizeToArray<ClientItem>(provider.value?.clients)
+);
+
 onMounted(async () => {
   // Fetch all districts for mapping
   await fetchAllDistricts("en");
-  
+
   const id = Number(route.params.id);
   if (!id) return;
   provider.value = await fetchProviderDetail(id, "en");
@@ -213,7 +301,7 @@ onMounted(async () => {
 const goBack = () => navigateTo("/directory");
 
 useSeoMeta({
-  title: computed(() => provider.value ? `${provider.value.business_name} - Public Directory` : "Provider"),
+  title: computed(() => (provider.value ? `${provider.value.business_name} - Public Directory` : "Provider")),
   description: computed(() => provider.value?.description || "Service provider profile"),
 });
 </script>
