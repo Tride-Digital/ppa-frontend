@@ -32,12 +32,12 @@
                   offset-x="-8"
                   offset-y="-8"
               >
-                <v-avatar size="40" color="success">
-                  <v-icon color="white" size="18">mdi-robot</v-icon>
+                <v-avatar size="40" class="assistant-avatar">
+                  <v-img :src="assistantImage" alt="Assistant" cover />
                 </v-avatar>
               </v-badge>
-              <v-avatar v-else size="40" color="success">
-                <v-icon color="white" size="18">mdi-robot</v-icon>
+              <v-avatar v-else size="40" class="assistant-avatar">
+                <v-img :src="assistantImage" alt="Assistant" cover />
               </v-avatar>
             </div>
           </div>
@@ -59,8 +59,8 @@
           <!-- Header -->
           <div class="chat-header">
             <div class="header-content">
-              <v-avatar :size="$vuetify.display.xs ? 32 : 36" color="success" class="mr-2 mr-sm-3">
-                <v-icon color="white" :size="$vuetify.display.xs ? 16 : 18">mdi-robot</v-icon>
+              <v-avatar :size="$vuetify.display.xs ? 32 : 36" class="mr-2 mr-sm-3 assistant-avatar">
+                <v-img :src="assistantImage" alt="Assistant" cover />
               </v-avatar>
 
               <div class="header-info">
@@ -117,8 +117,8 @@
                 <!-- Bot Message -->
                 <div v-if="!message.isSent" class="bot-message-container">
                   <div class="bot-message-header">
-                    <v-avatar :size="$vuetify.display.xs ? 20 : 24" color="success">
-                      <v-icon color="white" :size="$vuetify.display.xs ? 10 : 12">mdi-robot</v-icon>
+                    <v-avatar :size="$vuetify.display.xs ? 20 : 24" class="assistant-avatar-small">
+                      <v-img :src="assistantImage" alt="Assistant" cover />
                     </v-avatar>
                     <span class="bot-label">PPA Assistant</span>
                   </div>
@@ -576,8 +576,8 @@
               <!-- Typing indicator -->
               <div v-if="isTyping" class="bot-message-container">
                 <div class="bot-message-header">
-                  <v-avatar :size="$vuetify.display.xs ? 20 : 24" color="success">
-                    <v-icon color="white" :size="$vuetify.display.xs ? 10 : 12">mdi-robot</v-icon>
+                  <v-avatar :size="$vuetify.display.xs ? 20 : 24" class="assistant-avatar-small">
+                    <v-img :src="assistantImage" alt="Assistant" cover />
                   </v-avatar>
                   <span class="bot-label">PPA Assistant</span>
                 </div>
@@ -624,16 +624,16 @@
           offset-y="-8"
           location="top right"
       >
-        <v-btn
+        <button
             class="chat-fab"
-            color="success"
-            :size="$vuetify.display.xs ? 'large' : 'x-large'"
-            icon
-            elevation="8"
             @click="openChat"
         >
-          <v-icon :size="$vuetify.display.xs ? 24 : 28" color="white">mdi-robot</v-icon>
-        </v-btn>
+          <img 
+            :src="assistantImage" 
+            alt="Assistant" 
+            class="fab-image"
+          />
+        </button>
       </v-badge>
 
       <!-- Help Message Bubble -->
@@ -664,6 +664,7 @@
 
 <script setup lang="ts">
 import {ref, computed, nextTick, onMounted, watch} from "vue";
+import assistantImage from '~/assets/chatbot.png'
 
 const config = useRuntimeConfig()
 
@@ -2903,27 +2904,50 @@ onMounted(async () => {
 
 /* ==================== RESPONSIVE FAB ==================== */
 .chat-fab {
-  border-radius: 50% !important;
+  border-radius: 50%;
   transition: all 0.3s ease;
-  position: fixed !important;
-  bottom: 16px !important;
-  right: 20px !important;
+  position: fixed;
+  bottom: 16px;
+  right: 20px;
+  padding: 0;
+  overflow: hidden;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 60px;
+  height: 60px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.fab-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
 }
 
 @media (max-width: 600px) {
   .chat-fab {
-    bottom: 12px !important;
-    right: 12px !important;
+    bottom: 12px;
+    right: 12px;
+    width: 52px;
+    height: 52px;
   }
 }
 
 .chat-fab:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+.chat-fab:active {
+  transform: translateY(0) scale(0.98);
 }
 
 @media (max-width: 600px) {
   .chat-fab:hover {
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1.03);
   }
 }
 
