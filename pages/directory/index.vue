@@ -400,6 +400,14 @@ useSeoMeta({
 .category-title {
   font-weight: 700;
   color: rgb(var(--v-theme-section-title));
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+  line-height: 1;
+  min-height: 55px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
 }
 .category-sub {
   color: rgb(var(--v-theme-section-subtitle));
