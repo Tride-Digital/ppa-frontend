@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="map-header text-center mb-4">
+    <!-- <div class="map-header text-center">
       <h3 id="province-name" class="province-name">
         {{ selectedProvince || 'Select a Province' }}
       </h3>
-    </div>
+    </div> -->
     <div id="sri-lanka-map" class="map-container"></div>
 
     <!-- Hover Card -->
@@ -112,10 +112,23 @@ const provinceColors: Record<string, string> = {
   'Southern': 'rgb(255, 165, 0)',
   'Northern': 'rgb(186, 85, 211)',
   'Eastern': 'rgb(220, 20, 60)',
-  'North Western': 'rgb(218, 165, 32)',
-  'North Central': 'rgb(70, 130, 180)',
+  'North-Western': 'rgb(218, 165, 32)',
+  'North-Central': 'rgb(70, 130, 180)',
   'Uva': 'rgb(199, 21, 133)',
   'Sabaragamuwa': 'rgb(46, 139, 87)'
+}
+
+// Map display names to API route names
+const provinceNameToRoute: Record<string, string> = {
+  'Western': 'Western',
+  'Central': 'Central',
+  'Southern': 'Southern',
+  'Northern': 'Northern',
+  'Eastern': 'Eastern',
+  'North Western': 'North-Western',
+  'North Central': 'North-Central',
+  'Uva': 'Uva',
+  'Sabaragamuwa': 'Sabaragamuwa'
 }
 
 // hover card state
@@ -149,6 +162,7 @@ async function loadProvinceDirectors() {
 
   for (const province of provinces) {
     try {
+      // Use the API route format (with hyphens) for fetching
       const directors = await fetchDirectorsByProvince(province)
       if (directors && directors.length > 0) {
         const directorId = directors[0].id
@@ -196,7 +210,9 @@ function showHoverCard(provinceName: string, event: MouseEvent) {
   setHoverCardPosition(event)
   hoverCard.show = true
 
-  const info = provinceDirectors.value[provinceName]
+  // Convert display name to route format for lookup
+  const routeName = provinceNameToRoute[provinceName] || provinceName
+  const info = provinceDirectors.value[routeName]
 
   // if we haven't loaded this province yet, show loading
   if (info === undefined) {
@@ -611,7 +627,7 @@ const provinceSets = [
 
   // Apply colors and interactions
   provinceSets.forEach((province) => {
-    const color = provinceColors[province.name]
+    const color = provinceColors[province.route]
 
     province.set.attr({
       fill: color,
