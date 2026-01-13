@@ -36,14 +36,38 @@
 
         <v-row v-else>
           <v-col v-for="cat in categories" :key="cat.id" cols="12" sm="6" md="4" lg="3">
-            <v-card class="category-card" elevation="3" hover @click="selectCategory(cat)">
-              <v-img :src="categoryImage(cat)" height="140" cover />
-              <v-card-title class="category-title">
-                <v-icon start size="20">{{ cat.icon || 'mdi-briefcase' }}</v-icon>
-                {{ cat.name }}
-              </v-card-title>
-              <v-card-text class="category-sub">
-                {{ cat.subcategories?.length || 0 }} services
+            <v-card class="category-card" elevation="3" hover>
+              <div @click="selectCategory(cat)">
+                <v-img :src="categoryImage(cat)" height="140" cover />
+                <v-card-title class="category-title">
+                  <v-icon start size="20">{{ cat.icon || 'mdi-briefcase' }}</v-icon>
+                  {{ cat.name }}
+                </v-card-title>
+              </div>
+              
+              <v-card-text class="category-sub pa-0">
+                <v-expansion-panels flat>
+                  <v-expansion-panel>
+                    <v-expansion-panel-title class="text-body-2">
+                      {{ cat.subcategories?.length || 0 }} services
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text>
+                      <v-list density="compact" class="pa-0">
+                        <v-list-item
+                          v-for="sub in cat.subcategories"
+                          :key="sub.id"
+                          :title="sub.name"
+                          class="text-body-2"
+                          @click="selectSubcategory(cat.id, sub.id)"
+                        >
+                          <template #prepend>
+                            <v-icon size="16" class="me-2">mdi-chevron-right</v-icon>
+                          </template>
+                        </v-list-item>
+                      </v-list>
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
               </v-card-text>
             </v-card>
           </v-col>
@@ -282,6 +306,13 @@ const categoryImage = (cat: any) => {
 const selectCategory = (cat: any) => {
   filters.value.category = cat.id;
   filters.value.subcategory = null;
+  // UX: scroll to filters
+  window.scrollTo({ top: 520, behavior: "smooth" });
+};
+
+const selectSubcategory = (categoryId: number, subcategoryId: number) => {
+  filters.value.category = categoryId;
+  filters.value.subcategory = subcategoryId;
   // UX: scroll to filters
   window.scrollTo({ top: 520, behavior: "smooth" });
 };
