@@ -95,9 +95,15 @@ export function usePublicDirectory() {
     loadingProviders.value = true;
     try {
       const apiBase = config.public.backendUrl;
+      
+      // Filter out null/undefined values
+      const cleanParams = Object.fromEntries(
+        Object.entries(params).filter(([_, value]) => value != null)
+      );
+      
       const res = await $fetch<{ items: ProviderCard[]; total: number; page: number; page_size: number }>(
         `${apiBase}/public_directory/providers`,
-        { query: params as any }
+        { query: cleanParams }
       );
       providers.value = res.items;
       total.value = res.total;
