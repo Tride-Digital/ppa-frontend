@@ -32,9 +32,11 @@
               <v-chip v-if="provider.has_certifications" color="success" variant="elevated" size="small">
                 <v-icon start size="small">mdi-certificate</v-icon> Verified
               </v-chip>
-              <v-chip v-if="provider.average_rating" color="warning" variant="tonal" size="small">
-                <v-icon start size="small">mdi-star</v-icon>
-                {{ provider.average_rating }} ({{ provider.rating_count || 0 }})
+              <v-chip class="ml-2" v-if="averageRating" color="success" variant="tonal" size="small">
+                <span v-for="star in 5" :key="star" style="font-size: 0.9rem; margin: 0 2px;">
+                  {{ star <= Math.round(averageRating.average_rating || 0) ? '★' : '☆' }}
+                </span>
+                {{ averageRating.average_rating?.toFixed(1) || '' }} ({{ averageRating.rating_count || 0 }})
               </v-chip>
             </div>
           </v-col>
@@ -205,6 +207,57 @@
                 </v-list>
               </v-card-text>
             </v-card>
+
+            <!-- Reviews and Ratings -->
+            <v-card v-if="reviews.length > 0" class="info-card mt-6" elevation="4">
+              <v-card-title class="bg-section-title text-on-primary">
+                <v-icon start>mdi-comment-multiple</v-icon>
+                Client Reviews ({{ reviews.length }})
+              </v-card-title>
+              <v-card-text class="pt-4">
+                <div v-for="(review, idx) in reviews" :key="idx" class="review-item">
+                  <div class="d-flex justify-space-between align-start mb-2">
+                    <div>
+                      <div class="review-author font-weight-bold">{{ review.client_name || 'Anonymous' }}</div>
+                      <div class="d-flex align-center gap-1 mt-1">
+                        <v-icon
+                          v-for="star in 5"
+                          :key="star"
+                          :color="star <= review.rating ? 'warning' : 'grey-lighten-1'"
+                          size="small"
+                        >
+                          {{ star <= review.rating ? 'mdi-star' : 'mdi-star-outline' }}
+                        </v-icon>
+                      </div>
+                    </div>
+                    <div class="review-date text-caption">{{ formatDate(review.date) }}</div>
+                  </div>
+
+                  <div v-if="review.service_category_used && review.service_category_used.length > 0" class="mb-2">
+                    <div class="text-caption mb-1" style="opacity: 0.7;">Services used:</div>
+                    <div>
+                      <template v-for="(category, catIdx) in review.service_category_used" :key="catIdx">
+                        <v-chip
+                          v-for="(subcategory, subIdx) in category.subcategories"
+                          :key="`${catIdx}-${subIdx}`"
+                          size="x-small"
+                          color="success"
+                          variant="tonal"
+                          class="me-1 mb-1"
+                        >
+                          {{ subcategory }}
+                        </v-chip>
+                      </template>
+                    </div>
+                  </div>
+
+                  <p class="review-comment text-body-2 mt-2">{{ review.review }}</p>
+
+                  <v-divider v-if="idx < reviews.length - 1" class="my-4" />
+                </div>
+              </v-card-text>
+            </v-card>
+            
           </v-col>
         </v-row>
       </v-container>
@@ -225,10 +278,12 @@ import { usePublicDirectory } from "~/composables/usePublicDirectory";
 import { useLocations } from "~/composables/useLocations";
 
 const route = useRoute();
-const { fetchProviderDetail, loadingDetail } = usePublicDirectory();
+const { fetchProviderDetail, loadingDetail, getProviderPublicReviews, getProviderAverageRating } = usePublicDirectory();
 const { districts, fetchAllDistricts } = useLocations();
 
 const provider = ref<any>(null);
+const reviews = ref<any[]>([]);
+const averageRating = ref<any>(null);
 
 // const fallbackImage =
 //   "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=1200&q=60";
@@ -296,7 +351,30 @@ onMounted(async () => {
   const id = Number(route.params.id);
   if (!id) return;
   provider.value = await fetchProviderDetail(id, "en");
+  
+  // Fetch reviews
+  try {
+    const response = await getProviderPublicReviews(id) as any;
+    reviews.value = response.reviews || [];
+  } catch (error) {
+    console.error('Failed to load reviews:', error);
+    reviews.value = [];
+  }
+
+  // Fetch average rating
+  try {
+    averageRating.value = await getProviderAverageRating(id);
+  } catch (error) {
+    console.error('Failed to load average rating:', error);
+    averageRating.value = null;
+  }
 });
+
+const formatDate = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
 
 const goBack = () => navigateTo("/directory");
 
@@ -356,5 +434,20 @@ useSeoMeta({
   padding: 12px;
   border-radius: 12px;
   overflow: auto;
+}
+.review-item {
+  padding: 0;
+}
+.review-author {
+  font-size: 0.95rem;
+  color: rgb(var(--v-theme-on-surface));
+}
+.review-date {
+  color: rgba(var(--v-theme-on-surface), 0.6);
+  font-size: 0.75rem;
+}
+.review-comment {
+  color: rgb(var(--v-theme-on-surface));
+  line-height: 1.6;
 }
 </style>
