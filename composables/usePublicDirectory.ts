@@ -95,9 +95,15 @@ export function usePublicDirectory() {
     loadingProviders.value = true;
     try {
       const apiBase = config.public.backendUrl;
+      
+      // Filter out null/undefined values
+      const cleanParams = Object.fromEntries(
+        Object.entries(params).filter(([_, value]) => value != null)
+      );
+      
       const res = await $fetch<{ items: ProviderCard[]; total: number; page: number; page_size: number }>(
         `${apiBase}/public_directory/providers`,
-        { query: params as any }
+        { query: cleanParams }
       );
       providers.value = res.items;
       total.value = res.total;
@@ -118,6 +124,28 @@ export function usePublicDirectory() {
     }
   };
 
+  const getProviderPublicReviews = async (providerId: number) => {
+    try {
+      const apiBase = config.public.backendUrl;
+      const response = await $fetch(`${apiBase}/public_directory/providers/${providerId}/reviews`);
+      return response;
+    } catch (error: any) {
+      console.error('Get provider reviews error:', error);
+      throw new Error(error.response?.data?.detail || 'Failed to fetch provider reviews');
+    }
+  };
+
+  const getProviderAverageRating = async (providerId: number) => {
+    try {
+      const apiBase = config.public.backendUrl;
+      const response = await $fetch(`${apiBase}/service-provider/${providerId}/rating/average`);
+      return response;
+    } catch (error: any) {
+      console.error('Get provider average rating error:', error?.response?.data || error);
+      throw new Error(error.response?.data?.detail || 'Failed to fetch provider rating');
+    }
+  };
+
   return {
     categories,
     providers,
@@ -128,5 +156,7 @@ export function usePublicDirectory() {
     fetchCategories,
     searchProviders,
     fetchProviderDetail,
+    getProviderPublicReviews,
+    getProviderAverageRating,
   };
 }

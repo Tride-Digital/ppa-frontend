@@ -21,9 +21,20 @@
       </div>
     </div>
 
-    <v-card-title class="provider-name">
-      {{ provider.business_name }}
-    </v-card-title>
+    <div class="title-rating-container">
+      <v-card-title class="provider-name">
+        {{ provider.business_name }}
+      </v-card-title>
+
+      <div class="rating-section" v-if="averageRating">
+        <v-chip color="success" variant="tonal" size="x-small">
+          <span v-for="star in 5" :key="star" style="font-size: 0.85rem; margin: 0 2px;">
+            {{ star <= Math.round(averageRating.average_rating || 0) ? '★' : '☆' }}
+          </span>
+          {{ averageRating.average_rating?.toFixed(1) || '' }} ({{ averageRating.rating_count || 0 }})
+        </v-chip>
+      </div>
+    </div>
 
     <v-card-text class="provider-meta">
       <div class="text-body-2 mb-2" style="opacity:.9" v-if="provider.owner_name">
@@ -71,6 +82,7 @@
 
 <script setup lang="ts">
 import type { ProviderCard } from "~/composables/usePublicDirectory";
+import { usePublicDirectory } from "~/composables/usePublicDirectory";
 
 const props = defineProps<{
   provider: ProviderCard;
@@ -81,6 +93,9 @@ defineEmits<{
   (e: "view"): void;
 }>();
 
+const { getProviderAverageRating } = usePublicDirectory();
+const averageRating = ref<any>(null);
+
 const fallbackImage =
   "https://static.vecteezy.com/system/resources/thumbnails/037/336/395/small/user-profile-flat-illustration-avatar-person-icon-gender-neutral-silhouette-profile-picture-free-vector.jpg";
 
@@ -89,6 +104,15 @@ const serviceTags = computed(() => {
   const subs = props.provider.services?.map(s => s.subcategory).filter(Boolean) as string[];
   const unique = Array.from(new Set(subs));
   return unique.slice(0, 6);
+});
+
+onMounted(async () => {
+  try {
+    averageRating.value = await getProviderAverageRating(props.provider.id);
+  } catch (error) {
+    console.error('Failed to load average rating:', error);
+    averageRating.value = null;
+  }
 });
 
 const copyContact = async () => {
@@ -141,6 +165,9 @@ const copyContact = async () => {
   color: rgb(var(--v-theme-section-title));
   padding-bottom: 8px;
   line-height: 1.3;
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 .provider-meta {
   color: rgb(var(--v-theme-section-subtitle));
@@ -151,6 +178,7 @@ const copyContact = async () => {
 .desc {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -158,5 +186,16 @@ const copyContact = async () => {
   padding: 16px;
   gap: 8px;
   background-color: rgb(var(--v-theme-service-card-bg));
+}
+.title-rating-container {
+  position: relative;
+  padding-right: 140px;
+  min-height: auto;
+}
+.rating-section {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  white-space: nowrap;
 }
 </style>

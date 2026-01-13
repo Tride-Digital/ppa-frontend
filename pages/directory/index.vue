@@ -36,14 +36,38 @@
 
         <v-row v-else>
           <v-col v-for="cat in categories" :key="cat.id" cols="12" sm="6" md="4" lg="3">
-            <v-card class="category-card" elevation="3" hover @click="selectCategory(cat)">
-              <v-img :src="categoryImage(cat)" height="140" cover />
-              <v-card-title class="category-title">
-                <v-icon start size="20">{{ cat.icon || 'mdi-briefcase' }}</v-icon>
-                {{ cat.name }}
-              </v-card-title>
-              <v-card-text class="category-sub">
-                {{ cat.subcategories?.length || 0 }} services
+            <v-card class="category-card" elevation="3" hover>
+              <div @click="selectCategory(cat)">
+                <v-img :src="categoryImage(cat)" height="140" cover />
+                <v-card-title class="category-title">
+                  <v-icon start size="20">{{ cat.icon || 'mdi-briefcase' }}</v-icon>
+                  {{ cat.name }}
+                </v-card-title>
+              </div>
+              
+              <v-card-text class="category-sub pa-0">
+                <v-expansion-panels flat>
+                  <v-expansion-panel>
+                    <v-expansion-panel-title class="text-body-2">
+                      {{ cat.subcategories?.length || 0 }} services
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text>
+                      <v-list density="compact" class="pa-0">
+                        <v-list-item
+                          v-for="sub in cat.subcategories"
+                          :key="sub.id"
+                          class="text-body-2 subcategory-item"
+                          @click="selectSubcategory(cat.id, sub.id)"
+                        >
+                          <template #prepend>
+                            <v-icon size="16" class="me-2">mdi-chevron-right</v-icon>
+                          </template>
+                          <div class="subcategory-text">{{ sub.name }}</div>
+                        </v-list-item>
+                      </v-list>
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
               </v-card-text>
             </v-card>
           </v-col>
@@ -286,6 +310,13 @@ const selectCategory = (cat: any) => {
   window.scrollTo({ top: 520, behavior: "smooth" });
 };
 
+const selectSubcategory = (categoryId: number, subcategoryId: number) => {
+  filters.value.category = categoryId;
+  filters.value.subcategory = subcategoryId;
+  // UX: scroll to filters
+  window.scrollTo({ top: 520, behavior: "smooth" });
+};
+
 const onProvinceChange = async () => {
   filters.value.district = null;
   resetDistricts();
@@ -336,11 +367,6 @@ useSeoMeta({
 <style scoped>
 .hero-section {
   padding: 2.5rem 0 1rem 0;
-  background: linear-gradient(
-    135deg,
-    rgba(var(--v-theme-primary), 0.12) 0%,
-    rgba(var(--v-theme-surface), 0.92) 100%
-  );
 }
 .section-title {
   font-size: 2.5rem;
@@ -369,6 +395,14 @@ useSeoMeta({
 .category-title {
   font-weight: 700;
   color: rgb(var(--v-theme-section-title));
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+  line-height: 1;
+  min-height: 55px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
 }
 .category-sub {
   color: rgb(var(--v-theme-section-subtitle));
@@ -397,4 +431,18 @@ useSeoMeta({
   display: flex;
   flex-direction: column;
 }
+
+.subcategory-item {
+  align-items: flex-start !important;
+  padding: 8px 0 !important;
+}
+
+.subcategory-text {
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+
 </style>
