@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="contact-page pa-0">
     <!-- Hero Section -->
-    <v-container class="py-12">
+    <v-container class="pt-12">
       <v-row justify="center">
         <v-col cols="12"  class="text-center">
           <h2 class="contact-title">Contact Us</h2>
@@ -12,7 +12,6 @@
           <v-btn
             color="secondary"
             size="large"
-            class="mt-4"
             prepend-icon="mdi-comment-alert"
             @click="feedbackDialog = true"
           >
@@ -23,16 +22,19 @@
     </v-container>
 
     <!-- Main Content Section -->
-    <v-container class="py-4">
+    <v-container class="pb-4">
       <v-row>
 
         <!-- Contact Information -->
-        <v-col cols="12" md="5" lg="5">
+        <v-col cols="12" md="7" lg="7">
           <v-card class="contact-info-card h-100" elevation="3">
             <v-card-title class="text-h5 font-weight-bold pa-6 pb-4">
               Contact Information
             </v-card-title>
             <v-card-text class="px-6 pb-6">
+            <v-row>
+              <!-- contact details -->
+              <v-col cols="12" lg="4">
               <!-- Office Address -->
               <div class="contact-info-item mb-6">
                 <div class="d-flex align-start">
@@ -94,7 +96,6 @@
                   </div>
                 </div>
               </div>
-
               <!-- Social Media -->
               <div class="contact-info-item">
                 <div class="d-flex align-start">
@@ -147,12 +148,27 @@
                   </div>
                 </div>
               </div>
+              </v-col>
+
+              <!-- Province Map -->
+              <v-col cols="12" lg="8" class="map-mini-column">
+                <div class="map-mini-head">
+                  <h3 class="text-subtitle-1 font-weight-bold mb-2">Find Your Provincial Coordinator</h3>
+                  <p class="text-body-2 text-medium-emphasis mb-4">
+                    Pick your province to view the assigned coordinator and jump to their profile.
+                  </p>
+                </div>
+                <div class="map-mini-wrapper">
+                  <SvgmapSriLankaMap @province-selected="onProvinceSelected" />
+                </div>
+              </v-col>
+            </v-row>
             </v-card-text>
           </v-card>
         </v-col>
 
         <!-- Contact Form -->
-        <v-col cols="12" md="7" lg="7">
+        <v-col cols="12" md="5" lg="5">
           <v-card class="contact-card h-100" elevation="3">
             <v-card-title class="text-h5 font-weight-bold pa-6 pb-2">
               Get In Touch
@@ -248,26 +264,6 @@
       </v-row>
     </v-container> -->
 
-    <!-- Province map to navigate to assigned director for contacts -->
-    <v-container class="map-section py-8 mt-2">
-      <v-row justify="center" class="mb-6">
-        <v-col cols="12" class="text-center">
-          <h2 class="map-title">Find Your Provincial Coordinator</h2>
-          <p class="map-subtitle">
-            Select your province to get contact details of the assigned coordinator.
-          </p>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-col cols="12" md="10" lg="8">
-          <v-card class="map-card" elevation="4">
-            <v-card-text class="pa-6">
-              <SvgmapSriLankaMap @province-selected="onProvinceSelected" />
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
     <!-- Feedback/Complaints -->
     <v-dialog v-model="feedbackDialog" max-width="700px">
       <v-card class="d-flex flex-column" style="max-height: 80vh;">
@@ -616,6 +612,27 @@ const submitFeedback = async () => {
   background-color: rgb(var(--v-theme-surface));
 }
 
+.map-mini-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.map-mini-head {
+  max-width: 400px;
+}
+
+.map-mini-wrapper {
+  width: 100%;
+  max-width: 250px;
+}
+
+.map-mini-wrapper :deep(svg) {
+  width: 100%;
+  height: 300px;
+}
+
 :deep(.v-field__prepend-inner) {
   padding-top: 8px;
 }
@@ -643,6 +660,10 @@ const submitFeedback = async () => {
 
   .map-container iframe {
     height: 350px;
+  }
+
+  .map-mini-wrapper :deep(svg) {
+    height: 280px;
   }
 }
 
