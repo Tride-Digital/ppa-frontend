@@ -56,13 +56,13 @@
                         <v-list-item
                           v-for="sub in cat.subcategories"
                           :key="sub.id"
-                          :title="sub.name"
-                          class="text-body-2"
+                          class="text-body-2 subcategory-item"
                           @click="selectSubcategory(cat.id, sub.id)"
                         >
                           <template #prepend>
                             <v-icon size="16" class="me-2">mdi-chevron-right</v-icon>
                           </template>
+                          <div class="subcategory-text">{{ sub.name }}</div>
                         </v-list-item>
                       </v-list>
                     </v-expansion-panel-text>
@@ -436,4 +436,18 @@ useSeoMeta({
   display: flex;
   flex-direction: column;
 }
+
+.subcategory-item {
+  align-items: flex-start !important;
+  padding: 8px 0 !important;
+}
+
+.subcategory-text {
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+
 </style>
