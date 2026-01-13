@@ -367,11 +367,6 @@ useSeoMeta({
 <style scoped>
 .hero-section {
   padding: 2.5rem 0 1rem 0;
-  background: linear-gradient(
-    135deg,
-    rgba(var(--v-theme-primary), 0.12) 0%,
-    rgba(var(--v-theme-surface), 0.92) 100%
-  );
 }
 .section-title {
   font-size: 2.5rem;

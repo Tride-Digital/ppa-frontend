@@ -39,6 +39,12 @@
                 {{ averageRating.average_rating?.toFixed(1) || '' }} ({{ averageRating.rating_count || 0 }})
               </v-chip>
             </div>
+            <div class="mt-6">
+              <v-btn variant="outlined" color="primary" class="hero-back-btn" @click="goBack">
+                <v-icon start>mdi-arrow-left</v-icon>
+                Back to Directory
+              </v-btn>
+            </div>
           </v-col>
 
           <!-- <v-col cols="12" md="6">
@@ -152,6 +158,7 @@
           </v-col>
 
           <v-col cols="12" lg="4">
+            <!-- Contact -->
             <v-card class="info-card" elevation="4">
               <v-card-title class="bg-section-title text-on-primary">
                 <v-icon start>mdi-information-outline</v-icon>
@@ -183,9 +190,10 @@
 
                 <v-divider class="my-4" />
 
-                <v-btn color="primary" block @click="goBack">
-                  <v-icon start>mdi-arrow-left</v-icon>
-                  Back to Directory
+                <!-- Request a Quote button ONLY inside contact card -->
+                <v-btn color="primary" block @click="quoteDialog = true">
+                  <v-icon start>mdi-email-fast</v-icon>
+                  Request a Quote
                 </v-btn>
               </v-card-text>
             </v-card>
@@ -270,12 +278,23 @@
         <v-btn color="primary" class="mt-4" @click="goBack">Back</v-btn>
       </v-col>
     </v-row>
+
+    <!-- Popup Quote Form -->
+    <RequestQuoteDialog
+      v-if="provider?.id"
+      v-model="quoteDialog"
+      :provider-id="provider.id"
+      :provider-name="provider.business_name"
+      @submitted="onQuoteSubmitted"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from "vue";
 import { usePublicDirectory } from "~/composables/usePublicDirectory";
 import { useLocations } from "~/composables/useLocations";
+import RequestQuoteDialog from "~/components/directory/RequestQuoteDialog.vue";
 
 const route = useRoute();
 const { fetchProviderDetail, loadingDetail, getProviderPublicReviews, getProviderAverageRating } = usePublicDirectory();
@@ -284,6 +303,7 @@ const { districts, fetchAllDistricts } = useLocations();
 const provider = ref<any>(null);
 const reviews = ref<any[]>([]);
 const averageRating = ref<any>(null);
+const quoteDialog = ref(false);
 
 // const fallbackImage =
 //   "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=1200&q=60";
@@ -403,6 +423,11 @@ useSeoMeta({
   line-height: 1.7;
   color: rgb(var(--v-theme-section-subtitle));
 }
+
+.hero-back-btn {
+  border-radius: 10px;
+}
+
 .section-title {
   font-size: 2rem;
   font-weight: 700;
@@ -421,6 +446,15 @@ useSeoMeta({
   overflow: hidden;
   border: 1px solid rgba(var(--v-theme-outline), 0.12);
 }
+
+.bg-section-title {
+  background: rgb(var(--v-theme-primary));
+}
+
+.text-on-primary {
+  color: rgb(var(--v-theme-on-primary));
+}
+
 .label {
   font-size: 0.85rem;
   opacity: 0.75;
