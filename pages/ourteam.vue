@@ -42,15 +42,20 @@
                   </template>
                 </v-img>
               </div>
-              <h3 class="director-name mt-4">
-                Director
+              <p class="director-title mt-4">
                 <template v-if="getDirectorTitle(director.id)">
-                  of {{ getDirectorTitle(director.id) }} {{ director.name }}
+                  Director of {{ getDirectorTitle(director.id) }}
                 </template>
                 <template v-else>
-                 - {{ director.name }}
+                  {{ getDirectorTitle(director.id) || 'Director' }}
                 </template>
-              </h3>
+              </p>
+
+              <h1 class="director-name">{{ director.name }}</h1>
+
+              <p class="director-province" v-if="getDirectorProvince(director.id)">
+                  {{ getDirectorProvince(director.id) }}
+              </p>
             </v-card-text>
           </v-card>
         </div>
@@ -163,10 +168,20 @@ const navigateToDirector = (id: string | number, title?: string, province?: stri
 }
 .director-name {
   font-size: 1.2rem;
+  color: rgb(var(--v-theme-contact-title));
+}
+
+.director-title {
+  font-size: 1rem;
   font-weight: 600;
   color: rgb(var(--v-theme-contact-title));
-  line-height: 1.3;
   margin: 0;
+}
+
+.director-province {
+  font-size: 0.8rem;
+  color: rgb(var(--v-theme-contact-title));
+  margin-top: 0rem;
 }
 
 /* Custom 5-up column on large screens */
