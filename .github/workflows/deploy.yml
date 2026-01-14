@@ -3,7 +3,7 @@ name: Deploy Nuxt Hybrid App to AWS Lightsail
 on:
   push:
     branches:
-      - qa
+      - release_20260114_v1
 
 jobs:
   deploy:
@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.LIGHTSAIL_USER }}
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           source: ".output/**"
-          target: "/home/ubuntu/qa/ppa-frontend"
+          target: "/home/ubuntu/ppa-frontend"
           port: 22
           rm: true
           overwrite: true
@@ -45,7 +45,7 @@ jobs:
           username: ${{ secrets.LIGHTSAIL_USER }}
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           source: "package.json,package-lock.json"
-          target: "/home/ubuntu/qa/ppa-frontend"
+          target: "/home/ubuntu/ppa-frontend"
           port: 22
           overwrite: true
 
@@ -60,7 +60,7 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 20.19.3
 
-            cd /home/ubuntu/qa/ppa-frontend
+            cd /home/ubuntu/ppa-frontend
             npm install --omit=dev
-            pm2 restart qappa-front-end
+            pm2 restart ppa-rontend
             sudo systemctl restart nginx
