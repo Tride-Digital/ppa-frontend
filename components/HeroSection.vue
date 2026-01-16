@@ -19,6 +19,14 @@
         <v-row align="center" justify="center" class="fill-height">
           <v-col cols="12" md="10" lg="9" xl="8" class="text-center">
             <div class="hero-copy-stage">
+              <div class="hero-welcome-paragraph mb-8">
+                <h1 class="welcome-title">
+                  Welcome to Proprietary Planters Alliance (Pvt) Ltd (PPA). 
+                </h1>
+                <h3 class="welcome-text">
+                  If you are a planter, investor, service provider, researcher, or policymaker, please briefly tell us your requirement and share your contact details. One of our Directors will reach out to you shortly.
+                </h3>
+              </div>
               <Transition name="hero-copy" :duration="{ enter: uiEnterMs, leave: uiLeaveMs }" appear>
                 <div :key="activeKey" class="hero-copy-slab"
                   :style="{
@@ -28,12 +36,13 @@
                     '--travelY': travelY
                   }"
                 >
-                  <h1 class="hero-title mb-6">{{ activeSlide.title }} </h1>
+                  <h1 class="hero-title mb-3">{{ activeSlide.title }} </h1>
                 </div>
               </Transition>
               <div class="hero-buttons-fixed">
-                <v-btn color="primary" size="large" class="me-4 mb-3" to="/services">Our Services</v-btn>
-                <v-btn color="white" size="large" class="mb-3" to="/providerselector">Join PPA</v-btn>
+                <!-- <v-btn color="primary" size="large" class="me-4 mb-3" to="/services">Our Services</v-btn> -->
+                <v-btn color="primary" size="large" class="me-4 mb-3" to="/providerselector">Join PPA</v-btn>
+                <v-btn color="white" size="large" class="mb-3" to="/contactus">Contact Us</v-btn>
               </div>
             </div>
           </v-col>
@@ -195,7 +204,7 @@ onMounted(() => {
 .hero-overlay { position: absolute; inset: 0; background: transparent; display: flex; align-items: center; z-index: 2; }
 .hero-content { height: 100%; display: flex; align-items: center; }
 .hero-title {
-  font-size: 3rem; font-weight: 100; color: #fff;
+  font-weight: 100; color: #fff;
   text-shadow: 2px 2px 8px rgba(0,0,0,.7);
   line-height: 1.2;
   margin-bottom: 0;
@@ -221,16 +230,41 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-bottom: 120px;
+  padding-bottom: 200px;
   max-width: 90vw;
+  margin: 0 auto;
+  min-height: 500px;
+}
+.hero-welcome-paragraph {
+  flex-shrink: 0;
+  margin-bottom: 10px;
+  width: 100%;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+}
+.welcome-title {
+  font-size: 3rem; font-weight: 100; color: #fff;
+  font-weight: 400;
+  color: #fff;
+  text-shadow: 8px 8px 16px rgba(0,0,0,.7);
+  line-height: 1.4;
+  margin: 0 auto 15px auto;
+}
+.welcome-text {
+  font-size: 1.5rem; font-weight: 100; color: #fff;
+  font-weight: 300;
+  color: #fff;
+  text-shadow: 2px 2px 8px rgba(0,0,0,.7);
+  line-height: 1.8;
   margin: 0 auto;
 }
 .hero-copy-slab {
   position: absolute;
-  top: 0;
+  top: 250px;
   left: 0;
   right: 0;
-  bottom: 120px;
+  height: 200px;
   display: flex; 
   flex-direction: column; 
   align-items: center; 
@@ -256,16 +290,31 @@ onMounted(() => {
 @media (prefers-reduced-motion: reduce) {
   .hero-copy-enter-active, .hero-copy-leave-active { transition-duration: 1ms !important; }
 }
+@media (min-width: 961px) and (max-width: 1280px) {
+  .hero-copy-slab {
+    top: 300px;
+  }
+}
 @media (max-width: 768px) {
+  .welcome-title {
+    font-size: 2.2rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+  .welcome-text {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
   .hero-title { 
-    font-size: 2.2rem; 
+    font-size: 1.7rem;
     line-height: 1.25;
   }
   .hero-copy-stage { 
     padding-bottom: 180px;
-    max-width: 95vw;
   }
-  .hero-copy-slab { bottom: 210px; }
+  .hero-copy-slab { 
+    top: 200px;
+  }
   .hero-buttons, .hero-buttons-fixed { 
     display: flex; 
     flex-direction: column; 
@@ -283,22 +332,35 @@ onMounted(() => {
   .navigation-buttons { padding: 0 15px; }
 }
 @media (max-width: 480px) {
+  .welcome-title {
+    font-size: 1.8rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+  .welcome-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
   .hero-title { 
-    font-size: 1.8rem; 
+    font-size: 1.5rem; 
     line-height: 1.3;
     padding: 0 10px;
   }
   .hero-copy-stage { 
-    padding-bottom: 200px;
+    position: absolute;
+    top: 100px;
+    padding-bottom: 20px;
     max-width: 100vw;
     padding-inline: 20px;
   }
-  .hero-copy-slab { bottom: 230px; }
+  .hero-copy-slab { top: 350px; }
   .hero-buttons-fixed {
     padding-top: 15px;
     bottom: -50px;
   }
   .hero-buttons .v-btn, .hero-buttons-fixed .v-btn { 
+    bottom: -80px;
     width: 260px;
     font-size: 0.9rem;
   }
@@ -306,21 +368,25 @@ onMounted(() => {
   .navigation-buttons { padding: 0 10px; }
 }
 @media (max-width: 360px) {
-  .hero-title { 
-    font-size: 1.6rem; 
-    line-height: 1.4;
+  .welcome-title {
+    font-size: 1.5rem;
+  }
+  .hero-title {
+    font-size: 1.2rem; 
+    line-height: 1.3;
     padding: 0 15px;
   }
   .hero-copy-stage { 
+    top: 30px;
     padding-bottom: 220px;
     max-width: 100vw;
     padding-inline: 15px;
   }
-  .hero-copy-slab { bottom: 250px; }
+  .hero-copy-slab { top: 250px; }
   .hero-buttons-fixed { 
-    width: 240px;
+    width: 150px;
     font-size: 0.85rem;
-    bottom: -60px;
+    bottom: 100px;
   }
 }
 </style>
