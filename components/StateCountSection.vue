@@ -5,7 +5,9 @@
         <div class="ring outer"></div>
         <div class="ring inner"></div>
         <div class="circle">
-          <div class="value">{{ getAnimatedValue(s, i) }}</div>
+          <div class="value">
+            <span v-if="getValuePrefix(s, i)" class="currency-prefix">{{ getValuePrefix(s, i) }}</span>{{ getAnimatedValueWithoutPrefix(s, i) }}
+          </div>
           <div class="label">
             <div v-for="(line, j) in splitLabel(s.label)" :key="j">{{ line }}</div>
           </div>
@@ -75,7 +77,7 @@ const stopBackgroundRotation = () => {
   }
 }
 const parseValue = (value: string) => {
-  const match = value.match(/(\$?)(\d+)(.*)/)
+  const match = value.match(/([A-Z$]*)(\d+)(.*)/)
   if (match) {
     return {
       prefix: match[1],
@@ -152,6 +154,15 @@ const getAnimatedValue = (stat: { value: string }, index: number) => {
   const currentValue = animatedValues.value[index] || 0
   return `${parsed.prefix}${currentValue}${parsed.suffix}`
 }
+const getValuePrefix = (stat: { value: string }, index: number) => {
+  const parsed = parseValue(stat.value)
+  return parsed.prefix
+}
+const getAnimatedValueWithoutPrefix = (stat: { value: string }, index: number) => {
+  const parsed = parseValue(stat.value)
+  const currentValue = animatedValues.value[index] || 0
+  return `${currentValue}${parsed.suffix}`
+}
 function posStyle(s: { x: number; y: number }) {
   return {
     left: `${s.x}%`,
@@ -225,6 +236,10 @@ function splitLabel(label: string) {
   line-height: 1.1;
   margin-bottom: 3px;
   transition: transform 0.1s ease;
+}
+.currency-prefix {
+  font-size: 0.6em;
+  opacity: 0.85;
 }
 @media (min-width: 400px) {
   .value { font-size: 14px; }
