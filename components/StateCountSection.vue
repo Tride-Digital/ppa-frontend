@@ -17,6 +17,8 @@
 </template>
 
 <script setup lang="ts">
+const { userApplications, estateRegistrations, serviceProviders, productionCostStats, fetchUserAppStats, fetchEstateStats, fetchProviderStats, fetchProductionCostStats } = useStats()
+
 const props = defineProps({
   backgroundUrl: { 
     type: [String, Array] as PropType<string | string[]>, 
@@ -28,22 +30,22 @@ const props = defineProps({
   },
   autoChangeInterval: { type: Number, default: 5000 }, // 5 seconds
   size: { type: Number, default: 220 },
-  stats: {
-    type: Array as () => Array<{
-      value: string
-      label: string
-      x: number
-      y: number
-    }>,
-    default: () => ([
-      { value: '80+',     label: 'Active Estates',           x: 35, y: 25 },
-      { value: '$500M+',  label: 'Export Value',             x: 65, y: 25 },
-      { value: '1500+',   label: 'Registered\nFarmers',      x: 20, y: 63 },
-      { value: '20+',     label: 'Agricultural\nCrops Grown',x: 50, y: 63 },
-      { value: '30+',     label: 'Export Countries',         x: 80, y: 63 },
-    ]),
-  },
 })
+
+const stats = computed(() => {
+  const revenuePerHectare = estateRegistrations.value.crop_stats.total_harvested_area > 0
+    ? Math.round(productionCostStats.value.total_revenue_all_clients / estateRegistrations.value.crop_stats.total_harvested_area)
+    : 0;
+  
+  return [
+    { value: `${estateRegistrations.value.crop_stats.total_harvested_area}+`, label: 'Total Acres', x: 35, y: 25 },
+    { value: `LKR${revenuePerHectare}+`, label: 'Monthly revenue per Hectare', x: 65, y: 25 },
+    { value: `${estateRegistrations.value.approved}+`, label: 'Registered Retainer\nClients', x: 20, y: 63 }, // has correct label and value
+    { value: `${estateRegistrations.value.crop_stats.distinct_crops_count}+`, label: 'Agricultural\nCrops Grown', x: 50, y: 63 },
+    { value: `${serviceProviders.value.approved}+`, label: 'Registered Service Providers', x: 80, y: 63 }, // has correct label and value
+  ];
+})
+
 const sectionRef = ref<HTMLElement>()
 const animatedValues = ref<number[]>([])
 const hasAnimated = ref(false)
@@ -83,9 +85,20 @@ const parseValue = (value: string) => {
   }
   return { prefix: '', number: 0, suffix: '' }
 }
-onMounted(() => {
+onMounted(async () => {
   initializeBackground()
-  animatedValues.value = new Array(props.stats.length).fill(0)
+  try {
+    await Promise.all([
+      fetchUserAppStats(),
+      fetchEstateStats(),
+      fetchProviderStats(),
+      fetchProductionCostStats()
+    ])
+  } catch (error) {
+    console.error('Error fetching stats:', error)
+  }
+  
+  animatedValues.value = new Array(stats.value.length).fill(0)
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -112,7 +125,7 @@ watch(() => props.backgroundUrl, () => {
   initializeBackground()
 }, { deep: true })
 const startAnimation = () => {
-  props.stats.forEach((stat, index) => {
+  stats.value.forEach((stat, index) => {
     const parsed = parseValue(stat.value)
     const targetValue = parsed.number
     const duration = 4000
