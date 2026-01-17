@@ -100,6 +100,7 @@
                 <v-select
                   v-model="filters.category"
                   :items="categoryItems"
+                  @click="filters.subcategory = null"
                   label="Category"
                   variant="outlined"
                   density="comfortable"
