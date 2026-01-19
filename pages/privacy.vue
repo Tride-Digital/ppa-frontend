@@ -19,7 +19,7 @@ const props = defineProps({
   },
   discriptiption: {
     type: String,
-    default: 'currently under development. Please check back soon!'
+    default: 'Currently under development. Please check back soon!'
   },
 })
 </script>
