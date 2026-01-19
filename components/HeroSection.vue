@@ -63,7 +63,7 @@ const autoplayTimer = ref(null)
 const isManualNavigation = ref(false)
 
 const slidesMeta = [
-  { title: 'Empowering Proprietary Planters (PP)', learnLabel: 'Join PPA', learnTo: '/aboutus', joinLabel: 'Join PPA' },
+  { title: 'Empowering Proprietary Planters in Sri Lanka', learnLabel: 'Join PPA', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'Together, we are shaping plantations into profitable, sustainable, and globally competitive enterprises.', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'From Tea to Cinnamon to Rubber: Innovation That Adds Value', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'Sustainable Practices for Future Generations', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
