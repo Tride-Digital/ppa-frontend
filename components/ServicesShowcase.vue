@@ -81,7 +81,7 @@ const localItems: ServiceItem[] = [
 const itemsToRender = computed(() => (props.items?.length ? props.items : localItems))
 const subtitle = computed(() => props.subtitle || 'Featured Services')
 const mainTitle = computed(() => props.mainTitle || 'Discover Services We Offer for Proprietary Planters')
-const lead = computed(() => props.lead || 'These 28 services are organized into 7 key categories, which should be clearly displayed in the cards for easy navigation. Each category encompasses a range of specialized services designed to meet the diverse needs of our clients.')
+const lead = computed(() => props.lead || 'Our services are grouped into seven categories, so you can quickly find the support you need. Each category includes specialised services designed to meet the diverse needs of our clients.')
 function goToServices() {
   window.location.href = '/services'
 }
