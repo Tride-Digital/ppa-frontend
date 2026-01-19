@@ -171,7 +171,7 @@
         <v-col cols="12" md="5" lg="5">
           <v-card class="contact-card h-100" elevation="3">
             <v-card-title class="text-h5 font-weight-bold pa-6 pb-2">
-              Get In Touch
+              Get in touch
             </v-card-title>
             <v-card-subtitle class="px-6 pb-4">
               Fill out the form below and we'll get back to you as soon as possible.
