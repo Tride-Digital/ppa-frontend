@@ -54,7 +54,7 @@ const props = defineProps<{
 useTheme()
 const localItems: ServiceItem[] = [
 {
-    title: 'Plantation Advisory and Governence',
+    title: 'Plantation Advisory and Governance',
     description:
       'Strategic end-to-end guidance on estate planning, compliance, and governance to run each plantation as a professionally managed business unit.',
     image: '/images/services/service-1.png',
@@ -87,7 +87,7 @@ function goToServices() {
 }
 function goToServiceCategory(serviceTitle: string) {
   const categoryMap: { [key: string]: number } = {
-    'Plantation Advisory and Governence': 0,
+    'Plantation Advisory and Governance': 0,
     'HRM & Labour Transformation': 1,
     'Agronomy & Soil Health Services': 2,
     'Sustainability, ESG & Certification': 3
