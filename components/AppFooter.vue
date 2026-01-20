@@ -90,7 +90,7 @@ const socialLinks = ref([
 const contactInfo = ref([
   {
     icon: 'mdi-map-marker',
-    text: 'No. 28, U. E. Perera Mawatha, Rajagiriya. 10107',  
+    text: 'No. 28, U. E. Perera Mawatha, Rajagiriya, 10107',  
     type: 'address'
   },
   {

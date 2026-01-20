@@ -112,7 +112,7 @@
                 <v-select
                   v-model="filters.subcategory"
                   :items="subcategoryItems"
-                  label="Sub-category"
+                  label="Subcategory"
                   variant="outlined"
                   density="comfortable"
                   item-title="title"

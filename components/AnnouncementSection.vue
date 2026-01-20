@@ -77,7 +77,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 const config = useRuntimeConfig()
-const sectionDescription = ref('Stay informed about upcoming events, policy updates, member benefits, and industry developments that matter to our plantation community')
+const sectionDescription = ref('Stay informed about upcoming events, policy updates, member benefits, and industry developments that matter to our plantation community.')
 const isModalOpen = ref(false)
 const selectedAnnouncement = ref(null)
 const announcements = ref([])

@@ -70,7 +70,7 @@
                 @click="goToRegister"
                 append-icon="mdi-arrow-right"
               >
-                Register as Retainer client
+                Register as a Retainer client
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -166,7 +166,7 @@
                 @click="navigateToServiceProvider"
                 append-icon="mdi-arrow-right"
               >
-                Register as PPA Service Provider
+                Register as a PPA Service Provider
               </v-btn>
             </v-card-actions>
           </v-card>
