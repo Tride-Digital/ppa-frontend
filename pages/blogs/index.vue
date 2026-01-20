@@ -89,8 +89,8 @@
             <v-col cols="12" md="6" class="text-center">
               <div class="empty-state">
                 <v-icon size="64" color="grey-lighten-1" class="mb-4">mdi-post-outline</v-icon>
-                <h3 class="text-h5 mb-2 text-grey-darken-1">No blog posts found</h3>
-                <p class="text-grey-darken-1">Check back later for new content!</p>
+                <h3 class="text-h5 mb-2 text-grey-darken-1">No blog posts yet</h3>
+                <p class="text-grey-darken-1">Please check back soon!</p>
               </div>
             </v-col>
           </v-row>

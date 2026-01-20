@@ -43,7 +43,7 @@
                     <h3 class="text-subtitle-1 font-weight-bold mb-2">Office Address</h3>
                     <p class="text-body-2 text-medium-emphasis mb-0">
                       No. 28, U. E. Perera Mawatha<br>
-                      Rajagiriya. 10107<br>
+                      Rajagiriya, 10107<br>
                       Sri Lanka
                     </p>
                   </div>
@@ -59,7 +59,7 @@
                     <p class="text-body-2 text-medium-emphasis mb-0">
                       <a href="tel:+94772376343" class="contact-link">+94 77 237 6343</a> <br/>
                       <a href="tel:+94714807594" class="contact-link">+94 71 480 7594</a> <br/>
-                      <a href="tel:+94772376343" class="contact-link">+94 76 949 9270</a> (WhatsApp Only)<br/>
+                      <a href="tel:+94772376343" class="contact-link">+94 76 949 9270</a> (WhatsApp only)<br/>
                     </p>
                   </div>
                 </div>
@@ -171,7 +171,7 @@
         <v-col cols="12" md="5" lg="5">
           <v-card class="contact-card h-100" elevation="3">
             <v-card-title class="text-h5 font-weight-bold pa-6 pb-2">
-              Get In Touch
+              Get in touch
             </v-card-title>
             <v-card-subtitle class="px-6 pb-4">
               Fill out the form below and we'll get back to you as soon as possible.
