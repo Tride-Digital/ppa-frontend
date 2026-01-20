@@ -1052,29 +1052,18 @@ const initializeChat = () => {
     currentStatus.value = `Welcome back, ${userName}!`;
     addBotMessage(
         `Hello ${userName}, welcome back to the <strong>PPA Virtual Office</strong>!<br><br>` +
-        `How can I assist you today?`,
+        `How can I assist you today? Select a question below:`,
         {
-          options: [
-            {label: "Connect with a Director", value: "director", icon: "1️⃣"},
-            {label: "Explore Services & Projects", value: "services", icon: "2️⃣"},
-            {label: "Partnership / Investment Inquiry", value: "partnership", icon: "3️⃣"},
-            {label: "General Information", value: "info", icon: "4️⃣"},
-            {label: "FAQs & Help", value: "show_faq", icon: "❓"},
-          ],
-        },
+          options: faqList.map(faq => ({ label: faq.label, value: faq.value })),
+        }
     );
   } else {
     // First-time user greeting
     addBotMessage(
-        `Welcome to the <strong>Proprietary Planters Alliance (PPA) Virtual Office</strong> -- Sri Lanka's first digital hub for Proprietary Planters.<br><br>I'm your assistant. May I know what brings you here today?`,
+        // `Welcome to the <strong>Proprietary Planters Alliance (PPA) Virtual Office</strong> — Sri Lanka's first digital hub for Proprietary Planters.<br><br>` +
+        `I'm your assistant. How can I help you today? Select a question below:`,
         {
-          options: [
-            {label: "Connect with a Director", value: "director", icon: "1️⃣"},
-            {label: "Explore Services & Projects", value: "services", icon: "2️⃣"},
-            {label: "Partnership / Investment Inquiry", value: "partnership", icon: "3️⃣"},
-            {label: "General Information", value: "info", icon: "4️⃣"},
-            {label: "FAQs & Help", value: "show_faq", icon: "❓"},
-          ],
+          options: faqList.map(faq => ({ label: faq.label, value: faq.value })),
         }
     );
   }
@@ -1121,14 +1110,7 @@ const selectOption = (option: { label: string; value: string; icon?: string }) =
   addUserMessage(option.label);
 
   setTimeout(() => {
-    // FAQ Menu
-    if (option.value === "show_faq") {
-      showFAQMenu();
-      return;
-    }
-
-    // faq options handling
-    if (option.value.startsWith("faq_")) {
+        if (option.value.startsWith("faq_")) {
       handleFAQ(option.value);
       return;
     }
@@ -1151,6 +1133,12 @@ const selectOption = (option: { label: string; value: string; icon?: string }) =
         break;
       case "not_now":
         askForLeadCapture();
+        break;
+      case "show_faq":
+        showFAQMenu();
+        break;
+      default:
+        showFAQMenu();
         break;
     }
   }, 500);
@@ -1262,8 +1250,11 @@ const submitServiceRequest = async () => {
           `Your request for <strong>${subcategoryName}</strong> (${categoryName}) has been submitted successfully.<br>` +
           `📧 Reference ID: <strong>#${response.reference_id}</strong><br>` +
           `📧 A confirmation email ${response.email_sent ? 'has been sent' : 'will be sent'} to you shortly.<br>` +
-          `You'll hear back from our team soon.`,
-          {quickActions: true}
+          `You'll hear back from our team soon.<br><br>` +
+          `Is there anything else I can help you with?`,
+          {
+            options: faqList.slice(0, 4).map(faq => ({ label: faq.label, value: faq.value })),
+          }
       );
 
       // Reset form
@@ -1327,9 +1318,9 @@ const showServices = () => {
       "Would you like to connect with a director for any of these services?",
       {
         options: [
-          {label: "Yes, connect me with a director", value: "director"},
-          {label: "Submit a service request", value: "submit_request"},
-          {label: "Tell me more", value: "info"},
+          {label: "📞 Connect with a director", value: "director"},
+          {label: "📝 Submit a service request", value: "submit_request"},
+          {label: "🔙 Back to FAQs", value: "show_faq"},
         ],
       }
   );
@@ -1359,8 +1350,10 @@ const showGeneralInfo = () => {
       "• Direct access to expert directors and specialized services<br>" +
       "• End-to-end support from planning to market access<br>" +
       "• Proven track record in sustainable agriculture and HRM reform<br><br>" +
-      "Explore our key resources and documents:",
-      {quickActions: true}
+      "What would you like to know more about?",
+      {
+        options: faqList.slice(0, 4).map(faq => ({ label: faq.label, value: faq.value })),
+      }
   );
 };
 
@@ -1384,7 +1377,11 @@ const submitLead = async (subscribe: boolean) => {
       addBotMessage(
           "✅ Great! You've been added to our mailing list.<br>" +
           "We'll keep you updated on PPA's news, projects, and funding opportunities.<br><br>" +
-          "Thank you for joining the PPA community!"
+          "Thank you for joining the PPA community!<br><br>" +
+          "Is there anything else I can help you with?",
+          {
+            options: faqList.slice(0, 4).map(faq => ({ label: faq.label, value: faq.value })),
+          }
       );
       showNotification("Successfully subscribed to PPA updates!", "success");
     } catch (error) {
@@ -1395,7 +1392,11 @@ const submitLead = async (subscribe: boolean) => {
     leadLoading.value = false;
     addBotMessage(
         "No problem! Feel free to explore our website and return anytime.<br>" +
-        "Our Virtual Office is always here to assist you with PPA services and information."
+        "Our Virtual Office is always here to assist you with PPA services and information.<br><br>" +
+        "Is there anything else I can help you with?",
+        {
+          options: faqList.slice(0, 4).map(faq => ({ label: faq.label, value: faq.value })),
+        }
     );
   }
 
@@ -1406,12 +1407,6 @@ const submitLead = async (subscribe: boolean) => {
     phone: "",
     interest: "",
   };
-
-  setTimeout(() => {
-    addBotMessage("Is there anything else I can help you with today?", {
-      quickActions: true,
-    });
-  }, 1500);
 };
 
 const handleQuickAction = (action: { label: string; value: string }) => {
@@ -1437,8 +1432,8 @@ const handleQuickAction = (action: { label: string; value: string }) => {
             "Contact a director for detailed application guidance and personalized support.",
             {
               options: [
-                {label: "Connect with Funding Expert", value: "director"},
-                {label: "Learn More About Requirements", value: "info"},
+                {label: "📞 Connect with Funding Expert", value: "director"},
+                {label: "🔙 Back to FAQs", value: "show_faq"},
               ],
             }
         );
@@ -1454,8 +1449,8 @@ const handleQuickAction = (action: { label: string; value: string }) => {
             "Our directors provide expert guidance on compliance and implementation strategies.",
             {
               options: [
-                {label: "Discuss Compliance Strategy", value: "director"},
-                {label: "More Reform Information", value: "info"},
+                {label: "📞 Discuss Compliance Strategy", value: "director"},
+                {label: "🔙 Back to FAQs", value: "show_faq"},
               ],
             }
         );
@@ -1472,53 +1467,8 @@ const handleQuickAction = (action: { label: string; value: string }) => {
             "Connect with our HRM specialists for implementation guidance.",
             {
               options: [
-                {label: "Talk to HR Expert", value: "director"},
-                {label: "Implementation Timeline", value: "info"},
-              ],
-            }
-        );
-        break;
-      case "avocado":
-        addBotMessage(
-            "<strong>Avocado Project Details</strong><br><br>" +
-            "Sri Lanka's pioneering commercial avocado cultivation initiative:<br><br>" +
-            "🥑 <strong>Project Scope:</strong><br>" +
-            "• 500+ acre pilot cultivation program<br>" +
-            "• Premium variety selection and testing<br>" +
-            "• Sustainable farming techniques<br>" +
-            "• Export market development<br><br>" +
-            "📊 <strong>Expected Outcomes:</strong><br>" +
-            "• 40% higher yield than traditional crops<br>" +
-            "• Direct access to international markets<br>" +
-            "• Year-round income stability for farmers<br><br>" +
-            "Join our avocado cultivation program today!",
-            {
-              options: [
-                {label: "Join Avocado Program", value: "director"},
-                {label: "Investment Opportunities", value: "partnership"},
-              ],
-            }
-        );
-        break;
-      case "zengate":
-        addBotMessage(
-            "<strong>Zengate Trade Platform</strong><br><br>" +
-            "Your digital gateway to international agricultural markets:<br><br>" +
-            "🌐 <strong>Platform Features:</strong><br>" +
-            "• Direct buyer-seller connections worldwide<br>" +
-            "• Real-time commodity pricing and market trends<br>" +
-            "• Integrated logistics and shipping coordination<br>" +
-            "• Secure payment processing and trade finance<br>" +
-            "• Quality certification and compliance tracking<br><br>" +
-            "📈 <strong>Success Statistics:</strong><br>" +
-            "• 200+ international buyers registered<br>" +
-            "• 40% faster export processing<br>" +
-            "• 25% higher profit margins for farmers<br><br>" +
-            "Register through our export specialists for personalized onboarding.",
-            {
-              options: [
-                {label: "Connect with Export Expert", value: "director"},
-                {label: "Platform Registration", value: "submit_request"},
+                {label: "📞 Talk to HR Expert", value: "director"},
+                {label: "🔙 Back to FAQs", value: "show_faq"},
               ],
             }
         );
@@ -1543,9 +1493,9 @@ const handleFAQ = (faqKey: string) => {
         "Think of this as your one-stop digital platform for all plantation-related needs!",
         {
           options: [
-            { label: "Explore Services", value: "services" },
-            { label: "Meet Our Directors", value: "director" },
-            { label: "More FAQs", value: "show_faq" },
+            { label: "🌱 What services offered?", value: "faq_services" },
+            { label: "📞 How to contact directors?", value: "faq_contact" },
+            { label: "🔙 Back to all FAQs", value: "show_faq" },
           ],
         }
       );
@@ -1556,20 +1506,20 @@ const handleFAQ = (faqKey: string) => {
         "<strong>How to Contact Our Directors</strong><br><br>" +
         "There are two easy ways:<br><br>" +
         "1️⃣ <strong>Through Chat</strong>:<br>" +
-        "• Select 'Connect with a Director'<br>" +
+        "• Select 'Connect with a Director' below<br>" +
         "• Browse available directors<br>" +
         "• Click to view their profile<br><br>" +
         "2️⃣ <strong>Direct Profile Visit</strong>:<br>" +
-        "• Navigate to Directors page<br>" +
+        "• Navigate to Directors page on website<br>" +
         "• View full qualifications<br>" +
         "• Submit service requests<br>" +
         "• Get contact information<br><br>" +
         "Each director specializes in different areas - choose based on your needs!",
         {
           options: [
-            { label: "View Directors Now", value: "director" },
-            { label: "Submit Service Request", value: "submit_request" },
-            { label: "More FAQs", value: "show_faq" },
+            { label: "📞 Connect with a Director Now", value: "director" },
+            { label: "📝 How to submit request?", value: "faq_submit" },
+            { label: "🔙 Back to all FAQs", value: "show_faq" },
           ],
         }
       );
@@ -1587,13 +1537,13 @@ const handleFAQ = (faqKey: string) => {
         "📦 <strong>Export Services</strong><br>" +
         "Access to international markets and export facilitation support<br><br>" +
         "🌾 <strong>Special Projects</strong><br>" +
-        "Custom project development for innovative agricultural ventures and diversification<br><br>" +
+        "Custom project development for innovative agricultural ventures<br><br>" +
         "Would you like to connect with a director for any of these services?",
         {
           options: [
-            { label: "Connect with Expert", value: "director" },
-            { label: "Request Specific Service", value: "submit_request" },
-            { label: "More FAQs", value: "show_faq" },
+            { label: "📞 Connect with Expert", value: "director" },
+            { label: "📝 Submit Service Request", value: "submit_request" },
+            { label: "🔙 Back to all FAQs", value: "show_faq" },
           ],
         }
       );
@@ -1614,9 +1564,9 @@ const handleFAQ = (faqKey: string) => {
         "Ready to start?",
         {
           options: [
-            { label: "Yes, Submit Request", value: "director" },
-            { label: "View Services First", value: "services" },
-            { label: "More FAQs", value: "show_faq" },
+            { label: "📝 Yes, Submit Request Now", value: "submit_request" },
+            { label: "📞 View Directors First", value: "director" },
+            { label: "🔙 Back to all FAQs", value: "show_faq" },
           ],
         }
       );
@@ -1639,9 +1589,9 @@ const handleFAQ = (faqKey: string) => {
         "Contact our funding experts for detailed application guidance!",
         {
           options: [
-            { label: "View Funding Calendar", value: "funding" },
-            { label: "Talk to Funding Expert", value: "director" },
-            { label: "More FAQs", value: "show_faq" },
+            { label: "📅 View Funding Calendar", value: "funding" },
+            { label: "📞 Talk to Funding Expert", value: "director" },
+            { label: "🔙 Back to all FAQs", value: "show_faq" },
           ],
         }
       );
@@ -1667,9 +1617,9 @@ const handleFAQ = (faqKey: string) => {
         "• Technology and innovation support",
         {
           options: [
-            { label: "Learn About Partnership", value: "partnership" },
-            { label: "Contact Membership Team", value: "director" },
-            { label: "More FAQs", value: "show_faq" },
+            { label: "🤝 Learn About Partnership", value: "partnership" },
+            { label: "📞 Contact Membership Team", value: "director" },
+            { label: "🔙 Back to all FAQs", value: "show_faq" },
           ],
         }
       );
@@ -1686,14 +1636,18 @@ const handleFAQ = (faqKey: string) => {
         "🌱 <strong>Services Page</strong><br>" +
         "Explore all available services and support programs<br><br>" +
         "📊 <strong>Projects Section</strong><br>" +
-        "View ongoing initiatives like Avocado cultivation<br><br>" +
+        "View ongoing initiatives and programs<br><br>" +
         "💬 <strong>Chat Assistant (Me!)</strong><br>" +
         "Get instant help, submit requests, access information<br><br>" +
         "📞 <strong>Contact Page</strong><br>" +
         "Find office locations, phone numbers, email addresses<br><br>" +
         "Where would you like to go?",
         {
-          quickActions: true,
+          options: [
+            { label: "📞 Connect with Director", value: "director" },
+            { label: "🌱 View Services", value: "services" },
+            { label: "🔙 Back to all FAQs", value: "show_faq" },
+          ],
         }
       );
       break;
@@ -1708,13 +1662,9 @@ const handleFAQ = (faqKey: string) => {
         "Legislative framework and compliance guidelines<br><br>" +
         "📋 <strong>HRM Ministry Proposal</strong><br>" +
         "Workforce modernization and policy development<br><br>" +
-        "🥑 <strong>Avocado Project Details</strong><br>" +
-        "Cultivation program specifications and benefits<br><br>" +
-        "🌐 <strong>Zengate Platform Info</strong><br>" +
-        "Export services and international market access<br><br>" +
         "📝 <strong>Service Request Forms</strong><br>" +
         "Templates for various service applications<br><br>" +
-        "Click 'Quick Links' below to access these resources!",
+        "Click below to access these resources!",
         {
           quickActions: true,
         }
@@ -1724,7 +1674,9 @@ const handleFAQ = (faqKey: string) => {
     default:
       addBotMessage(
         "I'm not sure about that question. Let me show you our FAQ menu!",
-        { options: faqList.slice(0, 5).map(faq => ({ label: faq.label, value: faq.value })) }
+        { 
+          options: faqList.map(faq => ({ label: faq.label, value: faq.value }))
+        }
       );
   }
 };
@@ -1740,25 +1692,27 @@ const sendUserMessage = () => {
   setTimeout(() => {
     if (msg.match(/\b(hello|hi|hey|good morning|good afternoon|good evening|greetings)\b/)) {
       addBotMessage("Hello! Welcome to the PPA Virtual Office. How may I assist you today?", {
-        options: [
-          {label: "Connect with a Director", value: "director", icon: "1️⃣"},
-          {label: "Explore Services", value: "services", icon: "2️⃣"},
-          {label: "Partnership Information", value: "partnership", icon: "3️⃣"},
-        ],
+        options: faqList.slice(0, 4).map(faq => ({ label: faq.label, value: faq.value })),
       });
-    } else if (msg.includes("director") || msg.includes("expert")) {
-      showDirectors();
+    } else if (msg.includes("director") || msg.includes("expert") || msg.includes("contact")) {
+      handleFAQ("faq_contact");
     } else if (msg.match(/\b(service|help|support|assist|consultation)\b/)) {
-      showServices();
+      handleFAQ("faq_services");
     } else if (msg.match(/\b(fund|grant|money|investment|financial|loan)\b/)) {
-      handleQuickAction({label: "Funding Calendar", value: "funding"});
-    } else if (msg.match(/\b(export|trade|international|market|zengate)\b/)) {
-      handleQuickAction({label: "Zengate Trade Platform", value: "zengate"});
-    } else if (msg.match(/\b(avocado|cultivation|farming|agriculture)\b/)) {
-      handleQuickAction({label: "Avocado Project", value: "avocado"});
+      handleFAQ("faq_funding");
+    } else if (msg.match(/\b(member|join|partnership|partner)\b/)) {
+      handleFAQ("faq_membership");
+    } else if (msg.match(/\b(submit|request|form)\b/)) {
+      handleFAQ("faq_submit");
+    } else if (msg.match(/\b(navigate|find|where|how to)\b/)) {
+      handleFAQ("faq_navigate");
+    } else if (msg.match(/\b(resource|document|download)\b/)) {
+      handleFAQ("faq_resources");
+    } else if (msg.match(/\b(what is|about|website)\b/)) {
+      handleFAQ("faq_website");
     } else if (msg.match(/\b(thank|thanks|appreciate|grateful)\b/)) {
       addBotMessage("You're very welcome! I'm here to assist you with any PPA-related inquiries. Is there anything else I can help you with?", {
-        quickActions: true,
+        options: faqList.slice(0, 4).map(faq => ({ label: faq.label, value: faq.value })),
       });
     } else if (msg.match(/\b(bye|goodbye|see you|farewell|exit)\b/)) {
       addBotMessage(
@@ -1766,15 +1720,10 @@ const sendUserMessage = () => {
       );
     } else {
       addBotMessage(
-          `I understand you're asking about: "${userMessage.value || msg}"<br><br>` +
-          `As your virtual receptionist, let me help you find the most relevant information and connect you with the right resources.<br><br>` +
-          `What would you like to do?`,
+          `I understand you're asking about: "${msg}"<br><br>` +
+          `Let me help you find the most relevant information. Please select from the options below:`,
           {
-            options: [
-              {label: "Connect with a Director", value: "director", icon: "1️⃣"},
-              {label: "Explore Services & Projects", value: "services", icon: "2️⃣"},
-              {label: "General Information", value: "info", icon: "4️⃣"},
-            ],
+            options: faqList.map(faq => ({ label: faq.label, value: faq.value })),
           }
       );
     }
