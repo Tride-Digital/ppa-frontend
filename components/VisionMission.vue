@@ -28,7 +28,7 @@
       <div class="contact-link-wrapper">
         <p class="contact-text">
           For more information, please 
-          <a :href="contactUsUrl" class="contact-link">Contact Us</a>
+          <a :href="contactUsUrl" class="contact-link">contact us</a>
         </p>
       </div>
     </div>

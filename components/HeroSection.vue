@@ -21,11 +21,11 @@
             <div class="hero-copy-stage">
               <div class="hero-welcome-paragraph mb-8">
                 <h1 class="welcome-title">
-                  Welcome to Proprietary Planters Alliance (Pvt) Ltd (PPA). 
+                  Welcome to Proprietary Planters Alliance 
                 </h1>
-                <h3 class="welcome-text">
+                <!-- <h3 class="welcome-text">
                   If you are a planter, investor, service provider, researcher, or policymaker, please briefly tell us your requirement and share your contact details. One of our Directors will reach out to you shortly.
-                </h3>
+                </h3> -->
               </div>
               <Transition name="hero-copy" :duration="{ enter: uiEnterMs, leave: uiLeaveMs }" appear>
                 <div :key="activeKey" class="hero-copy-slab"
@@ -36,18 +36,17 @@
                     '--travelY': travelY
                   }"
                 >
-                  <h1 class="hero-title mb-3">{{ activeSlide.title }} </h1>
+                  <!-- <h1 class="hero-title mb-3">{{ activeSlide.title }} </h1> -->
                 </div>
               </Transition>
-              <div class="hero-buttons-fixed">
-                <!-- <v-btn color="primary" size="large" class="me-4 mb-3" to="/services">Our Services</v-btn> -->
-                <v-btn color="primary" size="large" class="me-4 mb-3" to="/providerselector">Join PPA</v-btn>
-                <v-btn color="white" size="large" class="mb-3" to="/contactus">Contact Us</v-btn>
-              </div>
             </div>
           </v-col>
         </v-row>
       </v-container>
+      <div class="hero-buttons-fixed">
+        <v-btn color="primary" size="large" class="me-4 mb-3" to="/providerselector">Join PPA</v-btn>
+        <v-btn color="white" size="large" class="mb-3" to="/contactus">Contact Us</v-btn>
+      </div>
     </div>
   </section>
 </template>
@@ -63,7 +62,7 @@ const autoplayTimer = ref(null)
 const isManualNavigation = ref(false)
 
 const slidesMeta = [
-  { title: 'Empowering Proprietary Planters (PP)', learnLabel: 'Join PPA', learnTo: '/aboutus', joinLabel: 'Join PPA' },
+  { title: 'Empowering Proprietary Planters in Sri Lanka', learnLabel: 'Join PPA', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'Together, we are shaping plantations into profitable, sustainable, and globally competitive enterprises.', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'From Tea to Cinnamon to Rubber: Innovation That Adds Value', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
   { title: 'Sustainable Practices for Future Generations', learnLabel: 'Learn More', learnTo: '/aboutus', joinLabel: 'Join PPA' },
@@ -183,9 +182,35 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.hero-section { height: 100vh; position: relative; overflow: hidden; background: transparent; }
-.hero-slider  { position: absolute; inset: 0; z-index: 1; }
-.vue-flux-container { width: 100%; height: 100vh; background: transparent; }
+.hero-section { 
+  height: 100vh; 
+  min-height: 600px;
+  position: relative; 
+  overflow: hidden; 
+  background: transparent; 
+}
+.hero-slider  { 
+  position: absolute; 
+  inset: 0; 
+  z-index: 1; 
+}
+.vue-flux-container { 
+  width: 100%; 
+  height: 100%; 
+  min-height: 100vh;
+  background: transparent; 
+}
+:deep(.vue-flux) {
+  width: 100% !important;
+  height: 100% !important;
+}
+:deep(.vue-flux img),
+:deep(.flux-image) {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+}
 .navigation-buttons {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: space-between;
@@ -211,13 +236,15 @@ onMounted(() => {
 }
 .hero-buttons { margin-top: 10rem; }
 .hero-buttons-fixed {
-  margin-top: 0;
   position: absolute;
-  bottom: -30px;
+  bottom: 15%;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2;
-  padding-top: 20px;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }
 :deep(.flux-controls), :deep(.flux-pagination) { display: none !important; }
 :deep(.vue-flux *), .hero-copy-stage, .hero-copy-slab, .hero-title, .hero-buttons {
@@ -230,10 +257,10 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-bottom: 200px;
+  padding-bottom: 100px;
   max-width: 90vw;
   margin: 0 auto;
-  min-height: 500px;
+  min-height: 400px;
 }
 .hero-welcome-paragraph {
   flex-shrink: 0;
@@ -310,21 +337,18 @@ onMounted(() => {
     line-height: 1.25;
   }
   .hero-copy-stage { 
-    padding-bottom: 180px;
+    padding-bottom: 80px;
   }
   .hero-copy-slab { 
     top: 200px;
   }
-  .hero-buttons, .hero-buttons-fixed { 
-    display: flex; 
+  .hero-buttons-fixed { 
+    bottom: 12%;
     flex-direction: column; 
     align-items: center; 
     gap: 12px;
   }
-  .hero-buttons-fixed {
-    bottom: -40px;
-  }
-  .hero-buttons .v-btn, .hero-buttons-fixed .v-btn { 
+  .hero-buttons-fixed .v-btn { 
     width: 280px; 
     margin: 0 !important;
   }
@@ -356,11 +380,9 @@ onMounted(() => {
   }
   .hero-copy-slab { top: 350px; }
   .hero-buttons-fixed {
-    padding-top: 15px;
-    bottom: -50px;
+    bottom: 10%;
   }
-  .hero-buttons .v-btn, .hero-buttons-fixed .v-btn { 
-    bottom: -80px;
+  .hero-buttons-fixed .v-btn { 
     width: 260px;
     font-size: 0.9rem;
   }
@@ -378,15 +400,17 @@ onMounted(() => {
   }
   .hero-copy-stage { 
     top: 30px;
-    padding-bottom: 220px;
+    padding-bottom: 120px;
     max-width: 100vw;
     padding-inline: 15px;
   }
   .hero-copy-slab { top: 250px; }
   .hero-buttons-fixed { 
+    bottom: 8%;
+  }
+  .hero-buttons-fixed .v-btn {
     width: 150px;
     font-size: 0.85rem;
-    bottom: 100px;
   }
 }
 </style>
