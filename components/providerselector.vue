@@ -3,17 +3,19 @@
   <v-container class="d-flex align-center" style="min-height: 100vh">
     <v-row justify="center">
       <v-col cols="12" class="text-center mb-8">
-        <h2 class="text-h4 font-weight-bold mb-4">
+        <h2 class="text-h4 text-sm-h4 text-xs-h5 font-weight-bold mb-4 px-4">
           Choose Your Registration Path
         </h2>
-        <p class="text-body-1 text-grey-darken-2">
+        <p class="text-body-1 text-sm-body-1 text-xs-body-2 text-grey-darken-2 px-4">
           Select the option that best describes your role in the plantation
           ecosystem
         </p>
+        <div ref="cardsStartTarget" style="height: 1px;"></div>
       </v-col>
 
       <!-- Retainer Client Option -->
       <v-col cols="12" md="5" lg="4" class="d-flex">
+        <div ref="cardsStartTarget" style="height: 1px;"></div>
         <v-hover v-slot="{ isHovering, props }">
           <v-card
             v-bind="props"
@@ -22,22 +24,22 @@
             :class="{ 'card-hover': isHovering }"
           >
             <div class="card-gradient gradient-planter">
-              <v-icon size="80" color="white">mdi-leaf</v-icon>
+              <v-icon size="80" class="icon-responsive" color="white">mdi-leaf</v-icon>
             </div>
 
-            <v-card-title class="text-h5 font-weight-bold text-center py-4">
+            <v-card-title class="text-h5 text-sm-h5 text-xs-h6 font-weight-bold text-center py-4 px-2">
               Retainer Client
             </v-card-title>
 
-            <v-card-text class="flex-grow-1">
+            <v-card-text class="flex-grow-1 px-4 px-sm-5 px-md-6">
               <v-list density="compact" class="transparent">
-                <v-list-item v-for="item in planterFeatures" :key="item">
+                <v-list-item v-for="item in planterFeatures" :key="item" class="px-0 mb-1">
                   <template v-slot:prepend>
-                    <v-icon color="success" size="small"
+                    <v-icon color="success" size="small" class="mr-2 flex-shrink-0"
                       >mdi-check-circle</v-icon
                     >
                   </template>
-                  <v-list-item-title class="text-body-2">{{
+                  <v-list-item-title class="text-body-2 text-sm-body-2 text-xs-caption text-wrap">{{
                     item
                   }}</v-list-item-title>
                 </v-list-item>
@@ -45,23 +47,23 @@
 
               <v-divider class="my-4"></v-divider>
 
-              <div class="text-center">
+              <div class="text-center px-2">
                 <v-chip
                   color="primary"
                   variant="outlined"
                   size="small"
-                  class="mb-2"
+                  class="mb-2 chip-responsive"
                 >
                   For Plantation Owners
                 </v-chip>
-                <p class="text-body-2 text-grey-darken-1 mt-2">
+                <p class="text-body-2 text-sm-body-2 text-xs-caption text-grey-darken-1 mt-2 px-2">
                   Own or manage plantations producing tea, rubber, coconut, oil
                   palm, cinnamon, or spice crops
                 </p>
               </div>
             </v-card-text>
 
-            <v-card-actions class="pa-4">
+            <v-card-actions class="pa-4 pa-sm-5 pa-md-6">
               <v-btn
                 block
                 size="large"
@@ -69,8 +71,9 @@
                 variant="elevated"
                 @click="goToRegister"
                 append-icon="mdi-arrow-right"
+                class="btn-responsive text-none"
               >
-                Register as a Retainer client
+                <span class="btn-text">Register as a Retainer client</span>
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -108,22 +111,22 @@
             :class="{ 'card-hover': isHovering }"
           >
             <div class="card-gradient gradient-provider">
-              <v-icon size="80" color="white">mdi-handshake</v-icon>
+              <v-icon size="80" class="icon-responsive" color="white">mdi-handshake</v-icon>
             </div>
 
-            <v-card-title class="text-h5 font-weight-bold text-center py-4">
+            <v-card-title class="text-h5 text-sm-h5 text-xs-h6 font-weight-bold text-center py-4 px-2">
               Service Provider
             </v-card-title>
 
-            <v-card-text class="flex-grow-1">
+            <v-card-text class="flex-grow-1 px-4 px-sm-5 px-md-6">
               <v-list density="compact" class="transparent">
-                <v-list-item v-for="item in providerFeatures" :key="item">
+                <v-list-item v-for="item in providerFeatures" :key="item" class="px-0 mb-1">
                   <template v-slot:prepend>
-                    <v-icon color="primary" size="small"
+                    <v-icon color="primary" size="small" class="mr-2 flex-shrink-0"
                       >mdi-check-circle</v-icon
                     >
                   </template>
-                  <v-list-item-title class="text-body-2">{{
+                  <v-list-item-title class="text-body-2 text-sm-body-2 text-xs-caption text-wrap">{{
                     item
                   }}</v-list-item-title>
                 </v-list-item>
@@ -131,13 +134,13 @@
 
               <v-divider class="my-4"></v-divider>
 
-              <div class="text-center">
-                <div class="mb-2">
+              <div class="text-center px-2">
+                <div class="mb-2 d-flex flex-wrap justify-center gap-1">
                   <v-chip
                     color="indigo"
                     variant="outlined"
                     size="small"
-                    class="ma-1"
+                    class="ma-1 chip-responsive"
                   >
                     Supply Chain Services
                   </v-chip>
@@ -145,19 +148,19 @@
                     color="indigo"
                     variant="outlined"
                     size="small"
-                    class="ma-1"
+                    class="ma-1 chip-responsive"
                   >
                     Support Services
                   </v-chip>
                 </div>
-                <p class="text-body-2 text-grey-darken-1 mt-2">
+                <p class="text-body-2 text-sm-body-2 text-xs-caption text-grey-darken-1 mt-2 px-2">
                   Provide professional services to strengthen the plantation
                   ecosystem
                 </p>
               </div>
             </v-card-text>
 
-            <v-card-actions class="pa-4">
+            <v-card-actions class="pa-4 pa-sm-5 pa-md-6">
               <v-btn
                 block
                 size="large"
@@ -165,8 +168,9 @@
                 variant="elevated"
                 @click="navigateToServiceProvider"
                 append-icon="mdi-arrow-right"
+                class="btn-responsive text-none"
               >
-                Register as a PPA Service Provider
+                <span class="btn-text">Register as a PPA Service Provider</span>
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -178,9 +182,27 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { ref, onMounted, nextTick } from "vue";
+import { useRuntimeConfig } from "#app";
 
 const router = useRouter();
 const config = useRuntimeConfig();
+
+const cardsStartTarget = ref<HTMLElement | null>(null);
+
+onMounted(async () => {
+  await nextTick();
+
+  setTimeout(() => {
+    const el = cardsStartTarget.value;
+    if (!el) return;
+
+    const offset = 110;
+
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: "smooth" });
+  }, 50);
+});
 
 // Feature lists
 const planterFeatures = [
@@ -287,10 +309,64 @@ const navigateToServiceProvider = () => {
   );
 }
 
+.text-wrap {
+  white-space: normal !important;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.4;
+}
+
+.btn-responsive {
+  height: auto !important;
+  min-height: 48px;
+  padding: 12px 16px !important;
+}
+
+.btn-text {
+  white-space: normal;
+  line-height: 1.3;
+  text-align: center;
+  display: inline-block;
+}
+
 /* Responsive adjustments */
 @media (max-width: 960px) {
   .registration-card {
     margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .card-gradient {
+    height: 140px;
+  }
+  
+  .icon-responsive {
+    font-size: 60px !important;
+  }
+  
+  .btn-responsive {
+    font-size: 0.875rem !important;
+    padding: 10px 12px !important;
+  }
+  
+  .chip-responsive {
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .card-gradient {
+    height: 120px;
+  }
+  
+  .icon-responsive {
+    font-size: 50px !important;
+  }
+  
+  .btn-responsive {
+    font-size: 0.8125rem !important;
+    padding: 8px 10px !important;
   }
 }
 </style>
