@@ -27,144 +27,146 @@
 
         <!-- Contact Information -->
         <v-col cols="12" md="7" lg="7">
-          <v-card class="contact-info-card h-100" elevation="3">
-            <v-card-title class="text-h5 font-weight-bold pa-6 pb-4">
-              Contact Information
-            </v-card-title>
-            <v-card-text class="px-6 pb-6">
-            <v-row>
-              <!-- contact details -->
-              <v-col cols="12" lg="4">
-              <!-- Office Address -->
-              <div class="contact-info-item mb-6">
-                <div class="d-flex align-start">
-                  <v-icon color="primary" size="28" class="mr-4 mt-1">mdi-map-marker</v-icon>
-                  <div>
-                    <h3 class="text-subtitle-1 font-weight-bold mb-2">Office Address</h3>
-                    <p class="text-body-2 text-medium-emphasis mb-0">
-                      No. 28, U. E. Perera Mawatha<br>
-                      Rajagiriya, 10107<br>
-                      Sri Lanka
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Phone Number -->
-              <div class="contact-info-item mb-6">
-                <div class="d-flex align-start">
-                  <v-icon color="primary" size="28" class="mr-4 mt-1">mdi-phone</v-icon>
-                  <div>
-                    <h3 class="text-subtitle-1 font-weight-bold mb-2">Phone</h3>
-                    <p class="text-body-2 text-medium-emphasis mb-0">
-                      <a href="tel:+94772376343" class="contact-link">+94 77 237 6343</a> <br/>
-                      <a href="tel:+94714807594" class="contact-link">+94 71 480 7594</a> <br/>
-                      <a href="tel:+94772376343" class="contact-link">+94 76 949 9270</a> (WhatsApp only)<br/>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Email -->
-              <div class="contact-info-item mb-6">
-                <div class="d-flex align-start">
-                  <v-icon color="primary" size="28" class="mr-4 mt-1">mdi-email</v-icon>
-                  <div>
-                    <h3 class="text-subtitle-1 font-weight-bold mb-2">Email</h3>
-                    <p class="text-body-2 text-medium-emphasis mb-0">
-                      <a href="mailto:info@planters.lk" class="contact-link">info@planters.lk</a>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Business Hours -->
-              <div class="contact-info-item mb-6">
-                <div class="d-flex align-start">
-                  <v-icon color="primary" size="28" class="mr-4 mt-1">mdi-clock-outline</v-icon>
-                  <div>
-                    <h3 class="text-subtitle-1 font-weight-bold mb-2">Business Hours</h3>
-                    <p class="text-body-2 text-medium-emphasis mb-1">
-                      Monday - Friday: 9:00 AM - 6:00 PM
-                    </p>
-                    <p class="text-body-2 text-medium-emphasis mb-1">
-                      Saturday: 9:00 AM - 1:00 PM
-                    </p>
-                    <p class="text-body-2 text-medium-emphasis mb-0">
-                      Sunday: Closed
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <!-- Social Media -->
-              <div class="contact-info-item">
-                <div class="d-flex align-start">
-                  <v-icon color="primary" size="28" class="mr-4 mt-1">mdi-share-variant</v-icon>
-                  <div>
-                    <h3 class="text-subtitle-1 font-weight-bold mb-3">Follow Us</h3>
-                    <div class="d-flex gap-4">
-                      <v-btn
-                        icon
-                        variant="outlined"
-                        size="small"
-                        href="https://www.facebook.com/share/1BZSphvAiV/?mibextid=wwXIfr"
-                        target="_blank"
-                        aria-label="Facebook"
-                      >
-                        <v-icon>mdi-facebook</v-icon>
-                      </v-btn> &nbsp;
-                      <v-btn
-                        icon
-                        variant="outlined"
-                        size="small"
-                        href="https://x.com"
-                        target="_blank"
-                        aria-label="X"
-                      >
-                        <v-icon>mdi-twitter</v-icon>
-                      </v-btn>
-                      &nbsp;
-                      <v-btn
-                        icon
-                        variant="outlined"
-                        size="small"
-                        href="https://linkedin.com"
-                        target="_blank"
-                        aria-label="LinkedIn"
-                      >
-                        <v-icon>mdi-linkedin</v-icon>
-                      </v-btn> &nbsp;
-                      <v-btn
-                        icon
-                        variant="outlined"
-                        size="small"
-                        href="https://instagram.com"
-                        target="_blank"
-                        aria-label="Instagram"
-                      >
-                        <v-icon>mdi-instagram</v-icon>
-                      </v-btn>
+          <div ref="contactInfoSection">
+            <v-card class="contact-info-card h-100" elevation="3">
+              <v-card-title class="text-h5 font-weight-bold pa-6 pb-4">
+                Contact Information
+              </v-card-title>
+              <v-card-text class="px-6 pb-6">
+              <v-row>
+                <!-- contact details -->
+                <v-col cols="12" lg="4">
+                <!-- Office Address -->
+                <div class="contact-info-item mb-6">
+                  <div class="d-flex align-start">
+                    <v-icon color="primary" size="28" class="mr-4 mt-1">mdi-map-marker</v-icon>
+                    <div>
+                      <h3 class="text-subtitle-1 font-weight-bold mb-2">Office Address</h3>
+                      <p class="text-body-2 text-medium-emphasis mb-0">
+                        No. 28, U. E. Perera Mawatha<br>
+                        Rajagiriya, 10107<br>
+                        Sri Lanka
+                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-              </v-col>
 
-              <!-- Province Map -->
-              <v-col cols="12" lg="8" class="map-mini-column">
-                <div class="map-mini-head">
-                  <h3 class="text-subtitle-1 font-weight-bold mb-2">Find Your Provincial Coordinator</h3>
-                  <p class="text-body-2 text-medium-emphasis mb-4">
-                    Pick your province to view the assigned coordinator and jump to their profile.
-                  </p>
+                <!-- Phone Number -->
+                <div class="contact-info-item mb-6">
+                  <div class="d-flex align-start">
+                    <v-icon color="primary" size="28" class="mr-4 mt-1">mdi-phone</v-icon>
+                    <div>
+                      <h3 class="text-subtitle-1 font-weight-bold mb-2">Phone</h3>
+                      <p class="text-body-2 text-medium-emphasis mb-0">
+                        <a href="tel:+94772376343" class="contact-link">+94 77 237 6343</a> <br/>
+                        <a href="tel:+94714807594" class="contact-link">+94 71 480 7594</a> <br/>
+                        <a href="tel:+94772376343" class="contact-link">+94 76 949 9270</a> (WhatsApp only)<br/>
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div class="map-mini-wrapper">
-                  <SvgmapSriLankaMap @province-selected="onProvinceSelected" />
+
+                <!-- Email -->
+                <div class="contact-info-item mb-6">
+                  <div class="d-flex align-start">
+                    <v-icon color="primary" size="28" class="mr-4 mt-1">mdi-email</v-icon>
+                    <div>
+                      <h3 class="text-subtitle-1 font-weight-bold mb-2">Email</h3>
+                      <p class="text-body-2 text-medium-emphasis mb-0">
+                        <a href="mailto:info@planters.lk" class="contact-link">info@planters.lk</a>
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </v-col>
-            </v-row>
-            </v-card-text>
-          </v-card>
+
+                <!-- Business Hours -->
+                <div class="contact-info-item mb-6">
+                  <div class="d-flex align-start">
+                    <v-icon color="primary" size="28" class="mr-4 mt-1">mdi-clock-outline</v-icon>
+                    <div>
+                      <h3 class="text-subtitle-1 font-weight-bold mb-2">Business Hours</h3>
+                      <p class="text-body-2 text-medium-emphasis mb-1">
+                        Monday - Friday: 9:00 AM - 6:00 PM
+                      </p>
+                      <p class="text-body-2 text-medium-emphasis mb-1">
+                        Saturday: 9:00 AM - 1:00 PM
+                      </p>
+                      <p class="text-body-2 text-medium-emphasis mb-0">
+                        Sunday: Closed
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <!-- Social Media -->
+                <div class="contact-info-item">
+                  <div class="d-flex align-start">
+                    <v-icon color="primary" size="28" class="mr-4 mt-1">mdi-share-variant</v-icon>
+                    <div>
+                      <h3 class="text-subtitle-1 font-weight-bold mb-3">Follow Us</h3>
+                      <div class="d-flex gap-4">
+                        <v-btn
+                          icon
+                          variant="outlined"
+                          size="small"
+                          href="https://www.facebook.com/share/1BZSphvAiV/?mibextid=wwXIfr"
+                          target="_blank"
+                          aria-label="Facebook"
+                        >
+                          <v-icon>mdi-facebook</v-icon>
+                        </v-btn> &nbsp;
+                        <v-btn
+                          icon
+                          variant="outlined"
+                          size="small"
+                          href="https://x.com"
+                          target="_blank"
+                          aria-label="X"
+                        >
+                          <v-icon>mdi-twitter</v-icon>
+                        </v-btn>
+                        &nbsp;
+                        <v-btn
+                          icon
+                          variant="outlined"
+                          size="small"
+                          href="https://linkedin.com"
+                          target="_blank"
+                          aria-label="LinkedIn"
+                        >
+                          <v-icon>mdi-linkedin</v-icon>
+                        </v-btn> &nbsp;
+                        <v-btn
+                          icon
+                          variant="outlined"
+                          size="small"
+                          href="https://instagram.com"
+                          target="_blank"
+                          aria-label="Instagram"
+                        >
+                          <v-icon>mdi-instagram</v-icon>
+                        </v-btn>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </v-col>
+
+                <!-- Province Map -->
+                <v-col cols="12" lg="8" class="map-mini-column">
+                  <div class="map-mini-head">
+                    <h3 class="text-subtitle-1 font-weight-bold mb-2">Find Your Provincial Coordinator</h3>
+                    <p class="text-body-2 text-medium-emphasis mb-4">
+                      Pick your province to view the assigned coordinator and jump to their profile.
+                    </p>
+                  </div>
+                  <div class="map-mini-wrapper">
+                    <SvgmapSriLankaMap @province-selected="onProvinceSelected" />
+                  </div>
+                </v-col>
+              </v-row>
+              </v-card-text>
+            </v-card>
+          </div>
         </v-col>
 
         <!-- Contact Form -->
@@ -231,7 +233,7 @@
           </v-card>
         </v-col>
 
-        
+
       </v-row>
     </v-container>
 
@@ -331,21 +333,21 @@
         <v-divider></v-divider>
 
         <v-card-actions class="pa-4">
-  <v-spacer></v-spacer>
-  <v-btn variant="text" @click="feedbackDialog = false">
-    Close
-  </v-btn>
-  <v-btn
-    color="success"
-    size="large"
-    :loading="complaintLoading"
-    :disabled="!feedbackValid"
-    @click="submitFeedback"
-  >
-    <v-icon class="mr-2">mdi-send</v-icon>
-    Submit Feedback
-  </v-btn>
-</v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn variant="text" @click="feedbackDialog = false">
+            Close
+          </v-btn>
+          <v-btn
+            color="success"
+            size="large"
+            :loading="complaintLoading"
+            :disabled="!feedbackValid"
+            @click="submitFeedback"
+          >
+            <v-icon class="mr-2">mdi-send</v-icon>
+            Submit Feedback
+          </v-btn>
+        </v-card-actions>
 
       </v-card>
     </v-dialog>
@@ -366,7 +368,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDirectors } from '~/composables/useDirectors'
 import { useRuntimeConfig } from '#app'
@@ -382,6 +384,22 @@ const snackbarColor = ref('success')
 const feedbackDialog = ref(false)
 const contactLoading = ref(false)
 const complaintLoading = ref(false)
+
+const contactInfoSection = ref<HTMLElement | null>(null)
+
+onMounted(async () => {
+  await nextTick()
+
+  setTimeout(() => {
+    const el = contactInfoSection.value
+    if (!el) return
+
+    const offset = 140
+
+    const top = el.getBoundingClientRect().top + window.scrollY - offset
+    window.scrollTo({ top, behavior: 'smooth' })
+  }, 50)
+})
 
 const formData = ref({
   fullName: '',
@@ -433,7 +451,7 @@ const apiBaseUrl = config.public.apiBaseUrl || 'http://localhost:8000'
 
 // Province map -> director navigation
 const router = useRouter()
-const { 
+const {
   fetchDirectorContacts,
   getPrimaryDirectorIdByProvince,
   fetchDirectorInfo,

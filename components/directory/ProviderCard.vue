@@ -1,7 +1,7 @@
 <template>
   <v-card class="provider-card h-100" elevation="4" hover @click="$emit('click')">
     <div class="card-image-container">
-      <v-img :src="provider.image_url || fallbackImage" height="200" cover class="card-image">
+      <v-img :src="provider.image_url || fallbackImage" height="var(--dir-card-img-height)" cover class="card-image">
         <template #placeholder>
           <div class="d-flex align-center justify-center fill-height">
             <v-progress-circular indeterminate></v-progress-circular>
@@ -130,6 +130,10 @@ const copyContact = async () => {
 <style scoped>
 .provider-card {
   width: 100%;
+  min-height: 420px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 12px;
   overflow: hidden;
@@ -143,9 +147,12 @@ const copyContact = async () => {
 .card-image-container {
   position: relative;
   overflow: hidden;
+  flex: 0 0 auto;
+  height: 160px;
 }
 .card-image {
   transition: transform 0.3s ease;
+  height: 160px !important;
 }
 .provider-card:hover .card-image {
   transform: scale(1.05);
@@ -154,48 +161,167 @@ const copyContact = async () => {
   position: absolute;
   top: 12px;
   right: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: calc(100% - 24px);
 }
 .category-chip {
   backdrop-filter: blur(10px);
   color: rgb(var(--v-theme-on-primary)) !important;
 }
+
+.title-rating-container {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px 0 16px;
+  min-height: 60px;
+}
+
 .provider-name {
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
   font-weight: 700;
   color: rgb(var(--v-theme-section-title));
-  padding-bottom: 8px;
   line-height: 1.3;
-  word-wrap: break-word;
+  padding: 0;
   white-space: normal;
-  overflow-wrap: break-word;
+  overflow: hidden;
+  word-break: break-word;
+  hyphens: auto;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
+
+.rating-section {
+  position: static;
+  align-self: flex-start;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .provider-meta {
   color: rgb(var(--v-theme-section-subtitle));
-  font-size: 0.95rem;
+  font-size: clamp(0.8rem, 2vw, 0.95rem);
   line-height: 1.5;
-  padding-top: 0;
+  padding: 8px 16px;
+
+  flex: 1 1 auto;
+  min-height: 80px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  gap: 4px;
+  flex: 1 1 auto;
+  align-content: flex-start;
 }
 .desc {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .card-actions {
-  padding: 16px;
+  margin-top: auto;
+  padding: 12px 16px;
   gap: 8px;
   background-color: rgb(var(--v-theme-service-card-bg));
+  flex-shrink: 0;
 }
-.title-rating-container {
-  position: relative;
-  padding-right: 140px;
-  min-height: auto;
+
+@media (max-width: 1400px) {
+  .provider-card {
+    min-height: 400px;
+  }
+  .card-image-container {
+    height: 150px;
+  }
+  .card-image {
+    height: 150px !important;
+  }
 }
-.rating-section {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  white-space: nowrap;
+
+@media (max-width: 1200px) {
+  .provider-card {
+    min-height: 380px;
+  }
+  .card-image-container {
+    height: 140px;
+  }
+  .card-image {
+    height: 140px !important;
+  }
+  .title-rating-container {
+    padding: 10px 14px 0 14px;
+    min-height: 55px;
+  }
+  .provider-meta {
+    padding: 6px 14px;
+    min-height: 70px;
+  }
+  .card-actions {
+    padding: 10px 14px;
+  }
+}
+
+@media (max-width: 960px) {
+  .provider-card {
+    min-height: 360px;
+  }
+  .card-image-container {
+    height: 130px;
+  }
+  .card-image {
+    height: 130px !important;
+  }
+  .title-rating-container {
+    padding: 8px 12px 0 12px;
+    min-height: 50px;
+  }
+  .provider-meta {
+    padding: 6px 12px;
+    min-height: 60px;
+  }
+  .card-actions {
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .provider-card {
+    min-height: 340px;
+  }
+  .card-image-container {
+    height: 120px;
+  }
+  .card-image {
+    height: 120px !important;
+  }
+  .image-overlay {
+    top: 8px;
+    right: 8px;
+  }
+  .title-rating-container {
+    padding: 8px 10px 0 10px;
+    gap: 4px;
+  }
+  .provider-meta {
+    padding: 4px 10px;
+  }
+  .card-actions {
+    padding: 8px 10px;
+  }
 }
 </style>

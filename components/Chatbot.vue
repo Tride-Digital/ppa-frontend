@@ -787,6 +787,7 @@ const faqList = [
   { label: "👥 Who can join PPA?", value: "faq_membership" },
   { label: "🧭 How to navigate site?", value: "faq_navigate" },
   { label: "📄 Available resources?", value: "faq_resources" },
+  { label: "🤝 Join PPA", value: "faq_join" },
 ];
 
 // Watch for service category changes and resets
@@ -1669,6 +1670,23 @@ const handleFAQ = (faqKey: string) => {
           quickActions: true,
         }
       );
+      break;
+
+    case "faq_join":
+      addBotMessage(
+        "<strong>Join PPA - Become a Member</strong><br><br>" +
+        "Great choice! You're about to start your journey with the Proprietary Planters Alliance.<br><br>" +
+        "On the next page, you can:<br>" +
+        "• Choose your membership type<br>" +
+        "• Register as a planter or service provider<br>" +
+        "• Access exclusive member benefits<br>" +
+        "• Connect with our network<br><br>" +
+        "Redirecting you to the registration page..."
+      );
+      
+      setTimeout(() => {
+        navigateTo('/providerselector');
+      }, 1500);
       break;
 
     default:

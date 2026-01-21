@@ -16,7 +16,8 @@
 
     <!-- Marketing categories -->
     <section class="py-6">
-      <v-container >
+      <v-container>
+        <div ref="categoriesScrollTarget" class="categories-scroll-target"></div>
         <!-- <v-row class="mb-2" justify="center">
           <v-col cols="12" md="8" class="text-center">
             <h2 class="text-h5" style="color: rgb(var(--v-theme-section-title)); font-weight: 700;">
@@ -34,9 +35,9 @@
           </v-col>
         </v-row>
 
-        <v-row v-else>
-          <v-col v-for="cat in categories" :key="cat.id" cols="12" sm="6" md="4" lg="3">
-            <v-card class="category-card" elevation="3" hover>
+        <v-row v-else class="category-card-row">
+          <v-col v-for="cat in categories" :key="cat.id" cols="12" sm="6" md="4" lg="3" class="category-card-col">
+            <v-card class="category-card" :class="{ 'category-card--expanded': openCategoryPanel[cat.id] === 0 }" elevation="3" hover>
               <div @click="selectCategory(cat)">
                 <v-img :src="categoryImage(cat)" height="140" cover />
                 <v-card-title class="category-title">
@@ -44,15 +45,19 @@
                   {{ cat.name }}
                 </v-card-title>
               </div>
-              
+
               <v-card-text class="category-sub pa-0">
-                <v-expansion-panels flat>
+                <v-expansion-panels
+                  flat
+                  v-model="openCategoryPanel[cat.id]"
+                  @update:modelValue="onCategoryPanelChange(cat.id, $event)"
+                >
                   <v-expansion-panel>
                     <v-expansion-panel-title class="text-body-2">
                       {{ cat.subcategories?.length || 0 }} services
                     </v-expansion-panel-title>
                     <v-expansion-panel-text>
-                      <v-list density="compact" class="pa-0">
+                      <v-list density="compact" class="pa-0 subcategory-list">
                         <v-list-item
                           v-for="sub in cat.subcategories"
                           :key="sub.id"
@@ -224,8 +229,16 @@
               </v-col>
             </v-row>
 
-            <v-row v-else class="mt-4">
-              <v-col v-for="p in providers" :key="p.id" cols="12" sm="6" md="4" lg="3" class="mb-6 provider-card-col">
+            <v-row v-else class="mt-4 equal-card-row">
+              <v-col
+                v-for="p in providers"
+                :key="p.id"
+                cols="12"
+                sm="6"
+                md="4"
+                lg="3"
+                class="mb-6 provider-card-col"
+              >
                 <ProviderCard
                   :provider="p"
                   @click="goToProvider(p.id)"
@@ -265,9 +278,51 @@ const filters = ref({
   sort: "most_recent" as any,
 });
 
+const categoriesScrollTarget = ref<HTMLElement | null>(null);
+
+const openCategoryPanel = ref<Record<number, number | null>>({});
+
+const onCategoryPanelChange = (catId: number, val: any) => {
+  Object.keys(openCategoryPanel.value).forEach(k => {
+    const id = Number(k);
+    if (id !== catId) openCategoryPanel.value[id] = null;
+  });
+
+  openCategoryPanel.value[catId] = (val === 0 ? 0 : null);
+};
+
+const scrollToCategories = async () => {
+  await nextTick();
+
+  requestAnimationFrame(() => {
+    if (categoriesScrollTarget.value) {
+      categoriesScrollTarget.value.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  });
+};
+
 onMounted(async () => {
   await Promise.all([fetchCategories(), fetchProvinces("en")]);
+  categories.value.forEach((c: any) => {
+    if (openCategoryPanel.value[c.id] === undefined) openCategoryPanel.value[c.id] = null;
+  });
+  scrollToCategories();
 });
+
+watch(
+  () => loadingCategories.value,
+  async (isLoading, wasLoading) => {
+    if (wasLoading === true && isLoading === false) {
+      categories.value.forEach((c: any) => {
+        if (openCategoryPanel.value[c.id] === undefined) openCategoryPanel.value[c.id] = null;
+      });
+      await scrollToCategories();
+    }
+  }
+);
 
 const categoryItems = computed(() =>
   categories.value.map(c => ({ title: c.name, value: c.id }))
@@ -383,7 +438,54 @@ useSeoMeta({
   line-height: 1.6;
 }
 
+:root {
+  --dir-card-height: 420px;   
+  --dir-card-img-height: 150px;
+}
+@media (max-width: 1264px) {
+  :root {
+    --dir-card-height: 420px;
+    --dir-card-img-height: 150px;
+  }
+}
+@media (max-width: 960px) {
+  :root {
+    --dir-card-height: 410px;
+    --dir-card-img-height: 150px;
+  }
+}
+@media (max-width: 600px) {
+  :root {
+    --dir-card-height: auto;       
+    --dir-card-img-height: 160px;
+  }
+}
+
+.equal-card-row > :deep(.v-col) {
+  display: flex;
+}
+
+.category-card-row {
+  align-items: flex-start;
+}
+.category-card-row > :deep(.v-col) {
+  display: flex;
+}
+
+.category-card-col {
+  display: flex;
+  position: relative;
+  z-index: 1;
+}
+.category-card-col:has(.category-card--expanded) {
+  z-index: 10;
+}
 .category-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
   border-radius: 16px;
   overflow: hidden;
   background-color: rgb(var(--v-theme-service-card-bg));
@@ -391,7 +493,6 @@ useSeoMeta({
 }
 .category-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgb(var(--v-theme-card-shadow-hover));
 }
 .category-title {
   font-weight: 700;
@@ -399,14 +500,38 @@ useSeoMeta({
   word-wrap: break-word;
   white-space: normal;
   overflow-wrap: break-word;
-  line-height: 1;
-  min-height: 55px;
+  line-height: 1.2;
+  min-height: 56px;
   display: flex;
   align-items: flex-start;
   gap: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .category-sub {
   color: rgb(var(--v-theme-section-subtitle));
+  position: relative;
+}
+
+.category-card :deep(.v-expansion-panels) {
+  background: transparent;
+  border-radius: 0;
+}
+
+.category-card :deep(.v-expansion-panel) {
+  background-color: rgb(var(--v-theme-service-card-bg));
+}
+
+.category-card :deep(.v-expansion-panel-text__wrapper) {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.subcategory-list {
+  background: transparent !important;
 }
 
 .filters-card {
@@ -431,6 +556,14 @@ useSeoMeta({
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+
+  height: var(--dir-card-height);
+  min-height: 0;
+}
+@media (max-width: 600px) {
+  .provider-card-col :deep(.v-card) {
+    height: auto;
+  }
 }
 
 .subcategory-item {
@@ -446,4 +579,7 @@ useSeoMeta({
   overflow-wrap: break-word;
 }
 
+.categories-scroll-target {
+  scroll-margin-top: 88px;
+}
 </style>
