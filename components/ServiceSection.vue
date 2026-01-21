@@ -5,6 +5,7 @@
         <v-col cols="12" class="text-center">
           <h2 class="section-title">Our Services</h2>
           <p class="section-subtitle">{{ sectionDescription }}</p>
+          <div ref="subtitleScrollTarget" class="subtitle-scroll-target"></div>
         </v-col>
       </v-row>
       <v-row v-if="loading" justify="center" class="mb-8">
@@ -35,8 +36,22 @@
         </v-col>
       </v-row>
       <v-row v-if="activeCategory !== -1 && !loading">
-        <v-col v-for="(subItem, subIndex) in navigationItems[activeCategory]?.subItems" :key="subIndex" cols="12" sm="6" md="4" lg="3" class="mb-6 service-card-col">
-          <ServiceCard :service="subItem" :category-label="navigationItems[activeCategory].label" @service-click="handleServiceClick" @learn-more="learnMoreService" @add-to-cart="addToCartHandler"/>
+        <v-col
+          v-for="(subItem, subIndex) in navigationItems[activeCategory]?.subItems"
+          :key="subIndex"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
+          class="mb-6 service-card-col"
+        >
+          <ServiceCard
+            :service="subItem"
+            :category-label="navigationItems[activeCategory].label"
+            @service-click="handleServiceClick"
+            @learn-more="learnMoreService"
+            @add-to-cart="addToCartHandler"
+          />
         </v-col>
       </v-row>
       <v-row v-else-if="!loading">
@@ -55,7 +70,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import ServiceCard from './ServiceCard.vue'
 import { useCart } from '~/composables/useCart'
 import { useServices } from '~/composables/useServices'
@@ -74,32 +89,44 @@ const sectionDescription = ref('Discover the diverse range of high-quality servi
 const activeCategory = ref(-1)
 const navigationItems = ref([])
 
+const subtitleScrollTarget = ref(null)
+
+const scrollUnderSubtitle = async () => {
+  await nextTick()
+  requestAnimationFrame(() => {
+    if (subtitleScrollTarget.value) {
+      subtitleScrollTarget.value.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }
+  })
+}
+
 onMounted(async () => {
   const data = await fetchAllServices()
   if (data && data.length > 0) {
     navigationItems.value = transformServiceCategories(data)
     const categoryParam = route.query.category
-    if(categoryParam !== undefined){
+    if (categoryParam !== undefined) {
       const categoryIndex = parseInt(categoryParam)
-      if(categoryParam >= 0 && categoryParam < navigationItems.value.length){
+      if (categoryParam >= 0 && categoryParam < navigationItems.value.length) {
         activeCategory.value = categoryIndex
-      }
-      else {
+      } else {
         activeCategory.value = 0
       }
-    }
-    else {
+    } else {
       activeCategory.value = 0
     }
   }
+  scrollUnderSubtitle()
 })
 const selectCategory = (index) => {
   const newCategory = activeCategory.value === index ? -1 : index
   activeCategory.value = newCategory
   if (newCategory !== -1) {
-    router.replace({ query: { category: newCategory }})
-  }
-  else {
+    router.replace({ query: { category: newCategory } })
+  } else {
     router.replace({ query: {} })
   }
 }
@@ -133,6 +160,11 @@ const addToCartHandler = (category, service) => {
   margin: 0 auto;
   line-height: 1.6;
 }
+
+.subtitle-scroll-target {
+  scroll-margin-top: 88px;
+}
+
 .services-nav {
   background: linear-gradient(135deg, rgb(var(--v-theme-services-nav-bg-start)) 0%, rgb(var(--v-theme-services-nav-bg-end)) 100%);
   border-radius: 20px;

@@ -5,6 +5,7 @@
         <v-col cols="12" class="text-center mb-12">
           <h2 class="section-title">Announcements</h2>
           <p class="section-subtitle">{{ sectionDescription }}</p>
+          <div ref="subtitleScrollTarget" class="subtitle-scroll-target"></div>
         </v-col>
         <v-col cols="12">
           <v-row justify="center">
@@ -75,13 +76,28 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 const config = useRuntimeConfig()
 const sectionDescription = ref('Stay informed about upcoming events, policy updates, member benefits, and industry developments that matter to our plantation community.')
 const isModalOpen = ref(false)
 const selectedAnnouncement = ref(null)
 const announcements = ref([])
 const baseUrl = config.public.backendUrl
+
+const subtitleScrollTarget = ref(null)
+
+const scrollUnderSubtitle = async () => {
+  await nextTick()
+  requestAnimationFrame(() => {
+    if (subtitleScrollTarget.value) {
+      subtitleScrollTarget.value.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    }
+  })
+}
+
 const fetchAnnouncements = async () => {
   try {
     const res = await fetch(`${baseUrl}/announcement/all?skip=0&limit=100`, {
@@ -105,8 +121,9 @@ const fetchAnnouncements = async () => {
   }
 }
 
-onMounted(() => {
-  fetchAnnouncements()
+onMounted(async () => {
+  await fetchAnnouncements()
+  scrollUnderSubtitle()
 })
 
 const handleAnnouncementClick = (announcement) => {
@@ -138,6 +155,11 @@ const closeModal = () => {
   margin: 0 auto;
   line-height: 1.6;
 }
+
+.subtitle-scroll-target {
+  scroll-margin-top: 88px;
+}
+
 .announcement-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 12px;
