@@ -8,6 +8,7 @@
               <h2 class="section-title mb-4">{{ headerSection.title }}</h2>
               <p class="header-subtitle">{{ headerSection.subtitle }}</p>
               <div class="header-divider mx-auto mt-6"></div>
+              <div ref="subtitleScrollTarget" class="subtitle-scroll-target"></div>
             </v-col>
           </v-row>
           <v-row v-if="loading" justify="center" class="my-12">
@@ -28,7 +29,13 @@
           </v-row>
           <v-row v-else class="blog-grid">
             <v-col v-for="(post, index) in paginatedPosts" :key="post.id" cols="12" md="6" lg="4" class="blog-col">
-              <v-card class="blog-card" elevation="0" hover @click="navigateToPost(post)" :style="{ animationDelay: `${index * 0.1}s` }">
+              <v-card
+                class="blog-card"
+                elevation="0"
+                hover
+                @click="navigateToPost(post)"
+                :style="{ animationDelay: `${index * 0.1}s` }"
+              >
                 <div class="image-container">
                   <v-img :src="post.image_url" :alt="post.blog_name" height="280" cover class="blog-image">
                     <template #placeholder>
@@ -36,7 +43,13 @@
                         <v-progress-circular indeterminate color="primary" />
                       </v-row>
                     </template>
-                    <v-chip class="category-chip" :color="getCategoryColor(post.blog_category)" variant="elevated" size="small" label>
+                    <v-chip
+                      class="category-chip"
+                      :color="getCategoryColor(post.blog_category)"
+                      variant="elevated"
+                      size="small"
+                      label
+                    >
                       {{ post.blog_category }}
                     </v-chip>
                     <div class="image-overlay">
@@ -58,7 +71,14 @@
                   <h3 class="blog-title mb-3">{{ post.blog_name }}</h3>
                   <p class="blog-description mb-4">{{ post.short_description }}</p>
                   <div class="tags-section mb-5">
-                    <v-chip v-for="tag in post.related_topics.slice(0, 3)" :key="tag" size="small" variant="outlined" class="me-2 mb-1 tag-chip" color="primary">
+                    <v-chip
+                      v-for="tag in post.related_topics.slice(0, 3)"
+                      :key="tag"
+                      size="small"
+                      variant="outlined"
+                      class="me-2 mb-1 tag-chip"
+                      color="primary"
+                    >
                       {{ tag }}
                     </v-chip>
                     <v-chip v-if="post.related_topics.length > 3" size="small" variant="text" class="more-tags">
@@ -66,7 +86,16 @@
                     </v-chip>
                   </div>
                   <div class="read-more-section">
-                    <v-btn :text="readMoreLabel" color="primary" variant="flat" size="default" block class="read-more-btn" append-icon="mdi-arrow-right" @click.stop="navigateToPost(post)"/>
+                    <v-btn
+                      :text="readMoreLabel"
+                      color="primary"
+                      variant="flat"
+                      size="default"
+                      block
+                      class="read-more-btn"
+                      append-icon="mdi-arrow-right"
+                      @click.stop="navigateToPost(post)"
+                    />
                   </div>
                 </v-card-text>
               </v-card>
@@ -75,13 +104,25 @@
           <v-row v-if="totalPages > 1" justify="center" class="mt-12">
             <v-col cols="12" class="text-center">
               <div class="simple-pagination">
-                <v-btn icon="mdi-chevron-left" :disabled="currentPage === 1" @click="currentPage--; scrollToTop()" class="nav-btn" size="default"/>
+                <v-btn
+                  icon="mdi-chevron-left"
+                  :disabled="currentPage === 1"
+                  @click="currentPage--; scrollToTop()"
+                  class="nav-btn"
+                  size="default"
+                />
                 <div class="page-info">
                   <span class="current-page">{{ currentPage }}</span>
                   <span class="page-separator">of</span>
                   <span class="total-pages">{{ totalPages }}</span>
                 </div>
-                <v-btn icon="mdi-chevron-right" :disabled="currentPage === totalPages" @click="currentPage++; scrollToTop()" class="nav-btn" size="default"/>
+                <v-btn
+                  icon="mdi-chevron-right"
+                  :disabled="currentPage === totalPages"
+                  @click="currentPage++; scrollToTop()"
+                  class="nav-btn"
+                  size="default"
+                />
               </div>
             </v-col>
           </v-row>
@@ -101,7 +142,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import type { BlogPost } from '~/composables/useBlogData'
 
 useHead({
@@ -110,12 +151,12 @@ useHead({
     { name: 'description', content: 'Discover the latest insights, SMART agronomic practices, and industry updates from the Proprietary Planters Association of Sri Lanka.' }
   ]
 })
-const { 
-  getAllPosts, 
-  loading, 
-  error, 
-  getCategoryColor, 
-  formatDate 
+const {
+  getAllPosts,
+  loading,
+  error,
+  getCategoryColor,
+  formatDate
 } = useBlogData()
 const currentPage = ref<number>(1)
 const postsPerPage = ref<number>(6)
@@ -125,6 +166,21 @@ const headerSection = ref({
   subtitle: 'Empowering Sri Lankan proprietary planters with SMART agronomic practices, industry insights, and sustainable plantation management strategies.'
 })
 const readMoreLabel = ref('Read More')
+
+const subtitleScrollTarget = ref<HTMLElement | null>(null)
+
+const scrollUnderSubtitle = async (): Promise<void> => {
+  await nextTick()
+  requestAnimationFrame(() => {
+    if (subtitleScrollTarget.value) {
+      subtitleScrollTarget.value.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    }
+  })
+}
+
 const sortedPosts = computed(() => {
   const posts = [...allPosts.value]
   return posts.sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime())
@@ -142,6 +198,8 @@ const loadPosts = async () => {
     allPosts.value = await getAllPosts(0, 100)
   } catch (err) {
     console.error('Failed to load posts:', err)
+  } finally {
+    scrollUnderSubtitle()
   }
 }
 const navigateToPost = (post: BlogPost): void => {
@@ -152,6 +210,7 @@ const scrollToTop = (): void => {
 }
 onMounted(() => {
   loadPosts()
+  scrollUnderSubtitle()
 })
 </script>
 
@@ -201,6 +260,11 @@ onMounted(() => {
   opacity: 0.85;
   font-weight: 400;
 }
+
+.subtitle-scroll-target {
+  scroll-margin-top: 88px;
+}
+
 .header-divider {
   width: 80px;
   height: 4px;

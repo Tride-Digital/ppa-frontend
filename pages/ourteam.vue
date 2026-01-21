@@ -6,6 +6,7 @@
         <p class="directors-subtitle">
           Select a director’s profile to view details about their role and services.<br>
         </p>
+        <div ref="complaintsBtnScrollTarget" class="complaints-btn-scroll-target"></div>
       </v-col>
     </v-row>
 
@@ -54,7 +55,7 @@
               <h1 class="director-name">{{ director.name }}</h1>
 
               <p class="director-province" v-if="getDirectorProvince(director.id)">
-                  {{ getDirectorProvince(director.id) }}
+                {{ getDirectorProvince(director.id) }}
               </p>
             </v-card-text>
           </v-card>
@@ -66,36 +67,58 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDirectors } from '~/composables/useDirectors'
 
 const router = useRouter()
-const { 
-  directorContacts, 
-  fetchDirectorContacts, 
+const {
+  directorContacts,
+  fetchDirectorContacts,
   fetchDirectorInfo,
   getDirectorTitle,
-  getDirectorProvince 
+  getDirectorProvince
 } = useDirectors()
+
+const complaintsBtnScrollTarget = ref<HTMLElement | null>(null)
+
+const scrollUnderComplaintsButton = async () => {
+  await nextTick()
+  requestAnimationFrame(() => {
+    if (complaintsBtnScrollTarget.value) {
+      complaintsBtnScrollTarget.value.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }
+  })
+}
 
 onMounted(async () => {
   await fetchDirectorContacts()
+
+  scrollUnderComplaintsButton()
+
   // Fetch director info for all directors
   for (const director of directorContacts.value) {
     await fetchDirectorInfo(director.id)
   }
+  scrollUnderComplaintsButton()
 })
 
 const navigateToDirector = (id: string | number, title?: string, province?: string): void => {
   const query: Record<string, string> = {}
   if (title) query.title = title
   if (province) query.province = province
-  
+
   router.push({
     path: `/director/${id}`,
     query: Object.keys(query).length > 0 ? query : undefined
   })
+}
+
+const goToComplaints = (): void => {
+  router.push({ path: '/contactus' })
 }
 </script>
 
@@ -113,17 +136,21 @@ const navigateToDirector = (id: string | number, title?: string, province?: stri
   line-height: 1.6;
 }
 
+.complaints-btn-scroll-target {
+  scroll-margin-top: 88px;
+}
+
 .director-shell {
   background: rgb(var(--v-theme-surface));
   border: 1px solid rgba(var(--v-theme-on-surface), 0.12);
   border-radius: 20px;
   padding: 20px;
-  padding-left: 20px; 
-  padding-top: 10px;          
+  padding-left: 20px;
+  padding-top: 10px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   cursor: pointer;
-  display: inline-block;   
+  display: inline-block;
 }
 .director-shell:hover {
   transform: translateY(-4px);
