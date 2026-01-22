@@ -22,7 +22,7 @@
             <v-card class="filters-card" elevation="4">
               <v-card-title class="filters-title">
                 <v-icon start>mdi-filter</v-icon>
-                Filters
+                Search Directory
               </v-card-title>
 
               <v-card-text>
