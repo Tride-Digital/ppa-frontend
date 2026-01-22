@@ -1674,12 +1674,12 @@ const handleFAQ = (faqKey: string) => {
 
     case "faq_join":
       addBotMessage(
-        "<strong>Join PPA - Become a Member</strong><br><br>" +
+        "<strong>Join PPA - Become a Reatiner Client or a Service Provider</strong><br><br>" +
         "Great choice! You're about to start your journey with the Proprietary Planters Alliance.<br><br>" +
         "On the next page, you can:<br>" +
-        "• Choose your membership type<br>" +
-        "• Register as a planter or service provider<br>" +
-        "• Access exclusive member benefits<br>" +
+        "• Choose your registation path<br>" +
+        "• Register as a retainer client or a service provider<br>" +
+        "• Access exclusive membership benefits<br>" +
         "• Connect with our network<br><br>" +
         "Redirecting you to the registration page..."
       );

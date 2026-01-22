@@ -16,8 +16,8 @@
             Call us
           </v-btn>
         </v-col>
-        <v-col cols="12" md="10" lg="8">
-          <div class="about-content" ref="aboutContentRef">
+        <v-col ref="aboutContentRef" cols="12" md="10" lg="8">
+          <div class="about-content">
             <div v-if="pending" class="text-center">Loading...</div>
             <div v-else-if="error" class="text-center">Failed to load content.</div>
             <div v-else v-html="content"></div>
@@ -26,7 +26,7 @@
         <v-col cols="12" class="text-center mt-8">
           <div class="contact-link-wrapper">
             <p class="contact-text">
-              For more information, please
+              For more information, please 
               <a :href="contactUsUrl" class="contact-link">contact us</a>
             </p>
           </div>
@@ -37,44 +37,28 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, watch, nextTick } from 'vue';
+import { computed, ref, onMounted, nextTick } from 'vue';
 import { useStaticContent } from '~/composables/useStaticContent';
 
 const { content, pending, error } = useStaticContent('About');
 
 const aboutContentRef = ref(null);
 
+onMounted(async () => {
+  await nextTick();
+  setTimeout(() => {
+    if (aboutContentRef.value) {
+      const el = aboutContentRef.value.$el || aboutContentRef.value;
+      el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, 100);
+});
+
 const handleCallUs = () => {
   window.location.href = 'tel:+94772376343';
 };
 
 const contactUsUrl = computed(() => '/contactus');
-
-const scrollToAboutContent = async () => {
-  await nextTick();
-
-  requestAnimationFrame(() => {
-    if (aboutContentRef.value) {
-      aboutContentRef.value.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  });
-};
-
-onMounted(() => {
-  scrollToAboutContent();
-});
-
-watch(
-  () => pending.value,
-  async (isPending, wasPending) => {
-    if (wasPending === true && isPending === false && !error.value) {
-      await scrollToAboutContent();
-    }
-  }
-);
 </script>
 
 <style scoped>
@@ -86,18 +70,8 @@ watch(
   font-weight: 700;
   color: rgb(var(--v-theme-section-title));
 }
-
-.why-ppa-heading {
-  font-size: 2rem;
-  font-weight: 600;
-  color: rgb(var(--v-theme-section-title));
-  margin: 0;
-}
-
 .about-content {
   text-align: justify;
-
-  scroll-margin-top: 88px;
 }
 .about-text {
   font-size: 1.1rem;

@@ -5,7 +5,7 @@
       <v-container>
         <v-row justify="center">
           <v-col cols="12" md="8" class="text-center">
-            <h2 class="section-title">Public Directory</h2>
+            <h2 class="section-title">Service Provider Directory</h2>
             <p class="section-subtitle">
               Browse categories first, then apply filters to discover matching providers.
             </p>
@@ -14,78 +14,11 @@
       </v-container>
     </section>
 
-    <!-- Marketing categories -->
-    <section class="py-6">
-      <v-container>
-        <div ref="categoriesScrollTarget" class="categories-scroll-target"></div>
-        <!-- <v-row class="mb-2" justify="center">
-          <v-col cols="12" md="8" class="text-center">
-            <h2 class="text-h5" style="color: rgb(var(--v-theme-section-title)); font-weight: 700;">
-              Explore Service Categories
-            </h2>
-            <p class="text-body-2" style="color: rgb(var(--v-theme-section-subtitle));">
-              Browse categories first, then apply filters to discover matching providers.
-            </p>
-          </v-col>
-        </v-row> -->
-
-        <v-row v-if="loadingCategories" justify="center">
-          <v-col cols="12" class="text-center">
-            <v-progress-circular indeterminate size="48"></v-progress-circular>
-          </v-col>
-        </v-row>
-
-        <v-row v-else class="category-card-row">
-          <v-col v-for="cat in categories" :key="cat.id" cols="12" sm="6" md="4" lg="3" class="category-card-col">
-            <v-card class="category-card" :class="{ 'category-card--expanded': openCategoryPanel[cat.id] === 0 }" elevation="3" hover>
-              <div @click="selectCategory(cat)">
-                <v-img :src="categoryImage(cat)" height="140" cover />
-                <v-card-title class="category-title">
-                  <v-icon start size="20">{{ cat.icon || 'mdi-briefcase' }}</v-icon>
-                  {{ cat.name }}
-                </v-card-title>
-              </div>
-
-              <v-card-text class="category-sub pa-0">
-                <v-expansion-panels
-                  flat
-                  v-model="openCategoryPanel[cat.id]"
-                  @update:modelValue="onCategoryPanelChange(cat.id, $event)"
-                >
-                  <v-expansion-panel>
-                    <v-expansion-panel-title class="text-body-2">
-                      {{ cat.subcategories?.length || 0 }} services
-                    </v-expansion-panel-title>
-                    <v-expansion-panel-text>
-                      <v-list density="compact" class="pa-0 subcategory-list">
-                        <v-list-item
-                          v-for="sub in cat.subcategories"
-                          :key="sub.id"
-                          class="text-body-2 subcategory-item"
-                          @click="selectSubcategory(cat.id, sub.id)"
-                        >
-                          <template #prepend>
-                            <v-icon size="16" class="me-2">mdi-chevron-right</v-icon>
-                          </template>
-                          <div class="subcategory-text">{{ sub.name }}</div>
-                        </v-list-item>
-                      </v-list>
-                    </v-expansion-panel-text>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </section>
-
-    <!-- Filters + results -->
     <section class="py-8">
       <v-container>
         <v-row>
           <!-- Filters panel -->
-          <v-col cols="12" lg="4">
+          <v-col cols="12" lg="4" class="filters-col">
             <v-card class="filters-card" elevation="4">
               <v-card-title class="filters-title">
                 <v-icon start>mdi-filter</v-icon>
@@ -165,7 +98,7 @@
                   size="large"
                   class="apply-btn"
                   :loading="loadingProviders"
-                  @click="applyFilters"
+                  @click="page = 1; maxKnownTotalPages = null; applyFilters()"
                 >
                   <v-icon start>mdi-check</v-icon>
                   Apply
@@ -180,76 +113,200 @@
 
           <!-- Results -->
           <v-col cols="12" lg="8">
-            <v-card class="results-header" elevation="0">
-              <div class="d-flex align-center justify-space-between flex-wrap gap-3">
-                <div>
-                  <h3 class="text-h6" style="color: rgb(var(--v-theme-section-title)); font-weight: 700;">
-                    Providers
-                  </h3>
-                  <div class="text-body-2" style="color: rgb(var(--v-theme-section-subtitle));">
-                    Showing {{ providers.length }} of {{ total }}
-                  </div>
-                </div>
+            <!-- When filters NOT applied - Show marketing categories -->
+            <div v-if="!hasSearched">
+              <v-card class="results-header mb-4" elevation="0">
+                <h3 class="text-h6" style="color: rgb(var(--v-theme-section-title)); font-weight: 700;">
+                  Explore Service Categories
+                </h3>
+                <p class="text-body-2 mt-1" style="color: rgb(var(--v-theme-section-subtitle));">
+                  Select a category to browse service providers, or use filters to refine your search.
+                </p>
+              </v-card>
 
-                <v-select
-                  v-model="pageSize"
-                  :items="[8, 12, 16, 24]"
-                  label="Per page"
-                  variant="outlined"
-                  density="compact"
-                  style="max-width: 160px; margin-top: 10px;"
+              <v-row v-if="loadingCategories" justify="center">
+                <v-col cols="12" class="text-center">
+                  <v-progress-circular indeterminate size="48"></v-progress-circular>
+                </v-col>
+              </v-row>
+
+              <v-row v-else class="category-card-row">
+                <v-col v-for="cat in categories" :key="cat.id" cols="12" sm="6" md="6" lg="6" class="category-card-col">
+                  <v-card class="category-card" :class="{ 'category-card--expanded': openCategoryPanel[cat.id] === 0 }" elevation="3" hover>
+                    <div @click="selectCategory(cat)">
+                      <v-img :src="categoryImage(cat)" height="140" cover />
+                      <v-card-title class="category-title">
+                        <v-icon start size="20">{{ cat.icon || 'mdi-briefcase' }}</v-icon>
+                        {{ cat.name }}
+                      </v-card-title>
+                    </div>
+
+                    <v-card-text class="category-sub pa-0">
+                      <v-expansion-panels
+                        flat
+                        v-model="openCategoryPanel[cat.id]"
+                        @update:modelValue="onCategoryPanelChange(cat.id, $event)"
+                      >
+                        <v-expansion-panel>
+                          <v-expansion-panel-title class="text-body-2">
+                            {{ cat.subcategories?.length || 0 }} services
+                          </v-expansion-panel-title>
+                          <v-expansion-panel-text>
+                            <v-list density="compact" class="pa-0 subcategory-list">
+                              <v-list-item
+                                v-for="sub in cat.subcategories"
+                                :key="sub.id"
+                                class="text-body-2 subcategory-item"
+                                @click="selectSubcategory(cat.id, sub.id)"
+                              >
+                                <template #prepend>
+                                  <v-icon size="16" class="me-2">mdi-chevron-right</v-icon>
+                                </template>
+                                <div class="subcategory-text">{{ sub.name }}</div>
+                              </v-list-item>
+                            </v-list>
+                          </v-expansion-panel-text>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </div>
+
+            <!-- When filters ARE applied - Show provider results -->
+            <div v-else>
+              <v-card class="results-header" elevation="0">
+                <div class="d-flex align-center justify-space-between flex-wrap gap-3">
+                  <div>
+                    <h3 class="text-h6" style="color: rgb(var(--v-theme-section-title)); font-weight: 700;">
+                      Providers
+                    </h3>
+                    <div class="text-body-2" style="color: rgb(var(--v-theme-section-subtitle));">
+                      Showing {{ providers.length }} of {{ total }}
+                    </div>
+                  </div>
+
+                  <v-select
+                    v-model="pageSize"
+                    :items="[8, 12, 16, 24]"
+                    label="Per page"
+                    variant="outlined"
+                    density="compact"
+                    style="max-width: 160px; margin-top: 10px;"
+                  />
+                </div>
+              </v-card>
+
+              <v-row v-if="loadingProviders" class="mt-6" justify="center">
+                <v-col cols="12" class="text-center">
+                  <v-progress-circular indeterminate size="52"></v-progress-circular>
+                  <p class="mt-3">Loading providers...</p>
+                </v-col>
+              </v-row>
+
+              <v-row v-else-if="providers.length === 0" class="mt-6">
+                <v-col cols="12" class="text-center py-10">
+                  <v-icon size="64" color="grey" class="mb-4">mdi-account-search</v-icon>
+                  <h3 class="text-h6 mb-2">No providers found</h3>
+                  <p class="text-body-2" style="color: rgb(var(--v-theme-section-subtitle));">
+                    Try changing filters or removing some constraints.
+                  </p>
+                </v-col>
+              </v-row>
+
+              <v-row v-else class="mt-4 equal-card-row">
+                <v-col
+                  v-for="p in providers"
+                  :key="p.id"
+                  cols="12"
+                  sm="6"
+                  md="4"
+                  lg="3"
+                  class="mb-6 provider-card-col"
+                >
+                  <ProviderCard
+                    :provider="p"
+                    @click="goToProvider(p.id)"
+                    @view="goToProvider(p.id)"
+                  />
+                </v-col>
+              </v-row>
+   
+              <div v-if="effectiveTotalPages > 1" class="d-flex justify-center mt-6">
+                <v-pagination
+                  v-model="page"
+                  :length="effectiveTotalPages"
+                  rounded="lg"
+                  @update:modelValue="applyFilters"
                 />
               </div>
-            </v-card>
-
-            <v-row v-if="loadingProviders" class="mt-6" justify="center">
-              <v-col cols="12" class="text-center">
-                <v-progress-circular indeterminate size="52"></v-progress-circular>
-                <p class="mt-3">Loading providers...</p>
-              </v-col>
-            </v-row>
-
-            <v-row v-else-if="!hasSearched" class="mt-6">
-              <v-col cols="12" class="text-center py-10">
-                <v-icon size="64" color="primary" class="mb-4">mdi-filter-outline</v-icon>
-                <h3 class="text-h6 mb-2">Use filters and click Apply</h3>
-                <p class="text-body-2" style="color: rgb(var(--v-theme-section-subtitle));">
-                  Providers will appear here based on your selected category and location.
-                </p>
-              </v-col>
-            </v-row>
-
-            <v-row v-else-if="providers.length === 0" class="mt-6">
-              <v-col cols="12" class="text-center py-10">
-                <v-icon size="64" color="grey" class="mb-4">mdi-account-search</v-icon>
-                <h3 class="text-h6 mb-2">No providers found</h3>
-                <p class="text-body-2" style="color: rgb(var(--v-theme-section-subtitle));">
-                  Try changing filters or removing some constraints.
-                </p>
-              </v-col>
-            </v-row>
-
-            <v-row v-else class="mt-4 equal-card-row">
-              <v-col
-                v-for="p in providers"
-                :key="p.id"
-                cols="12"
-                sm="6"
-                md="4"
-                lg="3"
-                class="mb-6 provider-card-col"
-              >
-                <ProviderCard
-                  :provider="p"
-                  @click="goToProvider(p.id)"
-                  @view="goToProvider(p.id)"
-                />
-              </v-col>
-            </v-row>
-
-            <div v-if="hasSearched && totalPages > 1" class="d-flex justify-center mt-6">
-              <v-pagination v-model="page" :length="totalPages" rounded="lg" @update:modelValue="applyFilters" />
             </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </section>
+
+    <section v-if="hasSearched" class="py-6">
+      <v-container>
+        <div ref="categoriesScrollTarget" class="categories-scroll-target"></div>
+        <v-row class="mb-4" justify="center">
+          <v-col cols="12" md="8" class="text-center">
+            <h2 class="text-h5" style="color: rgb(var(--v-theme-section-title)); font-weight: 700;">
+              Explore More Service Categories
+            </h2>
+            <p class="text-body-2" style="color: rgb(var(--v-theme-section-subtitle));">
+              Browse other service categories available in our directory.
+            </p>
+          </v-col>
+        </v-row>
+
+        <v-row v-if="loadingCategories" justify="center">
+          <v-col cols="12" class="text-center">
+            <v-progress-circular indeterminate size="48"></v-progress-circular>
+          </v-col>
+        </v-row>
+
+        <v-row v-else class="category-card-row">
+          <v-col v-for="cat in categories" :key="cat.id" cols="12" sm="6" md="4" lg="3" class="category-card-col">
+            <v-card class="category-card" :class="{ 'category-card--expanded': openCategoryPanel[cat.id] === 0 }" elevation="3" hover>
+              <div @click="selectCategory(cat)">
+                <v-img :src="categoryImage(cat)" height="140" cover />
+                <v-card-title class="category-title">
+                  <v-icon start size="20">{{ cat.icon || 'mdi-briefcase' }}</v-icon>
+                  {{ cat.name }}
+                </v-card-title>
+              </div>
+
+              <v-card-text class="category-sub pa-0">
+                <v-expansion-panels
+                  flat
+                  v-model="openCategoryPanel[cat.id]"
+                  @update:modelValue="onCategoryPanelChange(cat.id, $event)"
+                >
+                  <v-expansion-panel>
+                    <v-expansion-panel-title class="text-body-2">
+                      {{ cat.subcategories?.length || 0 }} services
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text>
+                      <v-list density="compact" class="pa-0 subcategory-list">
+                        <v-list-item
+                          v-for="sub in cat.subcategories"
+                          :key="sub.id"
+                          class="text-body-2 subcategory-item"
+                          @click="selectSubcategory(cat.id, sub.id)"
+                        >
+                          <template #prepend>
+                            <v-icon size="16" class="me-2">mdi-chevron-right</v-icon>
+                          </template>
+                          <div class="subcategory-text">{{ sub.name }}</div>
+                        </v-list-item>
+                      </v-list>
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </v-card-text>
+            </v-card>
           </v-col>
         </v-row>
       </v-container>
@@ -268,6 +325,7 @@ const { provinces, districts, fetchProvinces, fetchDistrictsByProvince, resetDis
 const hasSearched = ref(false);
 const page = ref(1);
 const pageSize = ref(12);
+const maxKnownTotalPages = ref<number | null>(null);
 
 const filters = ref({
   q: "",
@@ -309,7 +367,6 @@ onMounted(async () => {
   categories.value.forEach((c: any) => {
     if (openCategoryPanel.value[c.id] === undefined) openCategoryPanel.value[c.id] = null;
   });
-  scrollToCategories();
 });
 
 watch(
@@ -319,7 +376,6 @@ watch(
       categories.value.forEach((c: any) => {
         if (openCategoryPanel.value[c.id] === undefined) openCategoryPanel.value[c.id] = null;
       });
-      await scrollToCategories();
     }
   }
 );
@@ -354,6 +410,12 @@ const totalPages = computed(() => {
   return Math.max(1, Math.ceil(t / pageSize.value));
 });
 
+const effectiveTotalPages = computed(() => {
+  const base = totalPages.value;
+  if (maxKnownTotalPages.value == null) return base;
+  return Math.max(1, Math.min(base, maxKnownTotalPages.value));
+});
+
 const categoryImage = (cat: any) => {
   const img = cat?.subcategories?.find((s: any) => s.img_url)?.img_url;
   return img || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=1200&q=60";
@@ -362,15 +424,15 @@ const categoryImage = (cat: any) => {
 const selectCategory = (cat: any) => {
   filters.value.category = cat.id;
   filters.value.subcategory = null;
-  // UX: scroll to filters
-  window.scrollTo({ top: 520, behavior: "smooth" });
+  // Scroll to top to see filters
+  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 const selectSubcategory = (categoryId: number, subcategoryId: number) => {
   filters.value.category = categoryId;
   filters.value.subcategory = subcategoryId;
-  // UX: scroll to filters
-  window.scrollTo({ top: 520, behavior: "smooth" });
+  // Scroll to top to see filters
+  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 const onProvinceChange = async () => {
@@ -383,21 +445,42 @@ const onProvinceChange = async () => {
 
 const applyFilters = async () => {
   hasSearched.value = true;
-  await searchProviders({
+
+  const baseParams = {
     q: filters.value.q || undefined,
     category_id: filters.value.category,
     subcategory_id: filters.value.subcategory,
     province_code: filters.value.province,
     district_code: filters.value.district,
     sort: filters.value.sort,
-    page: page.value,
     page_size: pageSize.value,
     lan: "en",
+  };
+
+  await searchProviders({
+    ...baseParams,
+    page: page.value,
   });
+
+  if (page.value > 1 && providers.value.length === 0) {
+    const fallbackPage = Math.max(1, page.value - 1);
+    maxKnownTotalPages.value = fallbackPage;
+    page.value = fallbackPage;
+
+    await searchProviders({
+      ...baseParams,
+      page: page.value,
+    });
+  }
+
+  if (providers.value.length > 0 && providers.value.length < pageSize.value) {
+    maxKnownTotalPages.value = page.value;
+  }
 };
 
 watch(pageSize, () => {
   page.value = 1;
+  maxKnownTotalPages.value = null;
   if (hasSearched.value) applyFilters();
 });
 
@@ -408,6 +491,8 @@ const resetFilters = () => {
   total.value = 0;
   hasSearched.value = false;
   page.value = 1;
+  maxKnownTotalPages.value = null;
+  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 const goToProvider = (id: number) => {
@@ -439,7 +524,7 @@ useSeoMeta({
 }
 
 :root {
-  --dir-card-height: 420px;   
+  --dir-card-height: 420px;
   --dir-card-img-height: 150px;
 }
 @media (max-width: 1264px) {
@@ -456,7 +541,7 @@ useSeoMeta({
 }
 @media (max-width: 600px) {
   :root {
-    --dir-card-height: auto;       
+    --dir-card-height: auto;
     --dir-card-img-height: 160px;
   }
 }
@@ -537,7 +622,16 @@ useSeoMeta({
 .filters-card {
   border-radius: 16px;
   background-color: rgb(var(--v-theme-service-card-bg));
+  position: sticky;
+  top: 88px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
+
+.filters-col {
+  align-self: flex-start;
+}
+
 .filters-title {
   font-weight: 800;
   color: rgb(var(--v-theme-section-title));
