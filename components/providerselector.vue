@@ -164,7 +164,7 @@
               <v-btn
                 block
                 size="large"
-                color="primary"
+                color="indigo"
                 variant="elevated"
                 @click="navigateToServiceProvider"
                 append-icon="mdi-arrow-right"
