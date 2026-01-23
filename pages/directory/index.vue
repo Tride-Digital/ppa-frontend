@@ -14,7 +14,7 @@
       </v-container>
     </section>
 
-    <section class="py-8">
+    <section ref="filtersSection" class="py-8">
       <v-container>
         <v-row>
           <!-- Filters panel -->
@@ -337,6 +337,7 @@ const filters = ref({
 });
 
 const categoriesScrollTarget = ref<HTMLElement | null>(null);
+const filtersSection = ref<HTMLElement | null>(null);
 
 const openCategoryPanel = ref<Record<number, number | null>>({});
 
@@ -367,6 +368,17 @@ onMounted(async () => {
   categories.value.forEach((c: any) => {
     if (openCategoryPanel.value[c.id] === undefined) openCategoryPanel.value[c.id] = null;
   });
+
+  // Auto-scroll to filters section
+  await nextTick();
+  setTimeout(() => {
+    if (filtersSection.value) {
+      filtersSection.value.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, 300);
 });
 
 watch(

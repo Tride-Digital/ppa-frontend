@@ -1679,7 +1679,7 @@ const handleFAQ = (faqKey: string) => {
         "On the next page, you can:<br>" +
         "• Choose your registation path<br>" +
         "• Register as a retainer client or a service provider<br>" +
-        "• Access exclusive membership benefits<br>" +
+        "• Access exclusive benefits<br>" +
         "• Connect with our network<br><br>" +
         "Redirecting you to the registration page..."
       );
