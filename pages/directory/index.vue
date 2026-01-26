@@ -133,13 +133,15 @@
               <v-row v-else class="category-card-row">
                 <v-col v-for="cat in categories" :key="cat.id" cols="12" sm="6" md="6" lg="6" class="category-card-col">
                   <v-card class="category-card" :class="{ 'category-card--expanded': openCategoryPanel[cat.id] === 0 }" elevation="3" hover>
-                    <div @click="selectCategory(cat)">
+                    <div class="category-card-top" @click="selectCategory(cat)">
                       <v-img :src="categoryImage(cat)" height="140" cover />
                       <v-card-title class="category-title">
                         <v-icon start size="20">{{ cat.icon || 'mdi-briefcase' }}</v-icon>
                         {{ cat.name }}
                       </v-card-title>
                     </div>
+
+                    <div class="category-card-spacer"></div>
 
                     <v-card-text class="category-sub pa-0">
                       <v-expansion-panels
@@ -270,13 +272,15 @@
         <v-row v-else class="category-card-row">
           <v-col v-for="cat in categories" :key="cat.id" cols="12" sm="6" md="4" lg="3" class="category-card-col">
             <v-card class="category-card" :class="{ 'category-card--expanded': openCategoryPanel[cat.id] === 0 }" elevation="3" hover>
-              <div @click="selectCategory(cat)">
+              <div class="category-card-top" @click="selectCategory(cat)">
                 <v-img :src="categoryImage(cat)" height="140" cover />
                 <v-card-title class="category-title">
                   <v-icon start size="20">{{ cat.icon || 'mdi-briefcase' }}</v-icon>
                   {{ cat.name }}
                 </v-card-title>
               </div>
+
+              <div class="category-card-spacer"></div>
 
               <v-card-text class="category-sub pa-0">
                 <v-expansion-panels
@@ -538,23 +542,27 @@ useSeoMeta({
 :root {
   --dir-card-height: 420px;
   --dir-card-img-height: 150px;
+  --category-card-height: 320px;
 }
 @media (max-width: 1264px) {
   :root {
     --dir-card-height: 420px;
     --dir-card-img-height: 150px;
+    --category-card-height: 320px;
   }
 }
 @media (max-width: 960px) {
   :root {
     --dir-card-height: 410px;
     --dir-card-img-height: 150px;
+    --category-card-height: 310px;
   }
 }
 @media (max-width: 600px) {
   :root {
     --dir-card-height: auto;
     --dir-card-img-height: 160px;
+    --category-card-height: 300px;
   }
 }
 
@@ -563,7 +571,7 @@ useSeoMeta({
 }
 
 .category-card-row {
-  align-items: flex-start;
+  align-items: stretch;
 }
 .category-card-row > :deep(.v-col) {
   display: flex;
@@ -582,6 +590,7 @@ useSeoMeta({
   display: flex;
   flex-direction: column;
   position: relative;
+  min-height: var(--category-card-height);
 
   border-radius: 16px;
   overflow: hidden;
@@ -591,6 +600,15 @@ useSeoMeta({
 .category-card:hover {
   transform: translateY(-6px);
 }
+
+.category-card-top {
+  flex-shrink: 0;
+}
+
+.category-card-spacer {
+  flex: 1 1 auto;
+}
+
 .category-title {
   font-weight: 700;
   color: rgb(var(--v-theme-section-title));
@@ -611,6 +629,8 @@ useSeoMeta({
 .category-sub {
   color: rgb(var(--v-theme-section-subtitle));
   position: relative;
+  flex-shrink: 0;
+  margin-top: auto;
 }
 
 .category-card :deep(.v-expansion-panels) {
