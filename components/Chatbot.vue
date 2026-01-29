@@ -1864,8 +1864,7 @@ const sendUserMessage = () => {
 
       if (highConfidence) {
         addBotMessage(
-          `I found the best director for your request: <strong>${name}</strong>.<br>` +
-          (matchedWords ? `Matched keywords: <strong>${matchedWords}</strong><br><br>` : "<br>") +
+          `I found the best director for your request: <strong>${name}</strong>.<br> <br>` +
           `Redirecting you now...`
         )
         setTimeout(() => navigateTo(`/director/${best.user_id}`), 1200)
