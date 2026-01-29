@@ -706,6 +706,35 @@ interface Director {
   image: string;
 }
 
+interface MatchedDirectorCandidate {
+  user_id: string
+  full_name?: string | null
+  profile_pic?: string | null
+  score: number
+  confidence?: number | null
+  matched_keywords: string[]
+}
+
+interface DirectorMatchResponse {
+  matched: boolean
+  best: MatchedDirectorCandidate | null
+  candidates: MatchedDirectorCandidate[]
+}
+
+const matchDirectorByText = async (text: string): Promise<DirectorMatchResponse | null> => {
+  try {
+    const res = await $fetch<DirectorMatchResponse>(`${config.public.backendUrl}/chatbot/match-director`, {
+      method: 'POST',
+      body: { text },
+      headers: { 'Content-Type': 'application/json' },
+    })
+    return res
+  } catch (e) {
+    console.error('matchDirectorByText error:', e)
+    return null
+  }
+}
+
 // State
 const chatOpen = ref(false);
 const chatMinimized = ref(false);
@@ -1111,7 +1140,16 @@ const selectOption = (option: { label: string; value: string; icon?: string }) =
   addUserMessage(option.label);
 
   setTimeout(() => {
-        if (option.value.startsWith("faq_")) {
+    if (option.value.startsWith("choose_director:")) {
+      const id = option.value.split(":")[1]
+      addBotMessage(
+        `Opening <strong>Director Office</strong>...<br><br>Redirecting now...`
+      )
+      setTimeout(() => navigateTo(`/director/${id}`), 900)
+      return
+    }
+
+    if (option.value.startsWith("faq_")) {
       handleFAQ(option.value);
       return;
     }
@@ -1700,51 +1738,153 @@ const handleFAQ = (faqKey: string) => {
 };
 
 const sendUserMessage = () => {
-  if (!userMessage.value.trim()) return;
+  if (!userMessage.value.trim()) return
 
-  addUserMessage(userMessage.value);
-  const msg = userMessage.value.toLowerCase();
-  userMessage.value = "";
+  const originalText = userMessage.value
+  addUserMessage(originalText)
 
-  // Keyword responses with professional tone
-  setTimeout(() => {
+  const msg = originalText.toLowerCase()
+  userMessage.value = ""
+
+  setTimeout(async () => {
+    // For long/complex sentences, tryingg director matching FIRST
+    const wordCount = originalText.trim().split(/\s+/).filter(Boolean).length
+    const isComplex = wordCount >= 8 || originalText.length >= 60
+
+    if (isComplex) {
+      const match = await matchDirectorByText(originalText)
+
+      if (match?.matched && match.best?.user_id) {
+        const best = match.best
+        const name = best.full_name || "a Director"
+        const matchedWords = (best.matched_keywords || []).slice(0, 8).join(", ")
+
+        const bestScore = best.score || 0
+        const bestConf = best.confidence || 0
+        const secondScore = match.candidates?.[1]?.score || 0
+
+        const highConfidence =
+          bestScore >= 2 ||
+          bestConf >= 0.25 ||
+          (bestScore >= secondScore + 1)
+
+        if (highConfidence) {
+          addBotMessage(
+            `I found the best director for your request: <strong>${name}</strong>.<br> <br>` +
+            `Redirecting you now...`
+          )
+          setTimeout(() => navigateTo(`/director/${best.user_id}`), 1200)
+          return
+        }
+
+        // low confidence -> show choices
+        showDirectorCandidates(match)
+        return
+      }
+    }
+
+    // Existing quick responses
     if (msg.match(/\b(hello|hi|hey|good morning|good afternoon|good evening|greetings)\b/)) {
       addBotMessage("Hello! Welcome to the PPA Virtual Office. How may I assist you today?", {
         options: faqList.slice(0, 4).map(faq => ({ label: faq.label, value: faq.value })),
-      });
-    } else if (msg.includes("director") || msg.includes("expert") || msg.includes("contact")) {
-      handleFAQ("faq_contact");
-    } else if (msg.match(/\b(service|help|support|assist|consultation)\b/)) {
-      handleFAQ("faq_services");
-    } else if (msg.match(/\b(fund|grant|money|investment|financial|loan)\b/)) {
-      handleFAQ("faq_funding");
-    } else if (msg.match(/\b(member|join|partnership|partner)\b/)) {
-      handleFAQ("faq_membership");
-    } else if (msg.match(/\b(submit|request|form)\b/)) {
-      handleFAQ("faq_submit");
-    } else if (msg.match(/\b(navigate|find|where|how to)\b/)) {
-      handleFAQ("faq_navigate");
-    } else if (msg.match(/\b(resource|document|download)\b/)) {
-      handleFAQ("faq_resources");
-    } else if (msg.match(/\b(what is|about|website)\b/)) {
-      handleFAQ("faq_website");
-    } else if (msg.match(/\b(thank|thanks|appreciate|grateful)\b/)) {
+      })
+      return
+    }
+
+    if (msg.includes("director") || msg.includes("expert") || msg.includes("contact")) {
+      handleFAQ("faq_contact")
+      return
+    }
+
+    if (msg.match(/\b(service|help|support|assist|consultation)\b/)) {
+      handleFAQ("faq_services")
+      return
+    }
+
+    if (msg.match(/\b(fund|grant|money|investment|financial|loan)\b/)) {
+      handleFAQ("faq_funding")
+      return
+    }
+
+    if (msg.match(/\b(member|join|partnership|partner)\b/)) {
+      handleFAQ("faq_membership")
+      return
+    }
+
+    if (msg.match(/\b(submit|request|form)\b/)) {
+      handleFAQ("faq_submit")
+      return
+    }
+
+    if (msg.match(/\b(navigate|find|where|how to)\b/)) {
+      handleFAQ("faq_navigate")
+      return
+    }
+
+    if (msg.match(/\b(resource|document|download)\b/)) {
+      handleFAQ("faq_resources")
+      return
+    }
+
+    if (msg.match(/\b(what is|about|website)\b/)) {
+      handleFAQ("faq_website")
+      return
+    }
+
+    if (msg.match(/\b(thank|thanks|appreciate|grateful)\b/)) {
       addBotMessage("You're very welcome! I'm here to assist you with any PPA-related inquiries. Is there anything else I can help you with?", {
         options: faqList.slice(0, 4).map(faq => ({ label: faq.label, value: faq.value })),
-      });
-    } else if (msg.match(/\b(bye|goodbye|see you|farewell|exit)\b/)) {
-      addBotMessage(
-          "Thank you for visiting the PPA Virtual Office! Have a great day, and feel free to return anytime for assistance with plantation services, funding opportunities, or expert consultations."
-      );
-    } else {
-      addBotMessage(
-          `I understand you're asking about: "${msg}"<br><br>` +
-          `Let me help you find the most relevant information. Please select from the options below:`,
-          {
-            options: faqList.map(faq => ({ label: faq.label, value: faq.value })),
-          }
-      );
+      })
+      return
     }
+
+    if (msg.match(/\b(bye|goodbye|see you|farewell|exit)\b/)) {
+      addBotMessage(
+        "Thank you for visiting the PPA Virtual Office! Have a great day, and feel free to return anytime for assistance with plantation services, funding opportunities, or expert consultations."
+      )
+      return
+    }
+
+    const match = await matchDirectorByText(originalText)
+
+    if (match?.matched && match.best?.user_id) {
+      const best = match.best
+      const name = best.full_name || "a Director"
+      const matchedWords = (best.matched_keywords || []).slice(0, 8).join(", ")
+
+      // confidence rule for shorter messages
+      const bestScore = best.score || 0
+      const bestConf = best.confidence || 0
+      const secondScore = match.candidates?.[1]?.score || 0
+
+      const highConfidence =
+        bestScore >= 2 ||
+        bestConf >= 0.25 ||
+        (bestScore >= secondScore + 1)
+
+      if (highConfidence) {
+        addBotMessage(
+          `I found the best director for your request: <strong>${name}</strong>.<br>` +
+          (matchedWords ? `Matched keywords: <strong>${matchedWords}</strong><br><br>` : "<br>") +
+          `Redirecting you now...`
+        )
+        setTimeout(() => navigateTo(`/director/${best.user_id}`), 1200)
+        return
+      }
+
+      // low confidence -> show choices if we have candidates
+      if (match.candidates && match.candidates.length > 0) {
+        showDirectorCandidates(match)
+        return
+      }
+    }
+    addBotMessage(
+      `I understand you're asking about: "${msg}"<br><br>` +
+      `Let me help you find the most relevant information. Please select from the options below:`,
+      {
+        options: faqList.map(faq => ({ label: faq.label, value: faq.value })),
+      }
+    );
   }, 500);
 };
 
@@ -1756,6 +1896,17 @@ const markAsRead = () => {
   });
   unreadCount.value = 0;
 };
+
+// Helper function to detect greeting-only messages
+const isGreetingOnly = (text: string): boolean => {
+  const cleaned = text.trim().toLowerCase()
+  const words = cleaned.split(/\s+/).filter(Boolean)
+
+  // If user wrote more than 3 words, it's not a greetign
+  if (words.length > 3) return false
+
+  return /\b(hello|hi|hey|good morning|good afternoon|good evening|greetings)\b/.test(cleaned)
+}
 
 const getLastMessagePreview = (): string => {
   if (messages.value.length === 0) return "Start your PPA journey";
@@ -2376,7 +2527,6 @@ onMounted(async () => {
   white-space: normal !important;
   flex-wrap: wrap !important;
   word-break: break-word !important;
-  text-align: left !important;
   display: flex !important;
   align-items: flex-start !important;
   justify-content: flex-start !important;
