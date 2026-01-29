@@ -42,10 +42,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      adminAppUrl: 'https://qaadmin.planters.lk',
-      registerUrl: 'https://qaadmin.planters.lk/register',
-      backendUrl: 'https://qaapippa.ecoderssl.com',
-      registerServiceUrl: 'https://qaadmin.planters.lk/registerservice',
+      adminAppUrl: 'http://localhost:3000',
+      registerUrl: 'http://localhost:3000/register',
+      backendUrl: 'http://localhost:8000',
+      registerServiceUrl: 'http://localhost:3000/registerservice',
     }
   },
 
