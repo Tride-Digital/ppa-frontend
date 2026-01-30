@@ -81,3 +81,5 @@ export default defineNuxtConfig({
   // For example:
   // @forward 'vuetify/settings' with (
   //   $button-border-radius: 0px,
+
+});
