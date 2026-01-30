@@ -33,6 +33,11 @@ interface ProductionCostStatsResponse {
   client_count: number;
 }
 
+interface SiteVisitStatsResponse {
+  total_visits: number;
+  unique_ips: number;
+}
+
 const userApplications = ref({
   total: 0,
   pending: 0,
@@ -64,6 +69,11 @@ const serviceProviders = ref({
 const productionCostStats = ref({
   total_revenue_all_clients: 0,
   client_count: 0,
+});
+
+const siteVisitStats = ref({
+  total_visits: 0,
+  unique_ips: 0,
 });
 
 // Retainer Clients Stats
@@ -149,15 +159,34 @@ async function fetchProductionCostStats() {
   }
 }
 
+// Site Visit Stats
+async function fetchSiteVisitStats() {
+  try {
+    const config = useRuntimeConfig();
+    const response = await $fetch<SiteVisitStatsResponse>(`${config.public.backendUrl}/site_visits/stats`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    siteVisitStats.value = {
+      total_visits: response.total_visits || 0,
+      unique_ips: response.unique_ips || 0,
+    };
+  } catch (error) {
+    console.error("Error fetching site visit stats:", error);
+  }
+}
+
 export const useStats = () => {
   return {
     userApplications,
     estateRegistrations,
     serviceProviders,
     productionCostStats,
+    siteVisitStats,
     fetchUserAppStats,
     fetchEstateStats,
     fetchProviderStats,
     fetchProductionCostStats,
+    fetchSiteVisitStats,
   };
 };

@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-const { userApplications, estateRegistrations, serviceProviders, productionCostStats, fetchUserAppStats, fetchEstateStats, fetchProviderStats, fetchProductionCostStats } = useStats()
+const { estateRegistrations, serviceProviders, siteVisitStats, fetchUserAppStats, fetchEstateStats, fetchProviderStats, fetchSiteVisitStats } = useStats()
 
 const props = defineProps({
   backgroundUrl: { 
@@ -34,17 +34,19 @@ const props = defineProps({
   size: { type: Number, default: 220 },
 })
 
+const formatCount = (num: number): string => {
+  if (num >= 1000000) return `${Math.floor(num / 1000000)}M+`
+  if (num >= 1000) return `${Math.floor(num / 1000)}K+`
+  return `${num}+`
+}
+
 const stats = computed(() => {
-  const revenuePerHectare = estateRegistrations.value.crop_stats.total_harvested_area > 0
-    ? Math.round(productionCostStats.value.total_revenue_all_clients / estateRegistrations.value.crop_stats.total_harvested_area)
-    : 0;
-  
   return [
-    { value: `${estateRegistrations.value.crop_stats.total_harvested_area}+`, label: 'Total Acres', x: 35, y: 25 },
-    { value: `LKR${revenuePerHectare}+`, label: 'Monthly revenue per Hectare', x: 65, y: 25 },
-    { value: `${estateRegistrations.value.approved}+`, label: 'Registered Retainer\nClients', x: 20, y: 63 }, // has correct label and value
-    { value: `${estateRegistrations.value.crop_stats.distinct_crops_count}+`, label: 'Agricultural\nCrops Grown', x: 50, y: 63 },
-    { value: `${serviceProviders.value.approved}+`, label: 'Registered Service Providers', x: 80, y: 63 }, // has correct label and value
+    { value: formatCount(estateRegistrations.value.crop_stats.total_harvested_area), label: 'Total Acres', x: 35, y: 25 },
+    { value: formatCount(siteVisitStats.value.total_visits), label: 'Total Site\nVisits', x: 65, y: 25 },
+    { value: formatCount(estateRegistrations.value.approved), label: 'Registered Retainer\nClients', x: 20, y: 63 },
+    { value: formatCount(estateRegistrations.value.crop_stats.distinct_crops_count), label: 'Agricultural\nCrops Grown', x: 50, y: 63 },
+    { value: formatCount(serviceProviders.value.approved), label: 'Registered Service Providers', x: 80, y: 63 },
   ];
 })
 
@@ -94,7 +96,7 @@ onMounted(async () => {
       fetchUserAppStats(),
       fetchEstateStats(),
       fetchProviderStats(),
-      fetchProductionCostStats()
+      fetchSiteVisitStats()
     ])
   } catch (error) {
     console.error('Error fetching stats:', error)
