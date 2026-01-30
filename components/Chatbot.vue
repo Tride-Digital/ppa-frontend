@@ -1768,18 +1768,19 @@ const sendUserMessage = () => {
           bestConf >= 0.25 ||
           (bestScore >= secondScore + 1)
 
-        if (highConfidence) {
+        // if (highConfidence) {
           addBotMessage(
             `I found the best director for your request: <strong>${name}</strong>.<br> <br>` +
             `Redirecting you now...`
           )
           setTimeout(() => navigateTo(`/director/${best.user_id}`), 1200)
           return
-        }
+        // }
 
-        // low confidence -> show choices
-        showDirectorCandidates(match)
-        return
+        // // low confidence -> show choices
+        // // showDirectorCandidates(match)
+        // showDirectors()
+        // return
       }
     }
 
@@ -1862,20 +1863,21 @@ const sendUserMessage = () => {
         bestConf >= 0.25 ||
         (bestScore >= secondScore + 1)
 
-      if (highConfidence) {
+      // if (highConfidence) {
         addBotMessage(
           `I found the best director for your request: <strong>${name}</strong>.<br> <br>` +
           `Redirecting you now...`
         )
         setTimeout(() => navigateTo(`/director/${best.user_id}`), 1200)
         return
-      }
+      // }
 
-      // low confidence -> show choices if we have candidates
-      if (match.candidates && match.candidates.length > 0) {
-        showDirectorCandidates(match)
-        return
-      }
+      // // low confidence -> show choices if we have candidates
+      // if (match.candidates && match.candidates.length > 0) {
+      //   // showDirectorCandidates(match)
+      //   showDirectors()
+      //   return
+      // }
     }
     addBotMessage(
       `I understand you're asking about: "${msg}"<br><br>` +
