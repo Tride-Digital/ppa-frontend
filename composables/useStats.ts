@@ -17,6 +17,7 @@ interface EstateStatsResponse {
   crop_stats: {
     distinct_crops_count: number;
     total_harvested_area: number;
+    total_acres: number;
     crops_detail: string[];
   };
 }
@@ -55,6 +56,7 @@ const estateRegistrations = ref({
   crop_stats: {
     distinct_crops_count: 0,
     total_harvested_area: 0,
+    total_acres: 0,
     crops_detail: [] as string[],
   },
 });
@@ -115,6 +117,7 @@ async function fetchEstateStats() {
       crop_stats: {
         distinct_crops_count: response.crop_stats?.distinct_crops_count || 0,
         total_harvested_area: response.crop_stats?.total_harvested_area || 0,
+        total_acres: response.crop_stats?.total_acres || 0,
         crops_detail: response.crop_stats?.crops_detail || [],
       },
     };
