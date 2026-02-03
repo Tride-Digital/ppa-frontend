@@ -38,6 +38,22 @@ export default defineNuxtConfig({
           href: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
         },
       ],
+
+      // GA4 Google tag
+      script: [
+        {
+          async: true,
+          src: "https://www.googletagmanager.com/gtag/js?id=G-XVW7315F4E",
+        },
+        {
+          innerHTML: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XVW7315F4E');
+          `,
+        },
+      ],
     },
   },
   runtimeConfig: {
@@ -46,7 +62,8 @@ export default defineNuxtConfig({
       registerUrl: 'https://qaadmin.planters.lk/register',
       backendUrl: 'https://qaapippa.ecoderssl.com',
       registerServiceUrl: 'https://qaadmin.planters.lk/registerservice',
-    }
+      ga4Id: "G-XVW7315F4E",
+    },
   },
 
   modules: ['nuxt-google-translate'],
