@@ -4,13 +4,14 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     prerender: {
-      routes: ["/"], // only these are SSG
+      routes: ["/","/aboutus", "/announcements", "/services", "/contactus"], // only these are SSG
     },
   },
 
   css: [
     "vuetify/lib/styles/main.sass", // Or 'vuetify/styles'
     "@mdi/font/css/materialdesignicons.min.css", // For MDI icons
+    "assets/css/fonts.css",
   ],
 
   build: {
@@ -32,10 +33,27 @@ export default defineNuxtConfig({
           href: "images/logo_white.png",
           media: "(prefers-color-scheme: dark)",
         },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
+        },
       ],
     },
   },
+  runtimeConfig: {
+    public: {
+      adminAppUrl: 'https://admin.planters.lk',
+      registerUrl: 'https://admin.planters.lk/register',
+      backendUrl: 'https://api.planters.lk',
+      registerServiceUrl: 'https://admin.planters.lk/registerservice',
+    }
+  },
 
+  modules: ['nuxt-google-translate'],
+  googleTranslate: {
+    defaultLanguage: 'en',
+    supportedLanguages: ['en','ta', 'si'],
+  },
   // modules: [
   //   async (options, nuxt) => {
   //     nuxt.hooks.hook('vite:extendConfig', (config) => {

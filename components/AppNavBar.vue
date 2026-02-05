@@ -1,96 +1,428 @@
 <template>
     <div v-if="isMobile">
-        <v-navigation-drawer v-model="sidebar" app>
-
+        <v-app-bar app flat height="70" :color="$vuetify.theme.current.colors.surface" class="mobile-navbar">
+            <v-btn icon @click="sidebar = !sidebar" class="mobile-menu-btn">
+                <v-icon>mdi-menu</v-icon>
+            </v-btn>
+            <v-btn disabled></v-btn>
+            <v-spacer></v-spacer>
+            <div @click="goToHome" class="mobile-logo-wrapper">
+                <v-img :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo.png'" contain height="70" width="160" class="mobile-navbar-logo"></v-img>
+            </div>
+            <v-spacer></v-spacer>
+            <CartNavButton :cart-items="cartItems" @toggle-cart="handleToggleCart" @cart-click="handleCartClick"/>
+            <v-btn icon @click="toggleTheme" class="mobile-theme-toggle-btn" title="Toggle Theme">
+                <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
+            </v-btn>
+        </v-app-bar>
+        <v-navigation-drawer v-model="sidebar" app :color="$vuetify.theme.current.colors.primary">
             <v-list nav dense>
-                <div @click="goToHome" tag="span" style="cursor: pointer">
-                    <v-row align="center">
-                        <v-col cols="4" class="pa-0 ma-0"><v-img :height="75" src="/images/logo.svg"></v-img></v-col>
-                        <v-col cols="8" class="pa-0 ma-0">
-                            <h3>Proprietary</h3>
-                            <h3>Planters Alliance</h3>
-                        </v-col>
-                    </v-row>
-
-                </div>
-                <v-divider class="my-6" :thickness="2"></v-divider>
-
                 <v-list-item v-for="item in menuItems" :key="item.title" :to="item.path" link>
                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                 </v-list-item>
+
+                <v-list-group>
+                    <template v-slot:activator="{ props }">
+                        <v-list-item v-bind="props">
+                            <v-list-item-title>Latest</v-list-item-title>
+                        </v-list-item>
+                    </template>
+                    <v-list-item to="/announcements" link>
+                        <v-list-item-title>Announcements</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item to="/blogs" link>
+                        <v-list-item-title>Blogs</v-list-item-title>
+                    </v-list-item>
+                </v-list-group>
+                
+                <v-list-item @click="goToAdmin" link>
+                    <v-list-item-title>Login</v-list-item-title>
+                </v-list-item>
+                <div class="d-flex">
+                    <LanguageSelector/>
+                </div>
             </v-list>
         </v-navigation-drawer>
-        <v-fab-transition>
-            <v-btn v-if="isMobile" icon color="transparent" class="fab" @click="sidebar = !sidebar">
-                <v-icon>mdi-menu</v-icon>
-            </v-btn>
-        </v-fab-transition>
     </div>
+    <v-app-bar v-else app flat height="90" :color="$vuetify.theme.current.colors.surface" class="navbar-with-border">
+  <v-toolbar flat :color="$vuetify.theme.current.colors.surface" height="110">
+    <v-toolbar-title class="logo-container">
+      <div @click="goToHome" tag="span" style="cursor: pointer">
+        <v-row align="center" no-gutters>
+          <v-img class="logo-img" :src="theme.global.current.value.dark?'/images/logo-dark.png':'/images/logo.png'"/>
+        </v-row>
+      </div>
+    </v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-toolbar-items class="nav-items">
+      <v-btn flat v-for="item in menuItems.slice(0, 6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
+      
+      <v-menu offset-y>
+        <template v-slot:activator="{ props }">
+          <v-btn flat v-bind="props" class="nav-link">
+            Latest
+            <v-icon right small>mdi-chevron-down</v-icon>
+          </v-btn>
+        </template>
+        <v-list :color="$vuetify.theme.current.colors.surface" class="latest-dropdown">
+          <v-list-item to="/blogs" link class="dropdown-item">
+            <v-list-item-title class="dropdown-item-title">Blogs</v-list-item-title>
+          </v-list-item>
 
-    <v-app-bar v-else app fixed>
-        <v-toolbar>
-            <v-toolbar-title>
-                <v-col cols="4">
-                    <div @click="goToHome" tag="span" style="cursor: pointer">
-                        <v-row align="center">
-                            <v-col cols="4" class="pa-0 ma-0"><v-img :height="75" src="/images/logo.svg"></v-img></v-col>
-                            <v-col cols="4" class="pa-0 ma-0">
-                                <h3>Proprietary</h3>
-                                <h3>Planters Alliance</h3>
-                            </v-col>
-                        </v-row>
-
-                    </div>
-                </v-col>
-            </v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items class="hidden-xs-only">
-                <v-btn flat v-for="item in menuItems" :key="item.title" :to="item.path">
-                    <!-- <v-icon left dark>{{ item.icon }}</v-icon> -->
-                    {{ item.title }}
-                </v-btn>
-            </v-toolbar-items>
-        </v-toolbar>
-    </v-app-bar>
-
+          <v-list-item to="/announcements" link class="dropdown-item">
+            <v-list-item-title class="dropdown-item-title">Announcements</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      
+      <v-btn flat @click="goToAdmin" class="nav-link">Login</v-btn>
+      <div class="d-flex align-center mx-2">
+        <CartNavButton :cart-items="cartItems" @toggle-cart="handleToggleCart" @cart-click="handleCartClick"/>
+      </div>
+      <div class="d-flex align-center mx-2">
+        <v-btn icon @click="toggleTheme" class="theme-toggle-btn" title="Toggle Theme">
+          <v-icon>{{ isDarkTheme ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
+        </v-btn>
+      </div>
+      <v-btn flat v-for="item in menuItems.slice(6)" :key="item.title" :to="item.path" class="nav-link">{{ item.title }}</v-btn>
+      <div class="d-flex align-center mx-3">
+        <LanguageSelector/>
+      </div>
+    </v-toolbar-items>
+  </v-toolbar>
+</v-app-bar>
 </template>
 
 <script setup>
-import { useDisplay } from 'vuetify';
-import { ref, computed, watch } from "vue";
+import { useDisplay, useTheme } from 'vuetify';
+import { ref, computed } from "vue";
 import { useRouter } from 'vue-router';
-
-
-const { mobile } = useDisplay();
-const isMobile = computed(() => mobile.value);
-
+import LanguageSelector from './LanguageSelector.vue';
+import CartNavButton from './cart/CartNavButton.vue';
+import { useCart } from '~/composables/useCart';
+const config = useRuntimeConfig();
+const { xs, sm } = useDisplay();
+const isMobile = computed(() => xs.value || sm.value);
 const router = useRouter();
-
+const theme = useTheme();
 const sidebar = ref(false);
-const menuItems = ref([
-    { title: 'Home', path: '/home', icon: 'mdi-home' },
-    { title: 'Sign Up', path: '/signup', icon: 'face' },
-    { title: 'Sign In', path: '/signin', icon: 'lock_open' }
-])
-
-const goToHome = () => {
-    router.push('/');
+const search = ref('');
+const isDarkTheme = computed(() => theme.global.current.value.dark);
+const { cartItems, toggleCartModal, openCartModal } = useCart();
+const toggleTheme = () => {
+    const newTheme = isDarkTheme.value ? 'light' : 'dark';
+    theme.global.name.value = newTheme;
+    localStorage.setItem('theme', newTheme);
+};
+const handleToggleCart = () => {
+  toggleCartModal()
+}
+const handleCartClick = () => {
+  openCartModal()
 }
 
-// watch(sidebar, (newVal, oldVal) => {
-//     if (newVal) {
-//         moveToTop();
-//     } else {
-//         goBackTo();
-//     }
-// })
-
+const menuItems = ref([
+    { title: 'Home', path: '/', icon: 'mdi-home' },
+    { title: 'About us', path: '/aboutus', icon: 'mdi-home' },
+    { title: 'Services', path: '/services', icon: 'mdi-leaf' },
+    { title: 'Directory', path: '/directory', icon: 'mdi-account-search' },
+    { title: 'Our Team', path: '/ourteam', icon: 'mdi-phone' },
+    { title: 'Contact Us', path: '/contactus', icon: 'mdi-phone' },
+]);
+const goToHome = () => {
+    router.push('/');
+};
+const goToAdmin = () => {
+    window.open(config.public.adminAppUrl, '_blank')
+};
+const goToRegister = () => {
+  router.push('/providerselector');
+};
+const goToAnnouncements = () => {
+  router.push('/announcements');
+};
 </script>
+
 <style scoped>
-.fab {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 100;
+.mobile-navbar {
+    border-bottom: 2px solid rgb(var(--v-theme-hero-arrow-bg)) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+.mobile-menu-btn {
+    color: rgb(var(--v-theme-navtext)) !important;
+}
+.mobile-logo-wrapper {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mobile-navbar-logo {
+    object-fit: contain;
+}
+.navbar-with-border {
+    border-bottom: 2px solid rgb(var(--v-theme-hero-arrow-bg)) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.nav-items .nav-link {
+    color: rgb(var(--v-theme-navtext)) !important;
+    font-weight: 500;
+    text-transform: none;
+}
+
+.nav-items .nav-link :deep(.v-btn__content) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    text-align: center !important;
+    line-height: 1.3 !important;
+    flex-wrap: wrap !important;
+}
+
+/* Responsive adjustments for navbar */
+@media (max-width: 1624px) {
+    .nav-items {
+        gap: 2px;
+    }
+    
+    .nav-items .nav-link {
+        padding: 6px 8px !important;
+        max-width: 120px;
+    }
+
+    .logo-container {
+        min-width: 250px !important;
+    }
+
+    .logo-img {
+        width: 250px !important;
+        height: 110px !important;
+    }
+    
+    .logo-img :deep(.v-img__img) {
+        width: 250px !important;
+        height: 110px !important;
+    }
+}
+
+
+@media (max-width: 1440px) {
+    .nav-items .nav-link {
+        padding: 6px 6px !important;
+        max-width: 100px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .nav-items .nav-link {
+        padding: 4px 4px !important;
+        max-width: 90px;
+    }
+    
+    .logo-container {
+        min-width: 110px !important;
+    }
+    
+    .logo-img {
+        width: 200px !important;
+        height: 110px !important;
+    }
+
+    .logo-img :deep(.v-img__img) {
+        width: 200px !important;
+        height: 110px !important;
+    }
+}
+
+/* Latest dropdown styling */
+.latest-dropdown {
+    min-width: 180px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+}
+
+.dropdown-item {
+    padding: 12px 20px;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(var(--v-theme-primary), 0.1) !important;
+}
+
+.dropdown-item-title {
+    color: rgb(var(--v-theme-navtext)) !important;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.search-bar {
+    align-items: center;
+    border-radius: 20px;
+    min-width: 250px;
+    height: 50px;
+}
+.search-bar .v-field__input {
+    color: var(--v-theme-onSecondary) !important;
+}
+.search-bar .v-field__prepend-inner {
+    color: var(--v-theme-onSecondary) !important;
+}
+.theme-toggle-btn {
+    color: var(--v-theme-on-primary) !important;
+    transition: transform 0.3s ease;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.announcements-icon-btn {
+    color: rgb(var(--v-theme-navtext)) !important;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mobile-theme-toggle-btn {
+    color: var(--v-theme-on-primary) !important;
+    transition: transform 0.3s ease;
+    background-color: var(--v-theme-toggle-btn);
+    border: 1px solid var(--v-theme-hero-arrow-bg);
+    border-radius: 50%;
+}
+.theme-toggle-btn:hover,
+.mobile-theme-toggle-btn:hover {
+    transform: rotate(30deg);
+    background-color: var(--v-theme-toggle-btn-hover);
+}
+.announcements-icon-btn:hover {
+    background-color: rgba(var(--v-theme-primary-rgb), 0.1);
+}
+.announcements-icon-btn .v-icon {
+    color: inherit !important;
+}
+
+.logo-container {
+    flex-shrink: 0 !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.logo-img {
+    width: 300px !important;
+    height: 110px !important;
+    max-width: 300px !important;
+    max-height: 110px !important;
+    flex-shrink: 0 !important;
+    object-fit: contain !important;
+}
+
+@media (max-width: 1624px) {
+    .logo-container {
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+
+    .logo-img {
+        width: 200px !important;
+        height: 90px !important;
+        max-width: 200px !important;
+        max-height: 90px !important;
+    }
+
+    .logo-img :deep(.v-img__img) {
+        width: 200px !important;
+        height: 90px !important;
+    }
+}
+
+@media (max-width: 1440px) {
+    .logo-container {
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+    
+    .logo-img {
+        width: 200px !important;
+        height: 90px !important;
+        max-width: 200px !important;
+        max-height: 90px !important;
+    }
+
+    .logo-img :deep(.v-img__img) {
+        width: 200px !important;
+        height: 90px !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .logo-container {
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+    
+    .logo-img {
+        width: 200px !important;
+        height: 90px !important;
+        max-width: 200px !important;
+        max-height: 90px !important;
+    }
+
+    
+    .logo-img :deep(.v-img__img) {
+        width: 200px !important;
+        height: 90px !important;
+    }
+}
+
+@media (max-width: 1060px) {
+    .logo-container {
+        min-width: 100px !important;
+        max-width: 100px !important;
+    }
+    
+    .logo-img {
+        width: 100px !important;
+        height: 100px !important;
+        max-width: 100px !important;
+
+    }
+    
+    .logo-img :deep(.v-img__img) {
+        width: 100px !important;
+
+    }
+}
+
+@media (max-width: 960px) {
+    .logo-container {
+        min-width: 70px !important;
+        max-width: 70px !important;
+    }
+    
+    .logo-img {
+        width: 70px !important;
+        height: 35px !important;
+        max-width: 70px !important;
+        max-height: 35px !important;
+    }
+
+    
+    .logo-img :deep(.v-img__img) {
+        width: 70px !important;
+        height: 35px !important;
+    }
+}
+
+.mobile-logo {
+    width: 100%;
+    object-fit: contain;
 }
 </style>
