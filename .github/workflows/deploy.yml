@@ -3,7 +3,7 @@ name: Deploy Nuxt Hybrid App to AWS Lightsail
 on:
   push:
     branches:
-      - release_20260114_v1
+      - main
 
 jobs:
   deploy:
