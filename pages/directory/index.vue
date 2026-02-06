@@ -5,7 +5,7 @@
       <v-container>
         <v-row justify="center">
           <v-col cols="12" md="8" class="text-center">
-            <h2 class="section-title">Service Provider Directory</h2>
+            <h2 class="section-title">Support Services Provider Directory</h2>
             <p class="section-subtitle">
               Browse categories first, then apply filters to discover matching providers.
             </p>

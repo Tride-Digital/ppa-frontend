@@ -28,7 +28,7 @@
             </div>
 
             <v-card-title class="text-h5 text-sm-h5 text-xs-h6 font-weight-bold text-center py-4 px-2">
-              Retainer Client
+              Proprietary Planters
             </v-card-title>
 
             <v-card-text class="flex-grow-1 px-4 px-sm-5 px-md-6">
@@ -73,7 +73,7 @@
                 append-icon="mdi-arrow-right"
                 class="btn-responsive text-none"
               >
-                <span class="btn-text">Register as a Retainer client</span>
+                <span class="btn-text">Register as a Proprietary Planter</span>
               </v-btn>
             </v-card-actions>
           </v-card>
