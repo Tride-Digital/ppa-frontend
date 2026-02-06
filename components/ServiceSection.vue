@@ -3,7 +3,7 @@
     <v-container>
       <v-row justify="center">
         <v-col cols="12" class="text-center">
-          <h2 class="section-title">Our Services</h2>
+          <h2 class="section-title">Core Services</h2>
           <p class="section-subtitle">{{ sectionDescription }}</p>
           <div ref="subtitleScrollTarget" class="subtitle-scroll-target"></div>
         </v-col>
