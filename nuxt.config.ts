@@ -2,6 +2,7 @@ import { defineNuxtConfig } from "nuxt/config";
 
 export default defineNuxtConfig({
   ssr: true,
+  compatibilityDate: "2026-02-09",
   nitro: {
     prerender: {
       routes: ["/","/aboutus", "/announcements", "/services", "/contactus"], // only these are SSG
@@ -82,4 +83,9 @@ export default defineNuxtConfig({
   // @forward 'vuetify/settings' with (
   //   $button-border-radius: 0px,
 
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 2000,
+    },
+  },
 });
