@@ -5,7 +5,7 @@
         <div class="ring outer"></div>
         <div class="ring inner"></div>
         <div class="circle">
-          <div class="value">
+          <div class="value" translate="no">
             <span v-if="getValuePrefix(s, i)" class="currency-prefix">{{ getValuePrefix(s, i) }}</span>{{ getAnimatedValueWithoutPrefix(s, i) }}
           </div>
           <div class="label">
