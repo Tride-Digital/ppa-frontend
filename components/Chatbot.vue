@@ -677,7 +677,7 @@ const {
   getCategoryName,
   getSubcategoryName,
   getCategoryIcon
-} = useServices()
+} = useServicesChat()
 
 // Use directors composable
 const {

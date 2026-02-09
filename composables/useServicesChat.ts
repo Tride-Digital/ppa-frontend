@@ -27,7 +27,7 @@ const serviceCategories = ref<ServiceCategory[]>([])
 const loading = ref(false)
 const error = ref('')
 
-export const useServices = () => {
+export const useServicesChat = () => {
     const config = useRuntimeConfig()
     const baseURL = config.public.backendUrl
 

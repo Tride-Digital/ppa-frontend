@@ -2,6 +2,7 @@ import { defineNuxtConfig } from "nuxt/config";
 
 export default defineNuxtConfig({
   ssr: true,
+  compatibilityDate: "2026-02-09",
   nitro: {
     prerender: {
       routes: ["/","/aboutus", "/announcements", "/services", "/contactus"], // only these are SSG
@@ -24,13 +25,13 @@ export default defineNuxtConfig({
         {
           rel: "icon",
           type: "image/png",
-          href: "images/logo_black.png",
+          href: "/images/logo_black.png",
           media: "(prefers-color-scheme: light)",
         },
         {
           rel: "icon",
           type: "image/png",
-          href: "images/logo_white.png",
+          href: "/images/logo_white.png",
           media: "(prefers-color-scheme: dark)",
         },
         {
@@ -58,11 +59,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      adminAppUrl: 'https://admin.planters.lk',
-      registerUrl: 'https://admin.planters.lk/register',
-      backendUrl: 'https://api.planters.lk',
-      registerServiceUrl: 'https://admin.planters.lk/registerservice',
-      ga4Id: "G-XVW7315F4E",
+      adminAppUrl: 'https://qaadmin.planters.lk',
+      registerUrl: 'https://qaadmin.planters.lk/register',
+      backendUrl: 'https://qaapippa.ecoderssl.com',
+      registerServiceUrl: 'https://qaadmin.planters.lk/registerservice',
     }
   },
 
@@ -98,5 +98,10 @@ export default defineNuxtConfig({
   // For example:
   // @forward 'vuetify/settings' with (
   //   $button-border-radius: 0px,
-  // );
+
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 2000,
+    },
+  },
 });

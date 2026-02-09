@@ -39,6 +39,10 @@ interface SiteVisitStatsResponse {
   unique_ips: number;
 }
 
+interface RegisteredRetainerClientsCountResponse {
+  registered_retainer_clients_count: number;
+}
+
 const userApplications = ref({
   total: 0,
   pending: 0,
@@ -78,15 +82,19 @@ const siteVisitStats = ref({
   unique_ips: 0,
 });
 
+const registeredRetainerClients = ref(0);
+
 // Retainer Clients Stats
 async function fetchUserAppStats() {
   try {
     const config = useRuntimeConfig();
-    const token = useCookie("access_token");
-    const response = await $fetch<UserAppStatsResponse>(`${config.public.backendUrl}/membershipapplication/stats/dashboard`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await $fetch<UserAppStatsResponse>(
+      `${config.public.backendUrl}/membershipapplication/stats/dashboard`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     userApplications.value = {
       total: response.total_applications || 0,
       pending: response.pending_count || 0,
@@ -94,8 +102,8 @@ async function fetchUserAppStats() {
       rejected: response.rejected_count || 0,
       payment_done: response.payment_done_count || 0,
     };
-  } catch (error) { 
-    console.error("Error fetching user application stats:", error); 
+  } catch (error) {
+    console.error("Error fetching user application stats:", error);
   }
 }
 
@@ -103,11 +111,13 @@ async function fetchUserAppStats() {
 async function fetchEstateStats() {
   try {
     const config = useRuntimeConfig();
-    const token = useCookie("access_token");
-    const response = await $fetch<EstateStatsResponse>(`${config.public.backendUrl}/estates/stats/dashboard`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await $fetch<EstateStatsResponse>(
+      `${config.public.backendUrl}/estates/stats/dashboard`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     estateRegistrations.value = {
       total: response.total_estates || 0,
       pending: response.pending_count || 0,
@@ -121,8 +131,8 @@ async function fetchEstateStats() {
         crops_detail: response.crop_stats?.crops_detail || [],
       },
     };
-  } catch (error) { 
-    console.error("Error fetching estate stats:", error); 
+  } catch (error) {
+    console.error("Error fetching estate stats:", error);
   }
 }
 
@@ -130,18 +140,21 @@ async function fetchEstateStats() {
 async function fetchProviderStats() {
   try {
     const config = useRuntimeConfig();
-    const response = await $fetch<ProviderStatsResponse>(`${config.public.backendUrl}/service-provider/stats/dashboard`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await $fetch<ProviderStatsResponse>(
+      `${config.public.backendUrl}/service-provider/stats/dashboard`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     serviceProviders.value = {
       total: response.total_applications || 0,
       pending: response.pending_count || 0,
       approved: response.approved_count || 0,
       rejected: response.rejected_count || 0,
     };
-  } catch (error) { 
-    console.error("Error fetching provider stats:", error); 
+  } catch (error) {
+    console.error("Error fetching provider stats:", error);
   }
 }
 
@@ -149,16 +162,19 @@ async function fetchProviderStats() {
 async function fetchProductionCostStats() {
   try {
     const config = useRuntimeConfig();
-    const response = await $fetch<ProductionCostStatsResponse>(`${config.public.backendUrl}/rc_self_monitor/production_and_cost/stats/dashboard`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await $fetch<ProductionCostStatsResponse>(
+      `${config.public.backendUrl}/rc_self_monitor/production_and_cost/stats/dashboard`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     productionCostStats.value = {
       total_revenue_all_clients: response.total_revenue_all_clients || 0,
       client_count: response.client_count || 0,
     };
-  } catch (error) { 
-    console.error("Error fetching production cost stats:", error); 
+  } catch (error) {
+    console.error("Error fetching production cost stats:", error);
   }
 }
 
@@ -166,16 +182,38 @@ async function fetchProductionCostStats() {
 async function fetchSiteVisitStats() {
   try {
     const config = useRuntimeConfig();
-    const response = await $fetch<SiteVisitStatsResponse>(`${config.public.backendUrl}/site_visits/stats`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await $fetch<SiteVisitStatsResponse>(
+      `${config.public.backendUrl}/site_visits/stats`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     siteVisitStats.value = {
       total_visits: response.total_visits || 0,
       unique_ips: response.unique_ips || 0,
     };
   } catch (error) {
     console.error("Error fetching site visit stats:", error);
+  }
+}
+
+// fetch registered retainer clients count from payment table
+async function fetchRegisteredRetainerClientsCount() {
+  try {
+    const config = useRuntimeConfig();
+    const response = await $fetch<RegisteredRetainerClientsCountResponse>(
+      `${config.public.backendUrl}/payment/stats/retainer_clients`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    registeredRetainerClients.value = response.registered_retainer_clients_count || 0;
+  } catch (error) {
+    console.error("Error fetching registered retainer clients count:", error);
+    registeredRetainerClients.value = 0;
   }
 }
 
@@ -186,10 +224,12 @@ export const useStats = () => {
     serviceProviders,
     productionCostStats,
     siteVisitStats,
+    registeredRetainerClients,
     fetchUserAppStats,
     fetchEstateStats,
     fetchProviderStats,
     fetchProductionCostStats,
     fetchSiteVisitStats,
+    fetchRegisteredRetainerClientsCount,
   };
 };

@@ -5,7 +5,7 @@
         <div class="ring outer"></div>
         <div class="ring inner"></div>
         <div class="circle">
-          <div class="value">
+          <div class="value" translate="no">
             <span v-if="getValuePrefix(s, i)" class="currency-prefix">{{ getValuePrefix(s, i) }}</span>{{ getAnimatedValueWithoutPrefix(s, i) }}
           </div>
           <div class="label">
@@ -19,7 +19,17 @@
 </template>
 
 <script setup lang="ts">
-const { estateRegistrations, serviceProviders, siteVisitStats, fetchUserAppStats, fetchEstateStats, fetchProviderStats, fetchSiteVisitStats } = useStats()
+const { 
+  estateRegistrations, 
+  serviceProviders, 
+  siteVisitStats, 
+  registeredRetainerClients,
+  fetchUserAppStats, 
+  fetchEstateStats, 
+  fetchProviderStats, 
+  fetchSiteVisitStats,
+  fetchRegisteredRetainerClientsCount,
+} = useStats()
 
 const props = defineProps({
   backgroundUrl: { 
@@ -44,7 +54,7 @@ const stats = computed(() => {
   return [
     { value: formatCount(estateRegistrations.value.crop_stats.total_acres), label: 'Total Acres', x: 35, y: 25 },
     { value: formatCount(siteVisitStats.value.total_visits), label: 'Total Site\nVisits', x: 65, y: 25 },
-    { value: formatCount(estateRegistrations.value.approved), label: 'Registered Retainer\nClients', x: 20, y: 63 },
+    { value: formatCount(registeredRetainerClients.value), label: 'Registered Retainer\nClients', x: 20, y: 63 },
     { value: formatCount(estateRegistrations.value.crop_stats.distinct_crops_count), label: 'Agricultural\nCrops Grown', x: 50, y: 63 },
     { value: formatCount(serviceProviders.value.approved), label: 'Registered Service Providers', x: 80, y: 63 },
   ];
@@ -91,17 +101,19 @@ const parseValue = (value: string) => {
 }
 onMounted(async () => {
   initializeBackground()
-  try {
-    await Promise.all([
-      fetchUserAppStats(),
-      fetchEstateStats(),
-      fetchProviderStats(),
-      fetchSiteVisitStats()
-    ])
-  } catch (error) {
-    console.error('Error fetching stats:', error)
-  }
-  
+
+  const results = await Promise.allSettled([
+    fetchUserAppStats(),
+    fetchEstateStats(),
+    fetchProviderStats(),
+    fetchSiteVisitStats(),
+    fetchRegisteredRetainerClientsCount(),
+  ])
+
+  results.forEach((r) => {
+    if (r.status === "rejected") console.error("Stats fetch error:", r.reason)
+  })
+
   animatedValues.value = new Array(stats.value.length).fill(0)
   const observer = new IntersectionObserver(
     (entries) => {
@@ -112,9 +124,7 @@ onMounted(async () => {
         }
       })
     },
-    {
-      threshold: 0.3
-    }
+    {threshold: 0.3}
   )
   if (sectionRef.value) {
     observer.observe(sectionRef.value)
@@ -141,11 +151,8 @@ const startAnimation = () => {
         const progress = Math.min(elapsed / duration, 1)
         const easeOutQuart = 1 - Math.pow(1 - progress, 4)
         animatedValues.value[index] = Math.floor(targetValue * easeOutQuart)
-        if (progress < 1) {
-          requestAnimationFrame(animate)
-        } else {
-          animatedValues.value[index] = targetValue
-        }
+        if (progress < 1) requestAnimationFrame(animate)
+        else animatedValues.value[index] = targetValue
       }
       requestAnimationFrame(animate)
     }, delay)
