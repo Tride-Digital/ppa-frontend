@@ -2,6 +2,7 @@ import { defineNuxtConfig } from "nuxt/config";
 
 export default defineNuxtConfig({
   ssr: true,
+  compatibilityDate: "2026-02-09",
   nitro: {
     prerender: {
       routes: ["/","/aboutus", "/announcements", "/services", "/contactus"], // only these are SSG
@@ -24,13 +25,13 @@ export default defineNuxtConfig({
         {
           rel: "icon",
           type: "image/png",
-          href: "images/logo_black.png",
+          href: "/images/logo_black.png",
           media: "(prefers-color-scheme: light)",
         },
         {
           rel: "icon",
           type: "image/png",
-          href: "images/logo_white.png",
+          href: "/images/logo_white.png",
           media: "(prefers-color-scheme: dark)",
         },
         {
@@ -82,4 +83,9 @@ export default defineNuxtConfig({
   // @forward 'vuetify/settings' with (
   //   $button-border-radius: 0px,
 
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 2000,
+    },
+  },
 });
