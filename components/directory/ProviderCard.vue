@@ -60,8 +60,8 @@
         </v-chip>
       </div>
 
-      <div class="desc mt-3" v-if="provider.description">
-        {{ provider.description }}
+      <div class="desc mt-3" v-if="provider.description || provider.other_services?.[0]?.serviceDescription">
+        {{ provider.description || provider.other_services?.[0]?.serviceDescription }}
       </div>
     </v-card-text>
 
