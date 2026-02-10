@@ -25,6 +25,7 @@ export type ProviderCard = {
   email?: string | null;
   website?: string | null;
   description?: string | null;
+  other_services?: any;
   image_url?: string | null;
   logo_url?: string | null;
 

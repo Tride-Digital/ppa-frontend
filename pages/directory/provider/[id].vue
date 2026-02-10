@@ -22,7 +22,7 @@
 
             <h1 class="hero-title">{{ provider.business_name }}</h1>
             <p class="hero-description">
-              {{ provider.description || "Professional service provider in Sri Lanka." }}
+              {{ provider.description || provider.other_services?.[0]?.serviceDescription  || "Professional service provider in Sri Lanka." }}
             </p>
 
             <div class="mt-4 d-flex flex-wrap gap-2">
@@ -106,7 +106,7 @@
 
             <h3 class="subsection-title mb-3">About</h3>
             <p class="text-body-1" style="color: rgb(var(--v-theme-on-surface)); line-height: 1.8;">
-              {{ provider.description || "No additional description available." }}
+              {{ provider.description || provider.other_services?.[0]?.serviceDescription || "No additional description available." }}
             </p>
 
             <div v-if="qualifications.length" class="mt-8">
