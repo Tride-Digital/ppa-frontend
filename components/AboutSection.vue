@@ -8,7 +8,7 @@
         </v-col>
 
         <!-- Video Section -->
-        <v-col ref="videoSectionRef" cols="12" md="12" lg="10" class="mb-8 video-scroll-target">
+        <v-col ref="videoSectionRef" cols="12" md="12" lg="9" class="mb-8 video-scroll-target">
           <div class="video-wrapper">
             <video
               class="about-video"
@@ -131,6 +131,8 @@ const contactUsUrl = computed(() => '/contactus');
 .video-wrapper {
   position: relative;
   width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
