@@ -1,6 +1,6 @@
 <template>
   <div class="single-provider-page">
-    <section v-if="loadingDetail" class="hero-section">
+    <section v-if="isProviderPending" class="hero-section">
       <v-container>
         <v-row justify="center">
           <v-col cols="12" class="text-center">
@@ -271,7 +271,7 @@
       </v-container>
     </section>
 
-    <v-row v-if="!provider && !loadingDetail">
+    <v-row v-if="showProviderNotFound">
       <v-col cols="12" class="text-center py-10">
         <v-icon size="90" color="grey">mdi-account-off</v-icon>
         <h2 class="mt-4">Provider Not Found</h2>
@@ -291,7 +291,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { usePublicDirectory } from "~/composables/usePublicDirectory";
 import { useLocations } from "~/composables/useLocations";
 import RequestQuoteDialog from "~/components/directory/RequestQuoteDialog.vue";
@@ -304,6 +304,7 @@ const provider = ref<any>(null);
 const reviews = ref<any[]>([]);
 const averageRating = ref<any>(null);
 const quoteDialog = ref(false);
+const providerResolved = ref(false);
 
 // const fallbackImage =
 //   "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=1200&q=60";
@@ -364,31 +365,69 @@ const clients = computed<ClientItem[]>(() =>
   normalizeToArray<ClientItem>(provider.value?.clients)
 );
 
-onMounted(async () => {
-  // Fetch all districts for mapping
-  await fetchAllDistricts("en");
+const isProviderPending = computed(() => !providerResolved.value || loadingDetail.value);
+const showProviderNotFound = computed(() => providerResolved.value && !loadingDetail.value && !provider.value);
 
-  const id = Number(route.params.id);
-  if (!id) return;
-  provider.value = await fetchProviderDetail(id, "en");
-  
-  // Fetch reviews
+const loadProvider = async (rawId: string | string[] | number | undefined) => {
+  const id = Number(Array.isArray(rawId) ? rawId[0] : rawId);
+
+  providerResolved.value = false;
+  provider.value = null;
+  reviews.value = [];
+  averageRating.value = null;
+
+  if (!id) {
+    providerResolved.value = true;
+    return;
+  }
+
+  // District mapping is helpful but should not block provider content rendering.
+  const districtsPromise = fetchAllDistricts("en").catch((error) => {
+    console.error("Failed to load districts:", error);
+  });
+
   try {
-    const response = await getProviderPublicReviews(id) as any;
+    provider.value = await fetchProviderDetail(id, "en");
+  } catch (error) {
+    console.error("Failed to load provider detail:", error);
+    provider.value = null;
+  } finally {
+    providerResolved.value = true;
+  }
+
+  if (!provider.value) {
+    await districtsPromise;
+    return;
+  }
+
+  const [reviewsResult, ratingResult] = await Promise.allSettled([
+    getProviderPublicReviews(id),
+    getProviderAverageRating(id),
+  ]);
+
+  if (reviewsResult.status === "fulfilled") {
+    const response = reviewsResult.value as any;
     reviews.value = response.reviews || [];
-  } catch (error) {
-    console.error('Failed to load reviews:', error);
-    reviews.value = [];
+  } else {
+    console.error("Failed to load reviews:", reviewsResult.reason);
   }
 
-  // Fetch average rating
-  try {
-    averageRating.value = await getProviderAverageRating(id);
-  } catch (error) {
-    console.error('Failed to load average rating:', error);
-    averageRating.value = null;
+  if (ratingResult.status === "fulfilled") {
+    averageRating.value = ratingResult.value;
+  } else {
+    console.error("Failed to load average rating:", ratingResult.reason);
   }
-});
+
+  await districtsPromise;
+};
+
+watch(
+  () => route.params.id,
+  async (id) => {
+    await loadProvider(id as string | string[] | number | undefined);
+  },
+  { immediate: true }
+);
 
 const formatDate = (dateString: string) => {
   if (!dateString) return '';
