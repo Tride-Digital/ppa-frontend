@@ -571,14 +571,16 @@ useSeoMeta({
 }
 
 .category-card-row {
-  align-items: stretch;
+  align-items: flex-start;
 }
 .category-card-row > :deep(.v-col) {
   display: flex;
+  align-items: flex-start;
 }
 
 .category-card-col {
   display: flex;
+  align-items: flex-start;
   position: relative;
   z-index: 1;
 }
