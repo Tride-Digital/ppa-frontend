@@ -14,6 +14,7 @@ interface EstateStatsResponse {
   approved_count: number;
   rejected_count: number;
   not_submitted_count: number;
+  total_acres: number;
   crop_stats: {
     distinct_crops_count: number;
     total_harvested_area: number;
@@ -57,6 +58,7 @@ const estateRegistrations = ref({
   approved: 0,
   rejected: 0,
   not_submitted: 0,
+  registered_total_acres: 0,
   crop_stats: {
     distinct_crops_count: 0,
     total_harvested_area: 0,
@@ -124,6 +126,7 @@ async function fetchEstateStats() {
       approved: response.approved_count || 0,
       rejected: response.rejected_count || 0,
       not_submitted: response.not_submitted_count || 0,
+      registered_total_acres: response.total_acres || 0,
       crop_stats: {
         distinct_crops_count: response.crop_stats?.distinct_crops_count || 0,
         total_harvested_area: response.crop_stats?.total_harvested_area || 0,
