@@ -52,11 +52,11 @@ const formatCount = (num: number): string => {
 
 const stats = computed(() => {
   return [
-    { value: formatCount(estateRegistrations.value.crop_stats.total_acres), label: 'Total Acres', x: 35, y: 25 },
+    { value: formatCount(estateRegistrations.value.registered_total_acres), label: 'Total Acres', x: 35, y: 25 },
     { value: formatCount(siteVisitStats.value.total_visits), label: 'Total Site\nVisits', x: 65, y: 25 },
-    { value: formatCount(registeredRetainerClients.value), label: 'Registered Retainer\nClients', x: 20, y: 63 },
+    { value: formatCount(registeredRetainerClients.value), label: 'Retainer\nClients', x: 20, y: 63 },
     { value: formatCount(estateRegistrations.value.crop_stats.distinct_crops_count), label: 'Agricultural\nCrops Grown', x: 50, y: 63 },
-    { value: formatCount(serviceProviders.value.approved), label: 'Registered Service Providers', x: 80, y: 63 },
+    { value: formatCount(serviceProviders.value.approved), label: 'Service Providers', x: 80, y: 63 },
   ];
 })
 
