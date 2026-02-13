@@ -8,7 +8,7 @@
         </v-col>
 
         <!-- Video Section -->
-        <v-col ref="videoSectionRef" cols="12" md="12" lg="11" class="mb-4 video-scroll-target">
+        <v-col ref="videoSectionRef" cols="12" md="12" lg="11" class="mb-1 video-scroll-target">
           <div class="video-wrapper">
             <video
               class="about-video"
