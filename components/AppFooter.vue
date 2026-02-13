@@ -55,9 +55,7 @@
         <v-col cols="12" md="6" class="text-md-end">
           <div class="footer-legal">
           <!-- <LanguageSelector class="mr-4" /> -->
-            <a href="/privacy" class="footer-legal-link footer-primary-text footer-link-base">Privacy Policy</a>
-            <span class="footer-separator footer-secondary-text">|</span>
-            <a href="/terms" class="footer-legal-link footer-primary-text footer-link-base">Terms of Service</a>
+            <NuxtLink to="/web-policy" prefetch class="footer-legal-link footer-primary-text footer-link-base">Website Policy</NuxtLink>
             <span class="footer-separator footer-secondary-text">|</span>
             <a translate="no" target="_blank" href="https://www.avya.lk/" class="footer-legal-link footer-primary-text footer-link-base">Powered by Avya Technologies</a>
           </div>
