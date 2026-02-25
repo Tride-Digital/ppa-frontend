@@ -99,18 +99,78 @@ const averageRating = ref<any>(null);
 const PLACEHOLDER_IMAGE =
   "https://static.vecteezy.com/system/resources/thumbnails/037/336/395/small/user-profile-flat-illustration-avatar-person-icon-gender-neutral-silhouette-profile-picture-free-vector.jpg";
 
+const ALLOWED_IMAGE_EXTENSIONS = new Set([
+  "jpg",
+  "jpeg",
+  "png",
+  "gif",
+  "webp",
+  "svg",
+  "avif",
+  "bmp",
+  "ico",
+  "tif",
+  "tiff",
+]);
+
+const BLOCKED_FILE_EXTENSIONS = new Set([
+  "pdf",
+  "doc",
+  "docx",
+  "xls",
+  "xlsx",
+  "ppt",
+  "pptx",
+  "txt",
+  "zip",
+  "rar",
+  "7z",
+  "mp4",
+  "mov",
+  "avi",
+  "mp3",
+  "wav",
+]);
+
+const getFileExtension = (value: string) => {
+  const trimmed = value.trim();
+  const urlWithoutQueryOrHash = trimmed.split("#")[0]?.split("?")[0] || "";
+  const extension = urlWithoutQueryOrHash.split(".").pop()?.toLowerCase();
+  return extension || "";
+};
+
+const isAllowedImageSource = (value?: string | null) => {
+  if (!value) return false;
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+
+  // Allow inline/base64 image data URLs and block non-image data URLs.
+  if (trimmed.startsWith("data:")) {
+    return /^data:image\//i.test(trimmed);
+  }
+
+  const extension = getFileExtension(trimmed);
+  if (!extension) return false;
+  if (BLOCKED_FILE_EXTENSIONS.has(extension)) return false;
+  return ALLOWED_IMAGE_EXTENSIONS.has(extension);
+};
+
 const imageSrc = computed(() => {
+  const candidates = [
+    props.provider.profile_picture,
+    props.provider.image_url,
+    props.provider.logo_url,
+  ];
+
   return (
-    props.provider.profile_picture ||
-    props.provider.image_url ||
-    props.provider.logo_url ||
+    candidates.find((src) => isAllowedImageSource(src)) ||
     PLACEHOLDER_IMAGE
   );
 });
 
 const serviceTags = computed(() => {
   // show unique categories/subcategories (short)
-  const subs = props.provider.services?.map(s => s.subcategory).filter(Boolean) as string[];
+  const subs = props.provider.services?.map((s: any) => s.subcategory).filter(Boolean) as string[];
   const unique = Array.from(new Set(subs));
   return unique.slice(0, 6);
 });
