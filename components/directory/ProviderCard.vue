@@ -1,7 +1,7 @@
 <template>
   <v-card class="provider-card h-100" elevation="4" hover @click="$emit('click')">
     <div class="card-image-container">
-      <v-img :src="provider.image_url || fallbackImage" height="var(--dir-card-img-height)" cover class="card-image">
+      <v-img :src="imageSrc" height="var(--dir-card-img-height)" cover class="card-image">
         <template #placeholder>
           <div class="d-flex align-center justify-center fill-height">
             <v-progress-circular indeterminate></v-progress-circular>
@@ -96,8 +96,17 @@ defineEmits<{
 const { getProviderAverageRating } = usePublicDirectory();
 const averageRating = ref<any>(null);
 
-const fallbackImage =
+const PLACEHOLDER_IMAGE =
   "https://static.vecteezy.com/system/resources/thumbnails/037/336/395/small/user-profile-flat-illustration-avatar-person-icon-gender-neutral-silhouette-profile-picture-free-vector.jpg";
+
+const imageSrc = computed(() => {
+  return (
+    props.provider.profile_picture ||
+    props.provider.image_url ||
+    props.provider.logo_url ||
+    PLACEHOLDER_IMAGE
+  );
+});
 
 const serviceTags = computed(() => {
   // show unique categories/subcategories (short)

@@ -1,4 +1,3 @@
-// composables/usePublicDirectory.ts
 import { ref } from "vue";
 
 export type SortOption = "featured" | "highest_rated" | "most_recent" | "nearest";
@@ -28,6 +27,8 @@ export type ProviderCard = {
   other_services?: any;
   image_url?: string | null;
   logo_url?: string | null;
+
+  profile_picture?: string | null;
 
   district_code?: string | null;
   district_name?: string | null;
@@ -75,7 +76,6 @@ export function usePublicDirectory() {
     loadingCategories.value = true;
     try {
       const apiBase = config.public.backendUrl;
-      // you already have this endpoint
       categories.value = await $fetch(`${apiBase}/service_list/categories/all`);
     } finally {
       loadingCategories.value = false;
