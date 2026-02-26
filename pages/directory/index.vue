@@ -14,7 +14,7 @@
       </v-container>
     </section>
 
-    <section ref="filtersSection" class="py-8">
+    <section ref="filtersSection" class="directory-main-section">
       <v-container>
         <v-row>
           <!-- Filters panel -->
@@ -32,7 +32,7 @@
                   variant="outlined"
                   density="comfortable"
                   prepend-inner-icon="mdi-magnify"
-                  class="mb-3"
+                  class="mb-2"
                 />
 
                 <v-select
@@ -44,7 +44,7 @@
                   density="comfortable"
                   item-title="title"
                   item-value="value"
-                  class="mb-3"
+                  class="mb-2"
                 />
 
                 <v-select
@@ -56,7 +56,7 @@
                   item-title="title"
                   item-value="value"
                   :disabled="!filters.category"
-                  class="mb-3"
+                  class="mb-2"
                 />
 
                 <v-select
@@ -67,7 +67,7 @@
                   density="comfortable"
                   item-title="title"
                   item-value="value"
-                  class="mb-3"
+                  class="mb-2"
                   @update:modelValue="onProvinceChange"
                 />
 
@@ -80,7 +80,7 @@
                   item-title="title"
                   item-value="value"
                   :disabled="!filters.province"
-                  class="mb-3"
+                  class="mb-2"
                 />
 
                 <v-select
@@ -89,7 +89,7 @@
                   label="Sort"
                   variant="outlined"
                   density="comfortable"
-                  class="mb-4"
+                  class="mb-3"
                 />
 
                 <v-btn
@@ -104,7 +104,7 @@
                   Apply
                 </v-btn>
 
-                <v-btn block variant="text" class="mt-2" @click="resetFilters">
+                <v-btn block variant="text" class="mt-1" @click="resetFilters">
                   Reset
                 </v-btn>
               </v-card-text>
@@ -115,7 +115,7 @@
           <v-col cols="12" lg="8">
             <!-- When filters NOT applied - Show marketing categories -->
             <div v-if="!hasSearched">
-              <v-card class="results-header mb-4" elevation="0">
+              <v-card class="results-header mb-3" elevation="0">
                 <h3 class="text-h6" style="color: rgb(var(--v-theme-section-title)); font-weight: 700;">
                   Explore Service Categories
                 </h3>
@@ -179,7 +179,7 @@
             <!-- When filters ARE applied - Show provider results -->
             <div v-else>
               <v-card class="results-header" elevation="0">
-                <div class="d-flex align-center justify-space-between flex-wrap gap-3">
+                <div class="d-flex align-center justify-space-between flex-wrap gap-2">
                   <div>
                     <h3 class="text-h6" style="color: rgb(var(--v-theme-section-title)); font-weight: 700;">
                       Providers
@@ -200,16 +200,16 @@
                 </div>
               </v-card>
 
-              <v-row v-if="loadingProviders" class="mt-6" justify="center">
+              <v-row v-if="loadingProviders" class="mt-4" justify="center">
                 <v-col cols="12" class="text-center">
                   <v-progress-circular indeterminate size="52"></v-progress-circular>
                   <p class="mt-3">Loading providers...</p>
                 </v-col>
               </v-row>
 
-              <v-row v-else-if="providers.length === 0" class="mt-6">
-                <v-col cols="12" class="text-center py-10">
-                  <v-icon size="64" color="grey" class="mb-4">mdi-account-search</v-icon>
+              <v-row v-else-if="providers.length === 0" class="mt-4">
+                <v-col cols="12" class="text-center py-8">
+                  <v-icon size="64" color="grey" class="mb-3">mdi-account-search</v-icon>
                   <h3 class="text-h6 mb-2">No providers found</h3>
                   <p class="text-body-2" style="color: rgb(var(--v-theme-section-subtitle));">
                     Try changing filters or removing some constraints.
@@ -217,7 +217,7 @@
                 </v-col>
               </v-row>
 
-              <v-row v-else class="mt-4 equal-card-row">
+              <v-row v-else class="mt-3 equal-card-row">
                 <v-col
                   v-for="p in providers"
                   :key="p.id"
@@ -225,7 +225,7 @@
                   sm="6"
                   md="4"
                   lg="3"
-                  class="mb-6 provider-card-col"
+                  class="mb-4 provider-card-col"
                 >
                   <ProviderCard
                     :provider="p"
@@ -235,7 +235,7 @@
                 </v-col>
               </v-row>
    
-              <div v-if="effectiveTotalPages > 1" class="d-flex justify-center mt-6">
+              <div v-if="effectiveTotalPages > 1" class="d-flex justify-center mt-4">
                 <v-pagination
                   v-model="page"
                   :length="effectiveTotalPages"
@@ -249,10 +249,10 @@
       </v-container>
     </section>
 
-    <section v-if="hasSearched" class="py-6">
+    <section v-if="hasSearched" class="directory-categories-section">
       <v-container>
         <div ref="categoriesScrollTarget" class="categories-scroll-target"></div>
-        <v-row class="mb-4" justify="center">
+        <v-row class="mb-3" justify="center">
           <v-col cols="12" md="8" class="text-center">
             <h2 class="text-h5" style="color: rgb(var(--v-theme-section-title)); font-weight: 700;">
               Explore More Service Categories
@@ -525,6 +525,12 @@ useSeoMeta({
 .hero-section {
   padding: 2.5rem 0 1rem 0;
 }
+.directory-main-section {
+  padding: 1.75rem 0;
+}
+.directory-categories-section {
+  padding: 1.5rem 0 1.75rem 0;
+}
 .section-title {
   font-size: 2.5rem;
   font-weight: 700;
@@ -658,8 +664,14 @@ useSeoMeta({
   background-color: rgb(var(--v-theme-service-card-bg));
   position: sticky;
   top: 88px;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
+  overflow: visible;
+}
+
+@media (max-height: 820px) {
+  .filters-card {
+    position: static;
+    top: auto;
+  }
 }
 
 .filters-col {
@@ -669,12 +681,26 @@ useSeoMeta({
 .filters-title {
   font-weight: 800;
   color: rgb(var(--v-theme-section-title));
+  padding-bottom: 8px;
+}
+.filters-card :deep(.v-card-text) {
+  padding-top: 8px;
+  padding-bottom: 18px;
 }
 .apply-btn {
   border-radius: 12px;
 }
 .results-header {
   background: transparent;
+}
+
+@media (max-width: 960px) {
+  .directory-main-section {
+    padding: 1.25rem 0;
+  }
+  .directory-categories-section {
+    padding: 1.1rem 0 1.4rem 0;
+  }
 }
 
 .provider-card-col {
