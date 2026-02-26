@@ -185,7 +185,7 @@
                       Providers
                     </h3>
                     <div class="text-body-2" style="color: rgb(var(--v-theme-section-subtitle));">
-                      Showing {{ providers.length }} of {{ total }}
+                      Showing {{ providers.length }} of {{ providers.length  }}
                     </div>
                   </div>
 
