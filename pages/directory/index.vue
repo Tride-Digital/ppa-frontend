@@ -32,7 +32,7 @@
                   variant="outlined"
                   density="comfortable"
                   prepend-inner-icon="mdi-magnify"
-                  class="mb-2"
+                  class="mb-1"
                 />
 
                 <v-select
@@ -44,7 +44,7 @@
                   density="comfortable"
                   item-title="title"
                   item-value="value"
-                  class="mb-2"
+                  class="mb-1"
                 />
 
                 <v-select
@@ -56,7 +56,7 @@
                   item-title="title"
                   item-value="value"
                   :disabled="!filters.category"
-                  class="mb-2"
+                  class="mb-1"
                 />
 
                 <v-select
@@ -67,7 +67,7 @@
                   density="comfortable"
                   item-title="title"
                   item-value="value"
-                  class="mb-2"
+                  class="mb-1"
                   @update:modelValue="onProvinceChange"
                 />
 
@@ -80,7 +80,7 @@
                   item-title="title"
                   item-value="value"
                   :disabled="!filters.province"
-                  class="mb-2"
+                  class="mb-1"
                 />
 
                 <v-select
@@ -89,7 +89,7 @@
                   label="Sort"
                   variant="outlined"
                   density="comfortable"
-                  class="mb-3"
+                  class="mb-1"
                 />
 
                 <v-btn
@@ -104,7 +104,7 @@
                   Apply
                 </v-btn>
 
-                <v-btn block variant="text" class="mt-1" @click="resetFilters">
+                <v-btn block variant="text" class="mt-0" @click="resetFilters">
                   Reset
                 </v-btn>
               </v-card-text>
@@ -185,7 +185,7 @@
                       Providers
                     </h3>
                     <div class="text-body-2" style="color: rgb(var(--v-theme-section-subtitle));">
-                      Showing {{ providers.length }} of {{ total }}
+                      Showing {{ providers.length }} of {{ providers.length  }}
                     </div>
                   </div>
 
@@ -681,11 +681,12 @@ useSeoMeta({
 .filters-title {
   font-weight: 800;
   color: rgb(var(--v-theme-section-title));
-  padding-bottom: 8px;
+  padding-top: 12px;
+  padding-bottom: 4px;
 }
 .filters-card :deep(.v-card-text) {
-  padding-top: 8px;
-  padding-bottom: 18px;
+  padding-top: 6px;
+  padding-bottom: 12px;
 }
 .apply-btn {
   border-radius: 12px;
