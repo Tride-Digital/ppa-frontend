@@ -56,8 +56,6 @@
           <div class="footer-legal">
           <!-- <LanguageSelector class="mr-4" /> -->
             <NuxtLink to="/web-policy" prefetch class="footer-legal-link footer-primary-text footer-link-base">Website Policy</NuxtLink>
-            <span class="footer-separator footer-secondary-text">|</span>
-            <a translate="no" target="_blank" href="https://www.avya.lk/" class="footer-legal-link footer-primary-text footer-link-base">Powered by Avya Technologies</a>
           </div>
         </v-col>
       </v-row>
@@ -251,6 +249,7 @@ const contactInfo = ref([
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  padding-right: 1cap;
 }
 .footer-legal-link {
   font-size: 0.85rem;
